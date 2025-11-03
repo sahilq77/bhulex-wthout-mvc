@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:bhulexapp/colors/order_fonts.dart';
+import 'package:bhulexapp/information/upload_info_document_screen.dart';
 import 'package:bhulexapp/network/url.dart';
 import 'package:bhulexapp/profile/profile.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -127,13 +128,14 @@ class _informationscreenState extends State<informationscreen> {
             duration: Duration(seconds: 2),
           ),
         );
-
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfilePage(isToggled: istoggled),
+            builder: (context) =>
+                UploadInfoDocumentScreen(isToggled: istoggled),
           ),
         );
+
         print(" Success Response: $responseData");
       } else {
         print(" Error Response: ${response.body}");
@@ -245,12 +247,6 @@ class _informationscreenState extends State<informationscreen> {
           elevation: 0,
           titleSpacing: 0.0, // Reduce space between leading icon and title
 
-          leading: IconButton(
-            icon: Image.asset('assets/eva_arrow-back-fill.png'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
           title: Text(
             'Personal Details', // Replace with your desired title
             style: AppFontStyle.poppins(
