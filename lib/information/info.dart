@@ -345,11 +345,11 @@ class _informationscreenState extends State<informationscreen> {
                             return text == newValue.text
                                 ? newValue
                                 : TextEditingValue(
-                                  text: text,
-                                  selection: TextSelection.collapsed(
-                                    offset: text.length,
-                                  ),
-                                );
+                                    text: text,
+                                    selection: TextSelection.collapsed(
+                                      offset: text.length,
+                                    ),
+                                  );
                           }),
                           LengthLimitingTextInputFormatter(50),
                         ],
@@ -410,9 +410,8 @@ class _informationscreenState extends State<informationscreen> {
                         style: AppFontStyle.poppins(
                           fontSize:
                               15, // Adjusted to match your desired text size
-                          fontWeight:
-                              FontWeight
-                                  .w500, // Bold as per your previous style
+                          fontWeight: FontWeight
+                              .w500, // Bold as per your previous style
                           color: Color(0xFF36322E),
                         ),
                         decoration: InputDecoration(
@@ -431,10 +430,9 @@ class _informationscreenState extends State<informationscreen> {
                               color: Color(0xFFD9D9D9),
                             ),
                           ),
-                          hintText:
-                              _mobileController.text.isEmpty
-                                  ? "Enter your mobile number*"
-                                  : null,
+                          hintText: _mobileController.text.isEmpty
+                              ? "Enter your mobile number*"
+                              : null,
                           counterText: "", // Hides the counter
                         ),
                         validator: (value) {
@@ -494,9 +492,8 @@ class _informationscreenState extends State<informationscreen> {
                         textInputAction: TextInputAction.next,
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        textCapitalization:
-                            TextCapitalization
-                                .none, // Ensure no auto-capitalization
+                        textCapitalization: TextCapitalization
+                            .none, // Ensure no auto-capitalization
                         decoration: InputDecoration(
                           hintText: 'Email ID*',
                           border: OutlineInputBorder(
@@ -531,9 +528,8 @@ class _informationscreenState extends State<informationscreen> {
                         onChanged: (value) {
                           _emailController
                               .value = _emailController.value.copyWith(
-                            text:
-                                value
-                                    .toLowerCase(), // Convert input to lowercase
+                            text: value
+                                .toLowerCase(), // Convert input to lowercase
                             selection: TextSelection.collapsed(
                               offset: value.length,
                             ),
@@ -606,13 +602,11 @@ class _informationscreenState extends State<informationscreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               DropdownSearch<String>(
-                                items:
-                                    stateData
-                                        .map<String>(
-                                          (item) =>
-                                              item['state_name'].toString(),
-                                        )
-                                        .toList(),
+                                items: stateData
+                                    .map<String>(
+                                      (item) => item['state_name'].toString(),
+                                    )
+                                    .toList(),
                                 selectedItem: Selectedstate,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
@@ -656,10 +650,9 @@ class _informationscreenState extends State<informationscreen> {
                                     (item) => item['state_name'] == value,
                                     orElse: () => {},
                                   );
-                                  Selectedstateid =
-                                      matchedState.isNotEmpty
-                                          ? matchedState['id']?.toString()
-                                          : '';
+                                  Selectedstateid = matchedState.isNotEmpty
+                                      ? matchedState['id']?.toString()
+                                      : '';
                                   log("Selected state ID: $Selectedstateid");
                                   _fetchCity(Selectedstateid);
                                 },
@@ -705,13 +698,11 @@ class _informationscreenState extends State<informationscreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               DropdownSearch<String>(
-                                items:
-                                    cityData
-                                        .map<String>(
-                                          (item) =>
-                                              item['city_name'].toString(),
-                                        )
-                                        .toList(),
+                                items: cityData
+                                    .map<String>(
+                                      (item) => item['city_name'].toString(),
+                                    )
+                                    .toList(),
                                 selectedItem: Selectedcity,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
@@ -753,10 +744,9 @@ class _informationscreenState extends State<informationscreen> {
                                               city['city_name'] == newValue,
                                           orElse: () => {},
                                         );
-                                    SelectedcityId =
-                                        selectedCityData.isNotEmpty
-                                            ? selectedCityData['id']?.toString()
-                                            : null;
+                                    SelectedcityId = selectedCityData.isNotEmpty
+                                        ? selectedCityData['id']?.toString()
+                                        : null;
                                     log("Selected city ID: $SelectedcityId");
                                     state.didChange(newValue);
                                   });
@@ -767,6 +757,101 @@ class _informationscreenState extends State<informationscreen> {
                         },
                       ),
 
+                      const SizedBox(height: 16),
+
+                      FormField<String>(
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please select a city';
+                          }
+                          final trimmedValue = value.trim();
+
+                          // Block HTML/script tags or suspicious patterns
+                          if (RegExp(
+                            r'<.*?>|script|alert|on\w+=',
+                            caseSensitive: false,
+                          ).hasMatch(trimmedValue)) {
+                            return 'Invalid characters or script content detected';
+                          }
+
+                          // Allow only Unicode letters and spaces
+                          if (!RegExp(
+                            r'^[\p{L}\s]+$',
+                            unicode: true,
+                          ).hasMatch(trimmedValue)) {
+                            return 'Only alphabets and spaces allowed';
+                          }
+
+                          // Optional: Limit length to 50 characters
+                          if (trimmedValue.length > 50) {
+                            return 'State name must not exceed 50 characters';
+                          }
+
+                          return null;
+                        },
+                        builder: (FormFieldState<String> state) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              DropdownSearch<String>(
+                                items: cityData
+                                    .map<String>(
+                                      (item) => item['city_name'].toString(),
+                                    )
+                                    .toList(),
+                                selectedItem: Selectedcity,
+                                dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    hintText: 'City / Village',
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 14,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                      borderSide: const BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    errorText: state.errorText,
+                                  ),
+                                ),
+                                popupProps: PopupProps.menu(
+                                  showSearchBox: true,
+                                  searchFieldProps: TextFieldProps(
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(
+                                        RegExp(r'[\p{L}\s]', unicode: true),
+                                      ),
+                                      LengthLimitingTextInputFormatter(50),
+                                    ],
+                                    decoration: const InputDecoration(
+                                      hintText: 'Search city...',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    Selectedcity = newValue;
+                                    final selectedCityData = cityData
+                                        .firstWhere(
+                                          (city) =>
+                                              city['city_name'] == newValue,
+                                          orElse: () => {},
+                                        );
+                                    SelectedcityId = selectedCityData.isNotEmpty
+                                        ? selectedCityData['id']?.toString()
+                                        : null;
+                                    log("Selected city ID: $SelectedcityId");
+                                    state.didChange(newValue);
+                                  });
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                       const SizedBox(height: 70),
                       // Replace the TextButton widget in your build method with this:
                       Padding(
