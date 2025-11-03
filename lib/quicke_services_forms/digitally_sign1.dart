@@ -16,8 +16,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../validations_chan_lang/seventwelveextract.dart';
 
-
-
 class DigitallySign1 extends StatefulWidget {
   final String id;
   final String serviceName;
@@ -25,10 +23,8 @@ class DigitallySign1 extends StatefulWidget {
   final String lead_id;
   final String customer_id;
   final String package_lead_id;
-
-  final String packageId; // Add this parameter
+  final String packageId;
   final bool isToggled;
-  //final String name;
   final String serviceNameInLocalLanguage;
 
   const DigitallySign1({
@@ -36,17 +32,12 @@ class DigitallySign1 extends StatefulWidget {
     required this.id,
     required this.serviceName,
     required this.tblName,
-    // required packageId,
     required this.isToggled,
     required this.serviceNameInLocalLanguage,
     required this.packageId,
-    // required this.name,
-    Map<String, String>? previousData,
     required this.lead_id,
     required this.customer_id,
     required this.package_lead_id,
-    //required String packageid,
-    //required this.packageId,
   }) : super(key: key);
 
   @override
@@ -58,7 +49,8 @@ class _DigitallySign1State extends State<DigitallySign1> {
   final TextEditingController _surveyNoController = TextEditingController();
   final TextEditingController _ByNameIncasesurveynoisnotknownController =
       TextEditingController();
-  final NetworkChecker _networkChecker = NetworkChecker(); // Add NetworkChecker
+  final NetworkChecker _networkChecker = NetworkChecker();
+  String _selectedLanguage = 'en'; // Default: English
 
   String? Selectedcity;
   String? SelectedId;
@@ -75,9 +67,14 @@ class _DigitallySign1State extends State<DigitallySign1> {
   void initState() {
     print(widget.tblName);
     super.initState();
-    _networkChecker.startMonitoring(context); // Start network monitoring
-
+    _networkChecker.startMonitoring(context);
     _fetchCity();
+  }
+
+  String _getCurrentLanguage() {
+    if (widget.isToggled) return 'mr'; // Marathi
+    if (_selectedLanguage == 'hi') return 'hi';
+    return 'en';
   }
 
   Future<void> submitQuickServiceForm(
@@ -102,7 +99,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
         final responseData = jsonDecode(response.body);
         log("Success Response Data: $responseData");
 
-        // Check if packageId is empty
         if (widget.packageId == "") {
           Navigator.pushReplacement(
             context,
@@ -114,13 +110,12 @@ class _DigitallySign1State extends State<DigitallySign1> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder:
-                  (context) => PackageService(
-                    package_Id: widget.packageId,
-                    lead_id: widget.lead_id,
-                    customerid: widget.customer_id,
-                    tbl_name: '',
-                  ),
+              builder: (context) => PackageService(
+                package_Id: widget.packageId,
+                lead_id: widget.lead_id,
+                customerid: widget.customer_id,
+                tbl_name: '',
+              ),
             ),
           );
         }
@@ -153,7 +148,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
   void _fetchCity() async {
     final String url = URLS().get_all_city_apiUrl;
 
-    // Fetch state_id from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('state_id', '22');
     print('state_id 22 saved to SharedPreferences');
@@ -260,7 +254,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Back button disabled on signup page")),
     );
-    return false; // Returning false prevents the default back navigation
+    return false;
   }
 
   Future<void> _onRefresh() async {
@@ -276,13 +270,12 @@ class _DigitallySign1State extends State<DigitallySign1> {
 
   @override
   Widget build(BuildContext context) {
-    String displayServiceName =
-        widget.isToggled
-            ? widget.serviceNameInLocalLanguage
-            : widget.serviceName;
+    String displayServiceName = widget.isToggled
+        ? widget.serviceNameInLocalLanguage
+        : widget.serviceName;
 
     return WillPopScope(
-      onWillPop: _onWillPop, // Handle physical back button
+      onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: const Color(0xFFFDFDFD),
         appBar: AppBar(
@@ -299,10 +292,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
           elevation: 0,
           leading: GestureDetector(
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const HomePage2()),
-              // );
               Navigator.pop(context);
             },
             child: const Icon(Icons.arrow_back),
@@ -317,8 +306,9 @@ class _DigitallySign1State extends State<DigitallySign1> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
+              
               child: Container(
-                height: 850,
+                height: 950, // Increased to accommodate dropdown
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -338,6 +328,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
+                      // District Dropdown
                       FormField<String>(
                         validator: (value) {
                           if (Selectedcity == null ||
@@ -357,15 +348,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
                               widget.isToggled,
                             );
                           }
-                          // if (!RegExp(
-                          //   r'^[\p{L}\s]+$',
-                          //   unicode: true,
-                          // ).hasMatch(trimmedValue)) {
-                          //   return ValidationMessagesseventweleve.getMessage(
-                          //     'onlyAlphabetsAllowed',
-                          //     widget.isToggled,
-                          //   );
-                          // }
                           return null;
                         },
                         builder: (FormFieldState<String> state) {
@@ -373,14 +355,12 @@ class _DigitallySign1State extends State<DigitallySign1> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               DropdownSearch<String>(
-                                items:
-                                    CityData.map<String>((item) {
-                                      return widget.isToggled
-                                          ? (item['city_name_in_local_language'])
-                                              .toString()
-                                          : (item['city_name']).toString();
-                                    }).toList(),
-
+                                items: CityData.map<String>((item) {
+                                  return widget.isToggled
+                                      ? (item['city_name_in_local_language'])
+                                            .toString()
+                                      : (item['city_name']).toString();
+                                }).toList(),
                                 selectedItem: Selectedcity,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
@@ -406,25 +386,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                     ),
                                   ),
                                 ),
-                                // popupProps: PopupProps.menu(
-                                //   showSearchBox: true,
-                                //   searchFieldProps: TextFieldProps(
-                                //     textCapitalization: TextCapitalization.words,
-                                //     inputFormatters: [
-                                //       FilteringTextInputFormatter.allow(
-                                //         RegExp(r'[\p{L}\s]', unicode: true),
-                                //       ),
-                                //       LengthLimitingTextInputFormatter(50),
-                                //     ],
-                                //     decoration: InputDecoration(
-                                //       hintText:
-                                //           widget.isToggled
-                                //               ? 'जिल्हा शोधा...'
-                                //               : 'Search District...',
-                                //       border: const OutlineInputBorder(),
-                                //     ),
-                                //   ),
-                                // ),
                                 popupProps: PopupProps.menu(
                                   showSearchBox: true,
                                   searchFieldProps: TextFieldProps(
@@ -439,11 +400,9 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                       LengthLimitingTextInputFormatter(50),
                                     ],
                                     decoration: InputDecoration(
-                                      hintText:
-                                          widget.isToggled
-                                              ? 'जिल्हा शोधा...'
-                                              : 'Search District...',
-
+                                      hintText: widget.isToggled
+                                          ? 'जिल्हा शोधा...'
+                                          : 'Search District...',
                                       hintStyle: AppFontStyle2.blinker(),
                                       border: const OutlineInputBorder(),
                                     ),
@@ -456,23 +415,9 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                     color: Color(0xFF9CA3AF),
                                   ),
                                 ),
-                                // onChanged: (value) {
-                                //   setState(() {
-                                //     Selectedcity = value;
-                                //     SelectedId =
-                                //         CityData.firstWhere(
-                                //           (element) =>
-                                //               element['city_name'] == value,
-                                //         )['id'].toString();
-                                //     _fetchTaluka(SelectedId!);
-                                //     state.didChange(value);
-                                //   });
-                                // },
                                 onChanged: (value) {
-                                  log('${widget.isToggled}');
                                   setState(() {
                                     Selectedcity = value;
-
                                     final matchedCity = CityData.firstWhere(
                                       (element) =>
                                           (widget.isToggled
@@ -481,16 +426,12 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                           value,
                                       orElse: () => {},
                                     );
-
-                                    SelectedId =
-                                        matchedCity.isNotEmpty
-                                            ? matchedCity['id'].toString()
-                                            : null;
-
+                                    SelectedId = matchedCity.isNotEmpty
+                                        ? matchedCity['id'].toString()
+                                        : null;
                                     if (SelectedId != null) {
                                       _fetchTaluka(SelectedId!);
                                     }
-
                                     state.didChange(value);
                                   });
                                 },
@@ -500,6 +441,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      // Taluka Dropdown
                       FormField<String>(
                         validator: (value) {
                           if (selectedTaluka == null ||
@@ -509,27 +451,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
                               widget.isToggled,
                             );
                           }
-                          final trimmedValue = selectedVillageName!.trim();
-                          if (RegExp(
-                            r'<.*?>|script|alert|on\w+=',
-                            caseSensitive: false,
-                          ).hasMatch(trimmedValue)) {
-                            return ValidationMessagesseventweleve.getMessage(
-                              'invalidCharacters',
-                              widget.isToggled,
-                            );
-                          } // Allow Marathi (Devanagari), English alphabets, and spaces
-                          // if (!RegExp(
-                          //   r'^[\p{L}\s]+$',
-                          //   unicode: true,
-                          // ).hasMatch(trimmedValue)) {
-                          //   // Debug: Log the failing value
-                          //   print("Regex failed for taluka: '$trimmedValue'");
-                          //   return ValidationMessagesseventweleve.getMessage(
-                          //     'onlyAlphabetsAllowed',
-                          //     widget.isToggled,
-                          //   );
-                          // }
                           return null;
                         },
                         builder: (FormFieldState<String> state) {
@@ -537,16 +458,14 @@ class _DigitallySign1State extends State<DigitallySign1> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               DropdownSearch<String>(
-                                items:
-                                    talukaData.map<String>((item) {
-                                      return widget.isToggled
-                                          ? (item['taluka_name_in_local_language'] ??
-                                                  item['taluka_name'] ??
-                                                  '')
-                                              .toString()
-                                          : (item['taluka_name'] ?? '')
-                                              .toString();
-                                    }).toList(),
+                                items: talukaData.map<String>((item) {
+                                  return widget.isToggled
+                                      ? (item['taluka_name_in_local_language'] ??
+                                                item['taluka_name'] ??
+                                                '')
+                                            .toString()
+                                      : (item['taluka_name'] ?? '').toString();
+                                }).toList(),
                                 selectedItem: selectedTaluka,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
@@ -587,10 +506,9 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                       LengthLimitingTextInputFormatter(50),
                                     ],
                                     decoration: InputDecoration(
-                                      hintText:
-                                          widget.isToggled
-                                              ? 'तालुका शोधा...'
-                                              : 'Search Taluka...',
+                                      hintText: widget.isToggled
+                                          ? 'तालुका शोधा...'
+                                          : 'Search Taluka...',
                                       hintStyle: AppFontStyle2.blinker(),
                                       border: const OutlineInputBorder(),
                                     ),
@@ -604,23 +522,20 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                   ),
                                 ),
                                 onChanged: (value) {
-                                  log('${widget.isToggled}');
-
                                   setState(() {
                                     selectedTaluka = value;
                                     final matchedTaluka = talukaData.firstWhere(
                                       (element) =>
                                           (widget.isToggled
                                               ? (element['taluka_name_in_local_language'] ??
-                                                  element['taluka_name'])
+                                                    element['taluka_name'])
                                               : element['taluka_name']) ==
                                           value,
                                       orElse: () => {},
                                     );
-                                    selectedTalukaId =
-                                        matchedTaluka.isNotEmpty
-                                            ? matchedTaluka['id'].toString()
-                                            : null;
+                                    selectedTalukaId = matchedTaluka.isNotEmpty
+                                        ? matchedTaluka['id'].toString()
+                                        : null;
                                     if (selectedTalukaId != null &&
                                         SelectedId != null) {
                                       _fetchVillages(
@@ -637,6 +552,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      // Village Dropdown
                       FormField<String>(
                         validator: (value) {
                           if (selectedVillageName == null ||
@@ -646,25 +562,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
                               widget.isToggled,
                             );
                           }
-                          final trimmedValue = selectedVillageName!.trim();
-                          if (RegExp(
-                            r'<.*?>|script|alert|on\w+=',
-                            caseSensitive: false,
-                          ).hasMatch(trimmedValue)) {
-                            return ValidationMessagesseventweleve.getMessage(
-                              'invalidCharacters',
-                              widget.isToggled,
-                            );
-                          }
-                          // if (!RegExp(
-                          //   r'^[\p{L}\s]+$',
-                          //   unicode: true,
-                          // ).hasMatch(trimmedValue)) {
-                          //   return ValidationMessagesseventweleve.getMessage(
-                          //     'onlyAlphabetsAllowed',
-                          //     widget.isToggled,
-                          //   );
-                          // }
                           return null;
                         },
                         builder: (FormFieldState<String> state) {
@@ -672,22 +569,20 @@ class _DigitallySign1State extends State<DigitallySign1> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               DropdownSearch<String>(
-                                items:
-                                    villageData
-                                        .map<String>((item) {
-                                          final villageName =
-                                              widget.isToggled
-                                                  ? (item['village_name_in_local_language'] ??
-                                                      item['village_name'])
-                                                  : item['village_name'];
-                                          return villageName?.toString() ?? '';
-                                        })
-                                        .where(
-                                          (name) =>
-                                              name.trim().isNotEmpty &&
-                                              name.toLowerCase() != 'null',
-                                        )
-                                        .toList(),
+                                items: villageData
+                                    .map<String>((item) {
+                                      final villageName = widget.isToggled
+                                          ? (item['village_name_in_local_language'] ??
+                                                item['village_name'])
+                                          : item['village_name'];
+                                      return villageName?.toString() ?? '';
+                                    })
+                                    .where(
+                                      (name) =>
+                                          name.trim().isNotEmpty &&
+                                          name.toLowerCase() != 'null',
+                                    )
+                                    .toList(),
                                 selectedItem: selectedVillageName,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
@@ -728,10 +623,9 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                       LengthLimitingTextInputFormatter(50),
                                     ],
                                     decoration: InputDecoration(
-                                      hintText:
-                                          widget.isToggled
-                                              ? 'गाव शोधा...'
-                                              : 'Search Village...',
+                                      hintText: widget.isToggled
+                                          ? 'गाव शोधा...'
+                                          : 'Search Village...',
                                       hintStyle: AppFontStyle2.blinker(),
                                       border: const OutlineInputBorder(),
                                     ),
@@ -747,22 +641,19 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                 onChanged: (value) {
                                   setState(() {
                                     selectedVillageName = value;
-
                                     final matchedVillage = villageData.firstWhere(
                                       (element) =>
                                           (widget.isToggled
                                               ? (element['village_name_in_local_language'] ??
-                                                  element['village_name'])
+                                                    element['village_name'])
                                               : element['village_name']) ==
                                           value,
                                       orElse: () => {},
                                     );
-
                                     selectedVillageId =
                                         matchedVillage.isNotEmpty
-                                            ? matchedVillage['id'].toString()
-                                            : null;
-
+                                        ? matchedVillage['id'].toString()
+                                        : null;
                                     state.didChange(value);
                                   });
                                 },
@@ -772,6 +663,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      // Survey No
                       TextFormField(
                         controller: _surveyNoController,
                         decoration: InputDecoration(
@@ -804,17 +696,12 @@ class _DigitallySign1State extends State<DigitallySign1> {
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
                             RegExp(
-                              (r'^[\u0900-\u097F\u0966-\u096F a-zA-Z0-9\s/]+$'),
-                            ), // Simplified to allow numbers, letters, and spaces
+                              r'^[\u0900-\u097F\u0966-\u096F a-zA-Z0-9\s/]+$',
+                            ),
                           ),
                           TextInputFormatter.withFunction((oldValue, newValue) {
                             String text = newValue.text;
-                            // Replace multiple spaces with a single space
-                            text = text.replaceAll(RegExp(r'\s+'), ' ');
-                            // Remove leading/trailing spaces
-                            text = text.trim();
-
-                            // Prevent space immediately after switching between numbers and letters
+                            text = text.replaceAll(RegExp(r'\s+'), ' ').trim();
                             if (text.length > 1) {
                               final lastChar = text[text.length - 1];
                               final secondLastChar = text[text.length - 2];
@@ -831,25 +718,19 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                           RegExp(r'[0-9 /]').hasMatch(
                                             text.substring(0, text.length - 2),
                                           )))) {
-                                text = text.substring(
-                                  0,
-                                  text.length - 1,
-                                ); // Remove invalid space
+                                text = text.substring(0, text.length - 1);
                               }
                             }
-
                             return text == newValue.text
                                 ? newValue
                                 : TextEditingValue(
-                                  text: text,
-                                  selection: TextSelection.collapsed(
-                                    offset: text.length,
-                                  ),
-                                );
+                                    text: text,
+                                    selection: TextSelection.collapsed(
+                                      offset: text.length,
+                                    ),
+                                  );
                           }),
-                          LengthLimitingTextInputFormatter(
-                            50,
-                          ), // Limit to 50 characters
+                          LengthLimitingTextInputFormatter(50),
                         ],
                         textCapitalization: TextCapitalization.words,
                         validator: (value) {
@@ -869,22 +750,12 @@ class _DigitallySign1State extends State<DigitallySign1> {
                               widget.isToggled,
                             );
                           }
-                          // Validate: alphanumeric with single spaces between segments
-                          if (RegExp(
-                            r'<.*?>|script|alert|on\w+=',
-                            caseSensitive: false,
-                          ).hasMatch(trimmedValue)) {
-                            return ValidationMessagesseventweleve.getMessage(
-                              'invalidCharacters',
-                              widget.isToggled,
-                            );
-                          }
                           return null;
                         },
                         style: AppFontStyle2.blinker(),
                       ),
-
                       const SizedBox(height: 16),
+                      // By Name Field
                       TextFormField(
                         controller: _ByNameIncasesurveynoisnotknownController,
                         decoration: InputDecoration(
@@ -928,7 +799,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
                             ),
                           ),
                         ),
-
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
                             RegExp(
@@ -937,19 +807,17 @@ class _DigitallySign1State extends State<DigitallySign1> {
                           ),
                           TextInputFormatter.withFunction((oldValue, newValue) {
                             String text = newValue.text;
-                            // Replace multiple spaces with single space
-                            text = text.replaceAll(RegExp(r'\s+'), ' ');
-                            // Remove leading space
-                            text = text.trimLeft();
-
+                            text = text
+                                .replaceAll(RegExp(r'\s+'), ' ')
+                                .trimLeft();
                             return text == newValue.text
                                 ? newValue
                                 : TextEditingValue(
-                                  text: text,
-                                  selection: TextSelection.collapsed(
-                                    offset: text.length,
-                                  ),
-                                );
+                                    text: text,
+                                    selection: TextSelection.collapsed(
+                                      offset: text.length,
+                                    ),
+                                  );
                           }),
                           LengthLimitingTextInputFormatter(50),
                         ],
@@ -962,8 +830,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
                             );
                           }
                           final trimmedValue = value.trim();
-
-                          // Check for invalid characters (scripts, HTML tags, etc.)
                           if (RegExp(
                             r'<.*?>|script|alert|on\w+=',
                             caseSensitive: false,
@@ -973,11 +839,97 @@ class _DigitallySign1State extends State<DigitallySign1> {
                               widget.isToggled,
                             );
                           }
-
                           return null;
                         },
                         style: AppFontStyle2.blinker(),
                       ),
+
+                      // ============== LANGUAGE DROPDOWN (NEW) ==============
+                      const SizedBox(height: 16),
+                      // ============== LANGUAGE DROPDOWN (3 LANGUAGES) ==============
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFC5C5C5)),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: _getCurrentLanguage(),
+                            isExpanded: true,
+                            icon: const Icon(
+                              Icons.arrow_drop_down,
+                              color: Color(0xFF9CA3AF),
+                            ),
+                            hint: Text(
+                              LocalizedStrings.getString(
+                                'selectLanguage',
+                                widget.isToggled,
+                              ),
+                              style: AppFontStyle2.blinker(
+                                fontSize: 16,
+                                color: Color(0xFF36322E),
+                              ),
+                            ),
+                            items: [
+                              DropdownMenuItem(
+                                value: 'en',
+                                child: Text(
+                                  "English",
+                                  style: AppFontStyle2.blinker(fontSize: 16),
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'hi',
+                                child: Text(
+                                  "हिंदी",
+                                  style: AppFontStyle2.blinker(fontSize: 16),
+                                ),
+                              ),
+                              DropdownMenuItem(
+                                value: 'mr',
+                                child: Text(
+                                  "मराठी",
+                                  style: AppFontStyle2.blinker(fontSize: 16),
+                                ),
+                              ),
+                            ],
+                            onChanged: (String? newValue) {
+                              if (newValue != null) {
+                                setState(() {
+                                  // Update toggle: true = Marathi, false = English, but now we support Hindi too
+                                  // You can extend your logic here
+                                  if (newValue == 'mr') {
+                                    _selectedLanguage = 'mr';
+                                  } else if (newValue == 'hi') {
+                                    _selectedLanguage = 'hi';
+                                  } else {
+                                    _selectedLanguage = 'en';
+                                  }
+                                });
+
+                                // Save to SharedPreferences
+                                SharedPreferences.getInstance().then((prefs) {
+                                  prefs.setString(
+                                    'app_language',
+                                    _selectedLanguage,
+                                  );
+                                });
+
+                                // Trigger rebuild in parent if needed
+                                // widget.onLanguageChanged?.call(_selectedLanguage == 'mr');
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                      // =========================================================
+
+                      // =====================================================
                       Padding(
                         padding: const EdgeInsets.only(top: 50.0),
                         child: Container(
@@ -989,7 +941,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
                           ),
                           child: TextButton(
                             onPressed: () async {
-                              print("formdata");
                               if (_formKey.currentState!.validate()) {
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
@@ -1002,9 +953,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                 Map<String, dynamic> formData = {
                                   "tbl_name": widget.tblName,
                                   "lead_id": widget.package_lead_id,
-                                  "package_id":
-                                      widget.packageId ??
-                                      "", // This should now have a value
+                                  "package_id": widget.packageId ?? "",
                                   "customer_id": customerId,
                                   "state_id": stateId,
                                   "city_id": SelectedId,
@@ -1014,7 +963,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                   "name":
                                       _ByNameIncasesurveynoisnotknownController
                                           .text,
-                                  // 'orderId': responseData['order_id'] ?? widget.lead_id,
                                 };
                                 submitQuickServiceForm(context, formData);
                               }
@@ -1038,34 +986,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.19,
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.00,
-                        ),
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: const Color(0x40F57C03),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              width: 0.5,
-                              color: const Color(0xFFFCCACA),
-                            ),
-                          ),
-                          padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
-                          child: Text(
-                            LocalizedStrings.getString(
-                              'note',
-                              widget.isToggled,
-                            ),
-                            style: AppFontStyle2.blinker(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF36322E),
-                            ),
-                          ),
-                        ),
-                      ),
+                    
                     ],
                   ),
                 ),
