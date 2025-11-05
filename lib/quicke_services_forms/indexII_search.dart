@@ -11,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Order/service_package_details.dart';
 import '../form_internet.dart';
 import '../language/hindi.dart';
 import '../validations_chan_lang/indexIIsearch.dart';
