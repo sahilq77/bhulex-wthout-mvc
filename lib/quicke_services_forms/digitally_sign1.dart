@@ -11,6 +11,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -97,6 +99,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
+
         log("Success Response Data: $responseData");
 
         if (widget.packageId == "") {
@@ -165,8 +168,8 @@ class _DigitallySign1State extends State<DigitallySign1> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('Response Status Code: ${response.statusCode}');
-        print('Raw Response Body: "${response.body}"');
+        log('Response Status Code: ${response.statusCode}');
+        log('Raw Response Body: "${response.body}"');
 
         if (data['status'] == 'true') {
           setState(() {
@@ -306,7 +309,6 @@ class _DigitallySign1State extends State<DigitallySign1> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
-              
               child: Container(
                 height: 950, // Increased to accommodate dropdown
                 child: Form(
@@ -846,8 +848,8 @@ class _DigitallySign1State extends State<DigitallySign1> {
 
                       // ============== LANGUAGE DROPDOWN (NEW) ==============
                       const SizedBox(height: 16),
+
                       // ============== LANGUAGE DROPDOWN (3 LANGUAGES) added By Sahil ==============
-                      const SizedBox(height: 16),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -927,9 +929,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                           ),
                         ),
                       ),
-                      // =========================================================
 
-                      // =====================================================
                       Padding(
                         padding: const EdgeInsets.only(top: 50.0),
                         child: Container(
@@ -984,9 +984,77 @@ class _DigitallySign1State extends State<DigitallySign1> {
                         ),
                       ),
                       SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.02,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //  mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // "View Sample" Button
+                          Expanded(
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  //    foregroundColor: Colors.black, // Text color
+                                  backgroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.black),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child: Text(
+                                  'View Sample',
+                                  style: AppFontStyle2.blinker(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(width: 16), // Space between buttons
+                          // "Chat with Us" Button (WhatsApp)
+                          Expanded(
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              child: ElevatedButton.icon(
+                                onPressed: () {},
+
+                                icon: Icon(
+                                  FontAwesomeIcons.squareWhatsapp,
+                                  color: Colors.green,
+                                  size: 25,
+                                ),
+                                label: Text(
+                                  'Contact Us',
+                                  style: AppFontStyle2.blinker(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  //    foregroundColor: Colors.black, // Text color
+                                  backgroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.grey),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
                         height: MediaQuery.of(context).size.height * 0.19,
                       ),
-                    
                     ],
                   ),
                 ),
@@ -998,3 +1066,4 @@ class _DigitallySign1State extends State<DigitallySign1> {
     );
   }
 }
+
