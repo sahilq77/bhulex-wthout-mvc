@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:bhulexapp/My_package/package_details_new.dart';
 import 'package:bhulexapp/Order/order_list.dart';
@@ -183,8 +184,9 @@ class _HomePage2State extends State<HomePage2> {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         action: SnackBarAction(
-          label:
-              languageController.isToggled.value ? 'पुन्हा प्रयत्न' : 'Retry',
+          label: languageController.isToggled.value
+              ? 'पुन्हा प्रयत्न'
+              : 'Retry',
           textColor: Colors.white,
           onPressed: () async {
             bool isConnected = await _checkConnectivity();
@@ -230,6 +232,7 @@ class _HomePage2State extends State<HomePage2> {
       );
 
       if (response.statusCode == 200) {
+        log("API Response: ${response.body}");
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         setState(() {
           categoryList = responseData['data'] ?? [];
@@ -276,36 +279,30 @@ class _HomePage2State extends State<HomePage2> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => MyOrderScreen(package_id: '', customer_id: ''),
+            builder: (context) =>
+                MyOrderScreen(package_id: '', customer_id: ''),
           ),
         );
         break;
-     
+
       case 3:
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                    ProfilePage(isToggled: languageController.isToggled.value),
-          ),
-        );
-        break;
-         case 4:
-         
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => PackageScreen(
-                  customerId: '',
-                  package_id: '',
-                  customerid: '',
-                ),
+            builder: (context) =>
+                ProfilePage(isToggled: languageController.isToggled.value),
           ),
         );
-      
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                PackageScreen(customerId: '', package_id: '', customerid: ''),
+          ),
+        );
+
         break;
     }
   }
@@ -313,50 +310,47 @@ class _HomePage2State extends State<HomePage2> {
   Future<bool> _showExitDialog(BuildContext context) async {
     return await showDialog<bool>(
           context: context,
-          builder:
-              (context) => AlertDialog(
-                title: Obx(
-                  () => Text(
-                    languageController.isToggled.value
-                        ? 'साठवलेला डेटा नष्ट होईल'
-                        : 'Unsaved Data Will Be Lost',
-                    style: AppFontStyle2.blinker(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
+          builder: (context) => AlertDialog(
+            title: Obx(
+              () => Text(
+                languageController.isToggled.value
+                    ? 'साठवलेला डेटा नष्ट होईल'
+                    : 'Unsaved Data Will Be Lost',
+                style: AppFontStyle2.blinker(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
                 ),
-                content: Obx(
-                  () => Text(
-                    languageController.isToggled.value
-                        ? 'आपण खात्रीने बाहेर पडू इच्छिता?'
-                        : 'Are you sure you want to exit?',
-                    style: AppFontStyle2.blinker(fontSize: 16),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: Obx(
-                      () => Text(
-                        languageController.isToggled.value
-                            ? 'रद्द करा'
-                            : 'Cancel',
-                        style: AppFontStyle2.blinker(color: Colors.grey),
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => SystemNavigator.pop(),
-                    child: Obx(
-                      () => Text(
-                        languageController.isToggled.value ? 'होय' : 'Yes',
-                        style: AppFontStyle2.blinker(color: Colors.red),
-                      ),
-                    ),
-                  ),
-                ],
               ),
+            ),
+            content: Obx(
+              () => Text(
+                languageController.isToggled.value
+                    ? 'आपण खात्रीने बाहेर पडू इच्छिता?'
+                    : 'Are you sure you want to exit?',
+                style: AppFontStyle2.blinker(fontSize: 16),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Obx(
+                  () => Text(
+                    languageController.isToggled.value ? 'रद्द करा' : 'Cancel',
+                    style: AppFontStyle2.blinker(color: Colors.grey),
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => SystemNavigator.pop(),
+                child: Obx(
+                  () => Text(
+                    languageController.isToggled.value ? 'होय' : 'Yes',
+                    style: AppFontStyle2.blinker(color: Colors.red),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ) ??
         false;
   }
@@ -399,30 +393,29 @@ class _HomePage2State extends State<HomePage2> {
                           ),
                         ),
                         Obx(
-                          () =>
-                              !languageController.isToggled.value
-                                  ? Positioned(
-                                    right: 10,
-                                    child: Text(
-                                      'अ',
-                                      style: AppFontStyle2.blinker(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colorfile.lightblack,
-                                      ),
-                                    ),
-                                  )
-                                  : Positioned(
-                                    left: 10,
-                                    child: Text(
-                                      'A',
-                                      style: AppFontStyle2.blinker(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: Colorfile.lightblack,
-                                      ),
+                          () => !languageController.isToggled.value
+                              ? Positioned(
+                                  right: 10,
+                                  child: Text(
+                                    'अ',
+                                    style: AppFontStyle2.blinker(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colorfile.lightblack,
                                     ),
                                   ),
+                                )
+                              : Positioned(
+                                  left: 10,
+                                  child: Text(
+                                    'A',
+                                    style: AppFontStyle2.blinker(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colorfile.lightblack,
+                                    ),
+                                  ),
+                                ),
                         ),
                       ],
                     ),
@@ -447,945 +440,892 @@ class _HomePage2State extends State<HomePage2> {
         ),
         body: RefreshIndicator(
           onRefresh: _onRefresh,
-          child:
-              isLoading
-                  ? ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.grey.shade100,
-                          child: Container(height: 150, color: Colors.white),
-                        ),
-                      );
-                    },
-                  )
-                  : !hasConnection
-                  ? SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 20),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: 30.0,
-                              vertical: 10.0,
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.red, width: 1),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.cancel, color: Colors.red, size: 20),
-                                SizedBox(width: 8),
-                                Text(
-                                  languageController.isToggled.value
-                                      ? 'इंटरनेट नाही'
-                                      : 'No Internet',
-                                  style: AppFontStyle2.blinker(
-                                    fontSize: 14,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 16),
-                          Obx(
-                            () => Text(
-                              languageController.isToggled.value
-                                  ? 'कोणताही डेटा उपलब्ध नाही'
-                                  : 'No data available',
-                              style: AppFontStyle2.blinker(
-                                fontSize: 16,
-                                color: Colorfile.lightblack,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
+          child: isLoading
+              ? ListView.builder(
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: Container(height: 150, color: Colors.white),
                       ),
-                    ),
-                  )
-                  : SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
+                    );
+                  },
+                )
+              : !hasConnection
+              ? SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Center(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ...categoryList.map((category) {
-                          var services = category['service'] ?? [];
-                          return Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Obx(
-                                      () => Text(
-                                        languageController.isToggled.value
-                                            ? (category['category_name_in_local_language'] ??
-                                                category['category_name'] ??
-                                                '')
-                                            : (category['category_name'] ?? ''),
-                                        style: AppFontStyle2.blinker(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                    Obx(
-                                      () => Text(
-                                        LocalizationStringsinstant.getString(
-                                          instantTextMap[category['category_name']] ??
-                                              '',
-                                          languageController.isToggled.value,
-                                        ),
-                                        style: AppFontStyle2.blinker(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colorfile.lightgrey,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: services.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 4,
-                                        crossAxisSpacing: 10,
-                                        mainAxisSpacing: 10,
-                                        childAspectRatio: 1.4,
-                                      ),
-                                  itemBuilder: (context, serviceIndex) {
-                                    var service = services[serviceIndex];
-                                    String serviceIcon =
-                                        service['icon'] != null
-                                            ? iconPath + service['icon']
-                                            : '';
-                                    return Obx(() {
-                                      String displayName =
-                                          languageController.isToggled.value
-                                              ? (service['service_name_in_local_language'] ??
-                                                  service['service_name'] ??
-                                                  '')
-                                              : (service['service_name'] ?? '');
-                                      return InkWell(
-                                        onTap: () {
-                                          var selectedService =
-                                              services[serviceIndex];
-                                          final id =
-                                              selectedService['id'].toString();
-                                          final serviceName =
-                                              selectedService['service_name'] ??
-                                              '';
-                                          final tblName =
-                                              selectedService['tbl_name'] ?? '';
-                                          if ([
-                                            "tbl_seven_twelve",
-                                            "tbl_eighta_extract",
-                                            "tbl_e_mutation_extract",
-                                            "tbl_bhu_naksha",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => DigitallySign1(
-                                                      id: id,
-                                                      packageId: "",
-                                                      serviceName: serviceName,
-
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      lead_id: '',
-                                                      customer_id: '',
-                                                      package_lead_id: '',
-
-                                                      // packageId: null,
-                                                    ),
-                                              ),
-                                            );
-                                          } else if ([
-                                            "tbl_index_second_search",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => IndexSearch1(
-                                                      id: id,
-                                                      packageId: "",
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      lead_id: '',
-                                                      customer_id:
-                                                          widget.customer_id,
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if ([
-                                            "tbl_rera_certificate",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (
-                                                      context,
-                                                    ) => ReraCertificate(
-                                                      id: id,
-                                                      packageId: "",
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      lead_id: '',
-                                                      customer_id: '',
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if ([
-                                            "tbl_property_card",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => propertyCard(
-                                                      id: id,
-                                                      packageId: "",
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      package_lead_id: '',
-                                                      lead_id: '',
-                                                      customer_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if ([
-                                            "tbl_old_seven_twelve",
-                                            "tbl_old_eighta_extract",
-                                            "tbl_old_e_mutation_extract",
-                                            "tbl_old_bhu_naksha",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => oldextract1(
-                                                      id: id,
-                                                      packageId: "",
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      lead_id: '',
-                                                      customer_id: '',
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if ([
-                                            "tbl_mortage_report",
-                                            "tbl_ceersai_report",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (
-                                                      context,
-                                                    ) => MortgageReports(
-                                                      id: id,
-                                                      packageId: "",
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      lead_id: '',
-                                                      customer_id: '',
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if ([
-                                            "tbl_rera_builder_documents",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => RERA_Builder(
-                                                      id: id,
-                                                      packageId: "",
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      customer_id: '',
-                                                      lead_id: '',
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if ([
-                                            "tbl_registered_document",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (
-                                                      context,
-                                                    ) => RegisteredDocument(
-                                                      id: id,
-                                                      packageId: "",
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      lead_id: '',
-                                                      customer_id: '',
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if ([
-                                            "tbl_title_investigation_report",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => Investigation(
-                                                      id: id,
-                                                      packageId: "",
-
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      customer_id: '',
-                                                      lead_id: '',
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if ([
-                                            "tbl_legal_drafts",
-                                          ].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => Legaldrafts(
-                                                      id: id,
-                                                      packageId: "",
-
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      lead_id: '',
-                                                      customer_id: '',
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if (["tbl_court_cases"].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (context) => Courtcases(
-                                                      id: id,
-                                                      packageId: "",
-
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      lead_id: '',
-                                                      customer_id: '',
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else if (["tbl_adhikar_abhilekh"].contains(tblName)) {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder:
-                                                    (
-                                                      context,
-                                                    ) => Adhikar_Abhilekh(
-                                                      id: id,
-                                                      packageId: "",
-
-                                                      serviceName: serviceName,
-                                                      tblName: tblName,
-                                                      isToggled:
-                                                          languageController
-                                                              .isToggled
-                                                              .value,
-                                                      serviceNameInLocalLanguage:
-                                                          selectedService['service_name_in_local_language'] ??
-                                                          serviceName,
-                                                      lead_id: '',
-                                                      customerid: customer_id,
-                                                      package_lead_id: '',
-                                                    ),
-                                              ),
-                                            );
-                                          } else {
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              SnackBar(
-                                                content: Obx(
-                                                  () => Text(
-                                                    languageController
-                                                            .isToggled
-                                                            .value
-                                                        ? "या निवडीसाठी सेवा उपलब्ध नाही."
-                                                        : "Service not available for this selection.",
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            serviceIcon.isNotEmpty
-                                                ? Image.network(
-                                                  serviceIcon,
-                                                  height: 25,
-                                                  width: 25,
-                                                  fit: BoxFit.contain,
-                                                  errorBuilder:
-                                                      (ctx, _, __) =>
-                                                          const Icon(
-                                                            Icons.broken_image,
-                                                            size: 25,
-                                                          ),
-                                                )
-                                                : const Icon(
-                                                  Icons.miscellaneous_services,
-                                                  size: 30,
-                                                ),
-                                            const SizedBox(height: 5),
-                                            Text(
-                                              displayName,
-                                              style: AppFontStyle2.blinker(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colorfile.lightblack,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
+                        SizedBox(height: 20),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 30.0,
+                            vertical: 10.0,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8,
                             horizontal: 12,
-                            vertical: 18,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.red, width: 1),
                           ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Obx(
-                                () => Text(
-                                  languageController.isToggled.value
-                                      ? 'पॅकेजेस'
-                                      : 'Packages',
-                                  style: AppFontStyle2.blinker(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colorfile.lightblack,
-                                  ),
-                                ),
-                              ),
-                              Obx(
-                                () => TextButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AllPackagesPage(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    languageController.isToggled.value
-                                        ? 'सर्व पहा'
-                                        : 'View All',
-                                    style: AppFontStyle2.blinker(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colorfile.bordertheme,
-                                    ),
-                                  ),
+                              Icon(Icons.cancel, color: Colors.red, size: 20),
+                              SizedBox(width: 8),
+                              Text(
+                                languageController.isToggled.value
+                                    ? 'इंटरनेट नाही'
+                                    : 'No Internet',
+                                style: AppFontStyle2.blinker(
+                                  fontSize: 14,
+                                  color: Colors.red,
                                 ),
                               ),
                             ],
                           ),
                         ),
+                        SizedBox(height: 16),
                         Obx(
-                          () =>
-                              packageController.isLoading.value
-                                  ? const Center(
-                                    child: CircularProgressIndicator(),
-                                  )
-                                  : Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 15.0,
-                                      right: 20,
-                                      bottom: 15,
+                          () => Text(
+                            languageController.isToggled.value
+                                ? 'कोणताही डेटा उपलब्ध नाही'
+                                : 'No data available',
+                            style: AppFontStyle2.blinker(
+                              fontSize: 16,
+                              color: Colorfile.lightblack,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...categoryList.map((category) {
+                        var services = category['service'] ?? [];
+                        return Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Obx(
+                                    () => Text(
+                                      languageController.isToggled.value
+                                          ? (category['category_name_in_local_language'] ??
+                                                category['category_name'] ??
+                                                '')
+                                          : (category['category_name'] ?? ''),
+                                      style: AppFontStyle2.blinker(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                    child: SizedBox(
-                                      // Responsive height: 25% of screen height, capped at 200 for smaller screens
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                                      0.25 >
-                                                  200
-                                              ? 200
-                                              : MediaQuery.of(
-                                                    context,
-                                                  ).size.height *
-                                                  0.25,
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount:
-                                            packageController
-                                                .allPackages
-                                                .length +
-                                            (packageController
-                                                    .isLoadingMore
-                                                    .value
-                                                ? 1
-                                                : 0),
-                                        itemBuilder: (context, index) {
-                                          if (index ==
-                                                  packageController
-                                                      .allPackages
-                                                      .length &&
+                                  ),
+                                  Obx(
+                                    () => Text(
+                                      LocalizationStringsinstant.getString(
+                                        instantTextMap[category['category_name']] ??
+                                            '',
+                                        languageController.isToggled.value,
+                                      ),
+                                      style: AppFontStyle2.blinker(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colorfile.lightgrey,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: services.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 4,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 10,
+                                      childAspectRatio: 1.4,
+                                    ),
+                                itemBuilder: (context, serviceIndex) {
+                                  var service = services[serviceIndex];
+                                  String serviceIcon = service['icon'] != null
+                                      ? iconPath + service['icon']
+                                      : '';
+                                  return Obx(() {
+                                    String displayName =
+                                        languageController.isToggled.value
+                                        ? (service['service_name_in_local_language'] ??
+                                              service['service_name'] ??
+                                              '')
+                                        : (service['service_name'] ?? '');
+                                    return InkWell(
+                                      onTap: () {
+                                        var selectedService =
+                                            services[serviceIndex];
+                                        final id = selectedService['id']
+                                            .toString();
+                                        final serviceName =
+                                            selectedService['service_name'] ??
+                                            '';
+                                        final tblName =
+                                            selectedService['tbl_name'] ?? '';
+                                        if ([
+                                          "tbl_seven_twelve",
+                                          "tbl_eighta_extract",
+                                          "tbl_e_mutation_extract",
+                                          "tbl_bhu_naksha",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => DigitallySign1(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+
+                                                // packageId: null,
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_index_second_search",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => IndexSearch1(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: widget.customer_id,
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_rera_certificate",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => ReraCertificate(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_property_card",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => propertyCard(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                package_lead_id: '',
+                                                lead_id: '',
+                                                customer_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_old_seven_twelve",
+                                          "tbl_old_eighta_extract",
+                                          "tbl_old_e_mutation_extract",
+                                          "tbl_old_bhu_naksha",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => oldextract1(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_mortage_report",
+                                          "tbl_ceersai_report",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => MortgageReports(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_rera_builder_documents",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => RERA_Builder(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                customer_id: '',
+                                                lead_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_registered_document",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RegisteredDocument(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        selectedService['service_name_in_local_language'] ??
+                                                        serviceName,
+                                                    lead_id: '',
+                                                    customer_id: '',
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_title_investigation_report",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => Investigation(
+                                                id: id,
+                                                packageId: "",
+
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                customer_id: '',
+                                                lead_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_legal_drafts",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => Legaldrafts(
+                                                id: id,
+                                                packageId: "",
+
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if (["tbl_court_cases"].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => Courtcases(
+                                                id: id,
+                                                packageId: "",
+
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if (["tbl_adhikar_abhilekh"].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Adhikar_Abhilekh(
+                                                    id: id,
+                                                    packageId: "",
+
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        selectedService['service_name_in_local_language'] ??
+                                                        serviceName,
+                                                    lead_id: '',
+                                                    customerid: customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Obx(
+                                                () => Text(
+                                                  languageController
+                                                          .isToggled
+                                                          .value
+                                                      ? "या निवडीसाठी सेवा उपलब्ध नाही."
+                                                      : "Service not available for this selection.",
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          serviceIcon.isNotEmpty
+                                              ? Image.network(
+                                                  serviceIcon,
+                                                  height: 25,
+                                                  width: 25,
+                                                  fit: BoxFit.contain,
+                                                  errorBuilder: (ctx, _, __) =>
+                                                      const Icon(
+                                                        Icons.broken_image,
+                                                        size: 25,
+                                                      ),
+                                                )
+                                              : const Icon(
+                                                  Icons.miscellaneous_services,
+                                                  size: 30,
+                                                ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            displayName,
+                                            style: AppFontStyle2.blinker(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colorfile.lightblack,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 18,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Obx(
+                              () => Text(
+                                languageController.isToggled.value
+                                    ? 'पॅकेजेस'
+                                    : 'Packages',
+                                style: AppFontStyle2.blinker(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colorfile.lightblack,
+                                ),
+                              ),
+                            ),
+                            Obx(
+                              () => TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AllPackagesPage(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  languageController.isToggled.value
+                                      ? 'सर्व पहा'
+                                      : 'View All',
+                                  style: AppFontStyle2.blinker(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colorfile.bordertheme,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Obx(
+                        () => packageController.isLoading.value
+                            ? const Center(child: CircularProgressIndicator())
+                            : Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 15.0,
+                                  right: 20,
+                                  bottom: 15,
+                                ),
+                                child: SizedBox(
+                                  // Responsive height: 25% of screen height, capped at 200 for smaller screens
+                                  height:
+                                      MediaQuery.of(context).size.height *
+                                              0.25 >
+                                          200
+                                      ? 200
+                                      : MediaQuery.of(context).size.height *
+                                            0.25,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount:
+                                        packageController.allPackages.length +
+                                        (packageController.isLoadingMore.value
+                                            ? 1
+                                            : 0),
+                                    itemBuilder: (context, index) {
+                                      if (index ==
                                               packageController
-                                                  .isLoadingMore
-                                                  .value) {
-                                            return const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Center(
-                                                child:
-                                                    CircularProgressIndicator(),
+                                                  .allPackages
+                                                  .length &&
+                                          packageController
+                                              .isLoadingMore
+                                              .value) {
+                                        return const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        );
+                                      }
+
+                                      final package =
+                                          packageController.allPackages[index];
+                                      if (package.packages.isEmpty) {
+                                        return const SizedBox.shrink(); // Skip empty packages
+                                      }
+
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PackageDetailsPage(
+                                                      package_id: package
+                                                          .packages
+                                                          .first
+                                                          .id,
+                                                      customer_id:
+                                                          AppUtility.login_id,
+                                                      isToggled: isToggled,
+                                                      lead_id: '',
+                                                    ),
                                               ),
                                             );
-                                          }
-
-                                          final package =
-                                              packageController
-                                                  .allPackages[index];
-                                          if (package.packages.isEmpty) {
-                                            return const SizedBox.shrink(); // Skip empty packages
-                                          }
-
-                                          return Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (context) =>
-                                                            PackageDetailsPage(
-                                                              package_id:
-                                                                  package
-                                                                      .packages
-                                                                      .first
-                                                                      .id,
-                                                              customer_id:
-                                                                  AppUtility
-                                                                      .login_id,
-                                                              isToggled:
-                                                                  isToggled,
-                                                              lead_id: '',
-                                                            ),
-                                                  ),
-                                                );
-                                                print(
-                                                  "Tapped on: ${package.packages.first.packageName}",
-                                                );
-                                              },
-                                              child: Container(
-                                                // Responsive width: 80% of screen width or fixed 290, whichever is smaller
-                                                width:
-                                                    MediaQuery.of(
-                                                                  context,
-                                                                ).size.width *
-                                                                0.8 >
-                                                            290
-                                                        ? 290
-                                                        : MediaQuery.of(
-                                                              context,
-                                                            ).size.width *
-                                                            0.8,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  border: Border.all(
-                                                    color: const Color(
-                                                      0xFFDFE6F8,
-                                                    ),
-                                                    width: 0.5,
-                                                  ),
-                                                  color: Colors.white,
-                                                ),
-                                                child: SingleChildScrollView(
-                                                  // Added SingleChildScrollView
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(
-                                                              8.0,
-                                                            ),
-                                                        child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                50,
-                                                              ),
-                                                          child: CachedNetworkImage(
-                                                            imageUrl:
-                                                                packageController
-                                                                    .baseUrl
-                                                                    .value +
-                                                                (package
-                                                                        .packages
-                                                                        .first
-                                                                        .icon ??
-                                                                    ''),
-                                                            width: 40,
-                                                            height: 40,
-                                                            fit: BoxFit.cover,
-                                                            placeholder:
-                                                                (
-                                                                  context,
-                                                                  url,
-                                                                ) =>
-                                                                    const CircularProgressIndicator(),
-                                                            errorWidget:
-                                                                (
-                                                                  context,
-                                                                  url,
-                                                                  error,
-                                                                ) => Image.asset(
-                                                                  'assets/images/package1.png',
-                                                                  width: 40,
-                                                                  height: 40,
-                                                                  fit:
-                                                                      BoxFit
-                                                                          .cover,
-                                                                ),
-                                                          ),
+                                            print(
+                                              "Tapped on: ${package.packages.first.packageName}",
+                                            );
+                                          },
+                                          child: Container(
+                                            // Responsive width: 80% of screen width or fixed 290, whichever is smaller
+                                            width:
+                                                MediaQuery.of(
+                                                          context,
+                                                        ).size.width *
+                                                        0.8 >
+                                                    290
+                                                ? 290
+                                                : MediaQuery.of(
+                                                        context,
+                                                      ).size.width *
+                                                      0.8,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              border: Border.all(
+                                                color: const Color(0xFFDFE6F8),
+                                                width: 0.5,
+                                              ),
+                                              color: Colors.white,
+                                            ),
+                                            child: SingleChildScrollView(
+                                              // Added SingleChildScrollView
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          8.0,
                                                         ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.all(
-                                                              5.0,
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            50,
+                                                          ),
+                                                      child: CachedNetworkImage(
+                                                        imageUrl:
+                                                            packageController
+                                                                .baseUrl
+                                                                .value +
+                                                            (package
+                                                                    .packages
+                                                                    .first
+                                                                    .icon ??
+                                                                ''),
+                                                        width: 40,
+                                                        height: 40,
+                                                        fit: BoxFit.cover,
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                const CircularProgressIndicator(),
+                                                        errorWidget:
+                                                            (
+                                                              context,
+                                                              url,
+                                                              error,
+                                                            ) => Image.asset(
+                                                              'assets/images/package1.png',
+                                                              width: 40,
+                                                              height: 40,
+                                                              fit: BoxFit.cover,
                                                             ),
-                                                        child: Obx(
-                                                          () => Text(
-                                                            languageController
-                                                                    .isToggled
-                                                                    .value
-                                                                ? (package
-                                                                            .packages
-                                                                            .first
-                                                                            .packageNameInLocalLanguage
-                                                                            ?.isNotEmpty ??
-                                                                        false
-                                                                    ? package
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          5.0,
+                                                        ),
+                                                    child: Obx(
+                                                      () => Text(
+                                                        languageController
+                                                                .isToggled
+                                                                .value
+                                                            ? (package
+                                                                          .packages
+                                                                          .first
+                                                                          .packageNameInLocalLanguage
+                                                                          ?.isNotEmpty ??
+                                                                      false
+                                                                  ? package
                                                                         .packages
                                                                         .first
                                                                         .packageNameInLocalLanguage!
-                                                                    : PackageStrings.getPackageName(
+                                                                  : PackageStrings.getPackageName(
                                                                       package
                                                                           .packages
                                                                           .first
                                                                           .packageName,
                                                                       true,
                                                                     ))
-                                                                : package
-                                                                    .packages
-                                                                    .first
-                                                                    .packageName,
-                                                            style:
-                                                                AppFontStyle2.blinker(
-                                                                  fontSize: 16,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  color: Color(
-                                                                    0xFF353B43,
-                                                                  ),
-                                                                ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 1),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              horizontal: 8.0,
+                                                            : package
+                                                                  .packages
+                                                                  .first
+                                                                  .packageName,
+                                                        style:
+                                                            AppFontStyle2.blinker(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color: Color(
+                                                                0xFF353B43,
+                                                              ),
                                                             ),
-                                                        child: Obx(
-                                                          () => Text(
-                                                            languageController
-                                                                    .isToggled
-                                                                    .value
-                                                                ? (package
-                                                                            .packages
-                                                                            .first
-                                                                            .shortDescriptionInLocalLanguage
-                                                                            ?.isNotEmpty ??
-                                                                        false
-                                                                    ? package
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 1),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 8.0,
+                                                        ),
+                                                    child: Obx(
+                                                      () => Text(
+                                                        languageController
+                                                                .isToggled
+                                                                .value
+                                                            ? (package
+                                                                          .packages
+                                                                          .first
+                                                                          .shortDescriptionInLocalLanguage
+                                                                          ?.isNotEmpty ??
+                                                                      false
+                                                                  ? package
                                                                         .packages
                                                                         .first
                                                                         .shortDescriptionInLocalLanguage!
-                                                                    : PackageStrings.getShortDescription(
+                                                                  : PackageStrings.getShortDescription(
                                                                       package
                                                                           .packages
                                                                           .first
                                                                           .shortDescription,
                                                                       true,
                                                                     ))
-                                                                : package
+                                                            : package
+                                                                  .packages
+                                                                  .first
+                                                                  .shortDescription,
+                                                        style:
+                                                            AppFontStyle2.blinker(
+                                                              fontSize: 9,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: Color(
+                                                                0xFF4B5563,
+                                                              ),
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Wrap(
+                                                    spacing: 6,
+                                                    runSpacing: 6,
+                                                    children:
+                                                        (package
                                                                     .packages
                                                                     .first
-                                                                    .shortDescription,
-                                                            style:
-                                                                AppFontStyle2.blinker(
-                                                                  fontSize: 9,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                  color: Color(
-                                                                    0xFF4B5563,
-                                                                  ),
-                                                                ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 5),
-                                                      Wrap(
-                                                        spacing: 6,
-                                                        runSpacing: 6,
-                                                        children:
-                                                            (package
-                                                                        .packages
-                                                                        .first
-                                                                        .serviceNames ??
-                                                                    '')
-                                                                .split(',')
-                                                                .map((
-                                                                  serviceName,
-                                                                ) {
-                                                                  return Obx(() {
-                                                                    String
-                                                                    serviceNameText =
-                                                                        languageController.isToggled.value
-                                                                            ? ((package.packages.first.serviceNamesLocal?.isNotEmpty ??
-                                                                                        false) &&
-                                                                                    package.packages.first.serviceNamesLocal!
-                                                                                            .split(
-                                                                                              ',',
-                                                                                            )
-                                                                                            .length >
-                                                                                        (package.packages.first.serviceNames ??
-                                                                                                '')
-                                                                                            .split(
-                                                                                              ',',
-                                                                                            )
-                                                                                            .indexOf(
-                                                                                              serviceName,
-                                                                                            )
-                                                                                ? package.packages.first.serviceNamesLocal!
+                                                                    .serviceNames ??
+                                                                '')
+                                                            .split(',')
+                                                            .map((serviceName) {
+                                                              return Obx(() {
+                                                                String
+                                                                serviceNameText =
+                                                                    languageController
+                                                                        .isToggled
+                                                                        .value
+                                                                    ? ((package.packages.first.serviceNamesLocal?.isNotEmpty ??
+                                                                                  false) &&
+                                                                              package.packages.first.serviceNamesLocal!
+                                                                                      .split(
+                                                                                        ',',
+                                                                                      )
+                                                                                      .length >
+                                                                                  (package.packages.first.serviceNames ??
+                                                                                          '')
+                                                                                      .split(
+                                                                                        ',',
+                                                                                      )
+                                                                                      .indexOf(
+                                                                                        serviceName,
+                                                                                      )
+                                                                          ? package.packages.first.serviceNamesLocal!
+                                                                                .split(
+                                                                                  ',',
+                                                                                )[(package.packages.first.serviceNames ??
+                                                                                        '')
                                                                                     .split(
                                                                                       ',',
-                                                                                    )[(package.packages.first.serviceNames ??
-                                                                                            '')
-                                                                                        .split(
-                                                                                          ',',
-                                                                                        )
-                                                                                        .indexOf(
-                                                                                          serviceName,
-                                                                                        )]
-                                                                                    .trim()
-                                                                                : allPackageStrings.getServiceName(
-                                                                                  serviceName.trim(),
-                                                                                  true,
-                                                                                ))
-                                                                            : allPackageStrings.getServiceName(
+                                                                                    )
+                                                                                    .indexOf(
+                                                                                      serviceName,
+                                                                                    )]
+                                                                                .trim()
+                                                                          : allPackageStrings.getServiceName(
                                                                               serviceName.trim(),
-                                                                              false,
-                                                                            );
+                                                                              true,
+                                                                            ))
+                                                                    : allPackageStrings.getServiceName(
+                                                                        serviceName
+                                                                            .trim(),
+                                                                        false,
+                                                                      );
 
-                                                                    return Padding(
-                                                                      padding: const EdgeInsets.only(
+                                                                return Padding(
+                                                                  padding:
+                                                                      const EdgeInsets.only(
                                                                         left:
                                                                             7.0,
                                                                       ),
-                                                                      child: Container(
-                                                                        padding: const EdgeInsets.symmetric(
-                                                                          horizontal:
-                                                                              8,
-                                                                          vertical:
-                                                                              4,
-                                                                        ),
-                                                                        decoration: BoxDecoration(
-                                                                          color: const Color(
-                                                                            0xFFF5F4F1,
+                                                                  child: Container(
+                                                                    padding: const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          8,
+                                                                      vertical:
+                                                                          4,
+                                                                    ),
+                                                                    decoration: BoxDecoration(
+                                                                      color: const Color(
+                                                                        0xFFF5F4F1,
+                                                                      ),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            5,
                                                                           ),
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(
-                                                                                5,
-                                                                              ),
-                                                                          border: Border.all(
-                                                                            color: const Color(
-                                                                              0xFFE5E7EB,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        child: Text(
-                                                                          serviceNameText,
-                                                                          style: AppFontStyle2.blinker(
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.w400,
-                                                                            color: const Color(
-                                                                              0xFF757575,
-                                                                            ),
-                                                                          ),
+                                                                      border: Border.all(
+                                                                        color: const Color(
+                                                                          0xFFE5E7EB,
                                                                         ),
                                                                       ),
-                                                                    );
-                                                                  });
-                                                                })
-                                                                .toList(),
-                                                      ),
-                                                    ],
+                                                                    ),
+                                                                    child: Text(
+                                                                      serviceNameText,
+                                                                      style: AppFontStyle2.blinker(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                        color: const Color(
+                                                                          0xFF757575,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              });
+                                                            })
+                                                            .toList(),
                                                   ),
-                                                ),
+                                                ],
                                               ),
                                             ),
-                                          );
-                                        },
-                                      ),
-                                    ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                        ),
-                      ],
-                    ),
+                                ),
+                              ),
+                      ),
+                    ],
                   ),
+                ),
         ),
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(
@@ -1424,7 +1364,7 @@ class _HomePage2State extends State<HomePage2> {
                     languageController.isToggled.value,
                   ),
                 ),
-                 BottomNavigationBarItem(
+                BottomNavigationBarItem(
                   icon: const Icon(Icons.person),
                   label: BottomNavigationStrings.getString(
                     'myProfile',
@@ -1438,7 +1378,7 @@ class _HomePage2State extends State<HomePage2> {
                 //     languageController.isToggled.value,
                 //   ),
                 //),
-                 BottomNavigationBarItem(
+                BottomNavigationBarItem(
                   icon: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -1454,7 +1394,6 @@ class _HomePage2State extends State<HomePage2> {
                     languageController.isToggled.value,
                   ),
                 ),
-            
               ],
               currentIndex: _selectedIndex,
               selectedItemColor: Colorfile.bordertheme,
@@ -1493,9 +1432,9 @@ class BottomNavigationStrings {
       'home': {'en': 'Home', 'local': 'होम'},
       'customerCare': {'en': 'Customer Care', 'local': 'ग्राहक सेवा'},
       'myOrder': {'en': 'My Order', 'local': 'माझी ऑर्डर'},
-     
+
       'packages': {'en': 'Packages', 'local': 'पॅकेजेस'},
-       'myProfile': {'en': 'My Profile', 'local': 'माझे प्रोफाइल'},
+      'myProfile': {'en': 'My Profile', 'local': 'माझे प्रोफाइल'},
     };
 
     final language = isToggled ? 'local' : 'en';

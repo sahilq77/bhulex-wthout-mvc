@@ -1,3 +1,4 @@
+import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:bhulexapp/controller/order/language%20controller.dart';
 import 'package:bhulexapp/homepage.dart';
 import 'package:bhulexapp/profile/profile.dart';
@@ -104,8 +105,6 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
     _loadToggleState();
   }
 
-  
-
   Future<void> _loadToggleState() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -122,49 +121,47 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
     });
   }
 
-  Future<bool> _onWillPop() async {
+  Future<bool> _onWilPop() async {
     final width = MediaQuery.of(context).size.width;
     bool? shouldPop = await showDialog<bool>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              isToggled ? 'बाहेर पडायचे?' : 'Exit?',
-              style: BhulexStyle.dialogTitle(width), // Using custom class
+      builder: (context) => AlertDialog(
+        title: Text(
+          isToggled ? 'बाहेर पडायचे?' : 'Exit?',
+          style: BhulexStyle.dialogTitle(width), // Using custom class
+        ),
+        content: Text(
+          isToggled
+              ? 'आपण खात्रीशीर आहात की आपण बाहेर पडू इच्छिता?'
+              : 'Are you sure you want to exit?',
+          style: BhulexStyle.dialogContent(width), // Using custom class
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), // Cancel
+            child: Text(
+              isToggled ? 'नाही' : 'No',
+              style: BhulexStyle.dialogButton(width), // Using custom class
             ),
-            content: Text(
-              isToggled
-                  ? 'आपण खात्रीशीर आहात की आपण बाहेर पडू इच्छिता?'
-                  : 'Are you sure you want to exit?',
-              style: BhulexStyle.dialogContent(width), // Using custom class
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false), // Cancel
-                child: Text(
-                  isToggled ? 'नाही' : 'No',
-                  style: BhulexStyle.dialogButton(width), // Using custom class
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, true); // Confirm
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) =>
-                              HomePage2(customer_id: '', customerId: ''),
-                    ),
-                  );
-                },
-                child: Text(
-                  isToggled ? 'होय' : 'Yes',
-                  style: BhulexStyle.dialogButton(width), // Using custom class
-                ),
-              ),
-            ],
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, true); // Confirm
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      HomePage2(customer_id: '', customerId: ''),
+                ),
+              );
+            },
+            child: Text(
+              isToggled ? 'होय' : 'Yes',
+              style: BhulexStyle.dialogButton(width), // Using custom class
+            ),
+          ),
+        ],
+      ),
     );
 
     return shouldPop ?? false; // Default to not popping if dialog is dismissed
@@ -174,63 +171,50 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    return WillPopScope(
-      onWillPop: _onWillPop, // Handle physical back button
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: BhulexStyle.backgroundColor, // Using custom class
+      appBar: AppBar(
         backgroundColor: BhulexStyle.backgroundColor, // Using custom class
-        appBar: AppBar(
-          backgroundColor: BhulexStyle.backgroundColor, // Using custom class
-          elevation: 0,
-          title: Text(
-            isToggled ? "भाषा बदला" : "Change Language",
-            style: BhulexStyle.appBarTitle(width), // Using custom class
-          ),
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: BhulexStyle.iconStyle(width).color, // Using custom class
-              size: BhulexStyle.iconStyle(width).size, // Using custom class
-            ),
-            onPressed:
-                () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(isToggled: isToggled),
-                  ),
-                ), // App bar back button remains unaffected
-          ),
+        elevation: 0,
+        title: Text(
+          isToggled ? "भाषा बदला" : "Change Language",
+          style: BhulexStyle.appBarTitle(width), // Using custom class
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                isToggled ? "तुमची भाषा निवडा" : "Select Your Language",
-                style: BhulexStyle.bodyTitle(width), // Using custom class
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: Divider(color: Colorfile.border, height: 0),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              isToggled ? "तुमची भाषा निवडा" : "Select Your Language",
+              style: BhulexStyle.bodyTitle(width), // Using custom class
+            ),
+            SizedBox(height: 20),
+            Obx(
+              () => _buildLanguageOption(
+                languageController.isToggled.value ? "इंग्रजी" : "English",
+                !languageController.isToggled.value,
+                () {
+                  _saveToggleState(false);
+                },
               ),
-              SizedBox(height: 20),
-              Obx(
-                () => _buildLanguageOption(
-                  languageController.isToggled.value ? "इंग्रजी" : "English",
-                  !languageController.isToggled.value,
-                  () {
-                    _saveToggleState(false);
-                  },
-                ),
+            ),
+            SizedBox(height: 10),
+            Obx(
+              () => _buildLanguageOption(
+                languageController.isToggled.value ? "मराठी" : "Marathi",
+                languageController.isToggled.value,
+                () {
+                  _saveToggleState(true);
+                },
               ),
-              SizedBox(height: 10),
-              Obx(
-                () => _buildLanguageOption(
-                  languageController.isToggled.value ? "मराठी" : "Marathi",
-                  languageController.isToggled.value,
-                  () {
-                    _saveToggleState(true);
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

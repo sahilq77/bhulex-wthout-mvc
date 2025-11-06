@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:bhulexapp/colors/order_fonts.dart';
 import 'package:bhulexapp/controller/order/language%20controller.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -9,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get/get.dart';
-
 
 import '../no internet.dart';
 import 'no_internet_profile.dart';
@@ -62,20 +62,18 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder:
-              (context) => NoInternetPageone(
-                onRetry: () {
-                  fetchHelpContent(); // Retry fetching data
-                },
-              ),
+          builder: (context) => NoInternetPageone(
+            onRetry: () {
+              fetchHelpContent(); // Retry fetching data
+            },
+          ),
         ),
       );
       setState(() {
         _isLoading = false;
-        _content =
-            isToggled
-                ? '<p>कोणताही डेटा उपलब्ध नाही.</p>'
-                : '<p>No data available.</p>';
+        _content = isToggled
+            ? '<p>कोणताही डेटा उपलब्ध नाही.</p>'
+            : '<p>No data available.</p>';
       });
       return;
     }
@@ -91,10 +89,9 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
       if (customerId == null || customerId.isEmpty) {
         if (mounted) {
           setState(() {
-            _content =
-                isToggled
-                    ? '<p>त्रुटी: ग्राहक आयडी सापडला नाही.</p>'
-                    : '<p>Error: Customer ID not found.</p>';
+            _content = isToggled
+                ? '<p>त्रुटी: ग्राहक आयडी सापडला नाही.</p>'
+                : '<p>Error: Customer ID not found.</p>';
             _isLoading = false;
           });
         }
@@ -121,32 +118,29 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
         if (jsonData['status'].toString() == "true") {
           if (mounted) {
             setState(() {
-              _content =
-                  isToggled
-                      ? (jsonData['data']['page_content_in_local_language'] ??
-                          '<p>कोणताही मजकूर सापडला नाही.</p>')
-                      : (jsonData['data']['page_content'] ??
-                          '<p>No content found.</p>');
+              _content = isToggled
+                  ? (jsonData['data']['page_content_in_local_language'] ??
+                        '<p>कोणताही मजकूर सापडला नाही.</p>')
+                  : (jsonData['data']['page_content'] ??
+                        '<p>No content found.</p>');
               print('Displayed Content: $_content');
             });
           }
         } else {
           if (mounted) {
             setState(() {
-              _content =
-                  isToggled
-                      ? '<p>मजकूर लोड करण्यात अयशस्वी.</p>'
-                      : '<p>Failed to load content.</p>';
+              _content = isToggled
+                  ? '<p>मजकूर लोड करण्यात अयशस्वी.</p>'
+                  : '<p>Failed to load content.</p>';
             });
           }
         }
       } else {
         if (mounted) {
           setState(() {
-            _content =
-                isToggled
-                    ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
-                    : '<p>Server error: ${response.statusCode}</p>';
+            _content = isToggled
+                ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
+                : '<p>Server error: ${response.statusCode}</p>';
           });
         }
       }
@@ -154,10 +148,9 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
       log("Exception: $e");
       if (mounted) {
         setState(() {
-          _content =
-              isToggled
-                  ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
-                  : '<p>Something went wrong. Please try again.</p>';
+          _content = isToggled
+              ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
+              : '<p>Something went wrong. Please try again.</p>';
         });
       }
     } finally {
@@ -177,59 +170,50 @@ class _HelpSupportPageState extends State<HelpSupportPage> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    return ScaffoldMessenger(
-      key: _scaffoldMessengerStateKey,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Obx(
-            () => Text(
-              languageController.isToggled.value
-                  ? 'मदत आणि समर्थन'
-                  : 'Help & Support',
-              style: AppFontStyle2.blinker(
-                fontWeight: FontWeight.w600,
-                fontSize: width * 0.045,
-                color: Color(0xFF36322E),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Obx(
+          () => Text(
+            languageController.isToggled.value
+                ? 'मदत आणि समर्थन'
+                : 'Help and Support',
+            style: AppFontStyle2.blinker(
+              fontWeight: FontWeight.w600,
+              fontSize: width * 0.045,
+              color: Color(0xFF36322E),
             ),
           ),
-          backgroundColor: Color(0xFFFDFDFD),
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Color(0xFF36322E)),
-            onPressed: () => Navigator.pop(context),
-          ),
         ),
-        body: RefreshIndicator(
-          onRefresh: _onRefresh,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.all(16.0),
-            child:
-                _isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Html(
-                          data: _content,
-                          style: {
-                            "body": Style(
-                              fontFamily: 'blinker',
-                              fontSize: FontSize(16.0),
-                              color: Color(0xFF36322E),
-                              textAlign: TextAlign.center,
-                            ),
-                          },
+
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: Divider(color: Colorfile.border, height: 0),
+        ),
+      ),
+      body: RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.all(16.0),
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Html(
+                      data: _content,
+                      style: {
+                        "body": Style(
+                          fontFamily: 'blinker',
+                          fontSize: FontSize(16.0),
+                          color: Color(0xFF36322E),
+                          textAlign: TextAlign.start,
                         ),
-                      ],
+                      },
                     ),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: fetchHelpContent,
-          tooltip: isToggled ? 'रिफ्रेश' : 'Refresh',
-          child: Icon(Icons.refresh),
+                  ],
+                ),
         ),
       ),
     );

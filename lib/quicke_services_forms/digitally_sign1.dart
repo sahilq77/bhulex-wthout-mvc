@@ -169,6 +169,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         log('Response Status Code: ${response.statusCode}');
+        log('API URL: "${url}"');
         log('Raw Response Body: "${response.body}"');
 
         if (data['status'] == 'true') {
@@ -453,7 +454,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                               widget.isToggled,
                             );
                           }
-                          return null;
+                          return null; 
                         },
                         builder: (FormFieldState<String> state) {
                           return Column(
@@ -1066,4 +1067,3 @@ class _DigitallySign1State extends State<DigitallySign1> {
     );
   }
 }
-

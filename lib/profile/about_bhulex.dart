@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:bhulexapp/colors/order_fonts.dart';
 import 'package:bhulexapp/profile/no_internet_profile.dart';
 import 'package:flutter/material.dart';
@@ -57,20 +58,18 @@ class _AboutBhulexPageState extends State<AboutBhulexPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder:
-              (context) => NoInternetPageone(
-                onRetry: () {
-                  fetchAboutUs(); // Retry fetching data
-                },
-              ),
+          builder: (context) => NoInternetPageone(
+            onRetry: () {
+              fetchAboutUs(); // Retry fetching data
+            },
+          ),
         ),
       );
       setState(() {
         isLoading = false;
-        aboutHtmlContent =
-            isToggled
-                ? '<p>कोणताही डेटा उपलब्ध नाही.</p>'
-                : '<p>No data available.</p>';
+        aboutHtmlContent = isToggled
+            ? '<p>कोणताही डेटा उपलब्ध नाही.</p>'
+            : '<p>No data available.</p>';
       });
       return;
     }
@@ -95,43 +94,38 @@ class _AboutBhulexPageState extends State<AboutBhulexPage> {
 
         if (jsonData['status'].toString() == "true") {
           setState(() {
-            aboutHtmlContent =
-                isToggled
-                    ? (jsonData['data']['page_content_in_local_language'] ??
-                        '<p>स्थानिक भाषेत सामग्री उपलब्ध नाही.</p>')
-                    : (jsonData['data']['page_content'] ??
-                        '<p>No content available.</p>');
-            pageHeading =
-                isToggled
-                    ? (jsonData['data']['page_heading_in_local_language'] ??
-                        'आमच्याबद्दल')
-                    : (jsonData['data']['page_heading'] ?? 'About us');
+            aboutHtmlContent = isToggled
+                ? (jsonData['data']['page_content_in_local_language'] ??
+                      '<p>स्थानिक भाषेत सामग्री उपलब्ध नाही.</p>')
+                : (jsonData['data']['page_content'] ??
+                      '<p>No content available.</p>');
+            pageHeading = isToggled
+                ? (jsonData['data']['page_heading_in_local_language'] ??
+                      'आमच्याबद्दल')
+                : (jsonData['data']['page_heading'] ?? 'About us');
           });
         } else {
           setState(() {
-            aboutHtmlContent =
-                isToggled
-                    ? '<p>सामग्री लोड करण्यात अयशस्वी.</p>'
-                    : '<p>Failed to load content.</p>';
+            aboutHtmlContent = isToggled
+                ? '<p>सामग्री लोड करण्यात अयशस्वी.</p>'
+                : '<p>Failed to load content.</p>';
             pageHeading = isToggled ? 'आमच्याबद्दल' : 'About us';
           });
         }
       } else {
         setState(() {
-          aboutHtmlContent =
-              isToggled
-                  ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
-                  : '<p>Server error: ${response.statusCode}</p>';
+          aboutHtmlContent = isToggled
+              ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
+              : '<p>Server error: ${response.statusCode}</p>';
           pageHeading = isToggled ? 'आमच्याबद्दल' : 'About us';
         });
       }
     } catch (e) {
       log("Exception: $e");
       setState(() {
-        aboutHtmlContent =
-            isToggled
-                ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
-                : '<p>Something went wrong. Please try again.</p>';
+        aboutHtmlContent = isToggled
+            ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
+            : '<p>Something went wrong. Please try again.</p>';
         pageHeading = isToggled ? 'आमच्याबद्दल' : 'About us';
       });
     } finally {
@@ -152,18 +146,11 @@ class _AboutBhulexPageState extends State<AboutBhulexPage> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFDFD),
+      backgroundColor: Colorfile.background,
       appBar: AppBar(
         backgroundColor: const Color(0xFFFDFDFD),
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: const Color(0xFF36322E),
-            size: width * 0.06,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
+
         title: Text(
           isToggled ? "आमच्याबद्दल" : "About",
           style: AppFontStyle2.blinker(
@@ -172,34 +159,36 @@ class _AboutBhulexPageState extends State<AboutBhulexPage> {
             color: const Color(0xFF36322E),
           ),
         ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: Divider(color: Colorfile.border, height: 0),
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: _onRefresh,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: width * 0.04),
-          child:
-              isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Html(
-                        data: aboutHtmlContent,
-                        style: {
-                          "body": Style(
-                            fontFamily: 'blinker',
-                            fontSize: FontSize(width * 0.04),
-                            color: const Color(0xFF36322E),
-                            textAlign: TextAlign.center,
-                          ),
-                        },
-                      ),
-                    ],
-                  ),
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Html(
+                      data: aboutHtmlContent,
+                      style: {
+                        "body": Style(
+                          fontFamily: 'blinker',
+                          fontSize: FontSize(width * 0.04),
+                          color: const Color(0xFF36322E),
+                          textAlign: TextAlign.start,
+                        ),
+                      },
+                    ),
+                  ],
+                ),
         ),
       ),
     );
   }
 }
-

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:bhulexapp/colors/order_fonts.dart';
 import 'package:bhulexapp/network/url.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -170,15 +171,13 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder:
-              (context) => NoInternetPageone(
-                onRetry: () {
-                  fetchTermsConditions(); // Retry fetching data
-                },
-              ),
+          builder: (context) => NoInternetPageone(
+            onRetry: () {
+              fetchTermsConditions(); // Retry fetching data
+            },
+          ),
         ),
       );
-  
     }
 
     setState(() {
@@ -199,36 +198,32 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
 
         if (jsonData['status'].toString() == "true") {
           setState(() {
-            content =
-                isToggled
-                    ? (jsonData['data']['page_content_in_local_language'] ??
-                        '<p>कोणताही मजकूर सापडला नाही.</p>')
-                    : (jsonData['data']['page_content'] ??
-                        '<p>No content found.</p>');
+            content = isToggled
+                ? (jsonData['data']['page_content_in_local_language'] ??
+                      '<p>कोणताही मजकूर सापडला नाही.</p>')
+                : (jsonData['data']['page_content'] ??
+                      '<p>No content found.</p>');
             log('Displayed Content: $content');
           });
         } else {
           setState(() {
-            content =
-                isToggled
-                    ? '<p>मजकूर लोड करण्यात अयशस्वी.</p>'
-                    : '<p>Failed to load content.</p>';
+            content = isToggled
+                ? '<p>मजकूर लोड करण्यात अयशस्वी.</p>'
+                : '<p>Failed to load content.</p>';
           });
         }
-    } else {
+      } else {
         setState(() {
-          content =
-              isToggled
-                  ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
-                  : '<p>Server error: ${response.statusCode}</p>';
+          content = isToggled
+              ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
+              : '<p>Server error: ${response.statusCode}</p>';
         });
       }
     } catch (e) {
       setState(() {
-        content =
-            isToggled
-                ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
-                : '<p>Something went wrong. Please try again.</p>';
+        content = isToggled
+            ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
+            : '<p>Something went wrong. Please try again.</p>';
       });
       log("Exception: $e");
     } finally {
@@ -239,7 +234,6 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
       }
     }
   }
-
 
   Future<void> _onRefresh() async {
     await fetchTermsConditions();
@@ -278,103 +272,44 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
           elevation: 0,
           title: Text(
             isToggled ? "अटी आणि शर्ती" : "Terms and Conditions",
-            style: AppFontStyle.poppins(
+            style: AppFontStyle2.blinker(
               fontWeight: FontWeight.w600,
               fontSize: width * 0.050,
               color: const Color(0xFF36322E),
             ),
           ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Color(0xFF36322E)),
-            onPressed: () => Navigator.pop(context),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(0),
+            child: Divider(color: Colorfile.border, height: 0),
           ),
         ),
-        // body: RefreshIndicator(
-        //   onRefresh: _onRefresh,
-        //   child: SingleChildScrollView(
-        //     physics: const AlwaysScrollableScrollPhysics(),
-        //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        //     child:
-        //         isLoading
-        //             ? buildShimmer()
-        //             : Center(
-        //               child: Column(
-        //                 mainAxisAlignment: MainAxisAlignment.center,
-        //                 children: [
-        //                   if (!hasConnection)
-        //                     Container(
-        //                       padding: EdgeInsets.symmetric(
-        //                         vertical: 8,
-        //                         horizontal: 12,
-        //                       ),
-        //                       decoration: BoxDecoration(
-        //                         color: Colors.red.withOpacity(0.1),
-        //                         borderRadius: BorderRadius.circular(8),
-        //                         border: Border.all(color: Colors.red, width: 1),
-        //                       ),
-        //                       child: Row(
-        //                         mainAxisSize: MainAxisSize.min,
-        //                         children: [
-        //                           Icon(
-        //                             Icons.cancel,
-        //                             color: Colors.red,
-        //                             size: 20,
-        //                           ),
-        //                           SizedBox(width: 8),
-        //                           Text(
-        //                             isToggled ? 'इंटरनेट नाही' : 'No Internet',
-        //                             style: AppFontStyle.poppins(
-        //                               fontSize: width * 0.035,
-        //                               color: Colors.red,
-        //                             ),
-        //                           ),
-        //                         ],
-        //                       ),
-        //                     ),
-        //                   if (!hasConnection) SizedBox(height: 16),
-        //                   Html(
-        //                     data: content,
-        //                     style: {
-        //                       "body": Style(
-        //                         fontFamily: 'Poppins',
-        //                         fontSize: FontSize(width * 0.04),
-        //                         color: const Color(0xFF36322E),
-        //                         lineHeight: const LineHeight(1.5),
-        //                         textAlign: TextAlign.center,
-        //                       ),
-        //                     },
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //   ),
-        // ),
+
         body: RefreshIndicator(
-        onRefresh: _onRefresh,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: isLoading
-              ? buildShimmer()
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Html(
-                      data: content,
-                      style: {
-                        "body": Style(
-                          fontFamily: 'blinker',
-                          fontSize: FontSize(width * 0.04),
-                          color: const Color(0xFF36322E),
-                          lineHeight: const LineHeight(1.5),
-                          textAlign: TextAlign.center,
-                        ),
-                      },
-                    ),
-                  ],
-                ),
+          onRefresh: _onRefresh,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: isLoading
+                ? buildShimmer()
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Html(
+                        data: content,
+                        style: {
+                          "body": Style(
+                            fontFamily: 'blinker',
+                            fontSize: FontSize(width * 0.04),
+                            color: const Color(0xFF36322E),
+                            lineHeight: const LineHeight(1.5),
+                            textAlign: TextAlign.start,
+                          ),
+                        },
+                      ),
+                    ],
+                  ),
+          ),
         ),
-      ),
       ),
     );
   }

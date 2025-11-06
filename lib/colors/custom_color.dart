@@ -11,6 +11,7 @@ class Colorfile {
   static const Color lightgrey = Color(
     0xFF757575,
   ); // Gradient end color##A1A8B0
+   static const Color background = Color(0xFFFDFDFD);
   // Add more colors as needed
   static const Color darkgrey = Color(0xFF333333);
   static const Color morelightgrey = Color(0xFFA1A8B0);

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:bhulexapp/colors/order_fonts.dart';
 import 'package:bhulexapp/network/url.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
-
 
 import 'no_internet_profile.dart';
 
@@ -62,20 +62,18 @@ class _DisclaimerScreenState extends State<DisclaimerScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder:
-              (context) => NoInternetPageone(
-                onRetry: () {
-                  fetchDisclaimerContent(); // Retry fetching data
-                },
-              ),
+          builder: (context) => NoInternetPageone(
+            onRetry: () {
+              fetchDisclaimerContent(); // Retry fetching data
+            },
+          ),
         ),
       );
       setState(() {
         isLoading = false;
-        content =
-            isToggled
-                ? '<p>कोणताही डेटा उपलब्ध नाही.</p>'
-                : '<p>No data available.</p>';
+        content = isToggled
+            ? '<p>कोणताही डेटा उपलब्ध नाही.</p>'
+            : '<p>No data available.</p>';
       });
       return;
     }
@@ -91,10 +89,9 @@ class _DisclaimerScreenState extends State<DisclaimerScreen> {
       if (customerId == null || customerId.isEmpty) {
         if (mounted) {
           setState(() {
-            content =
-                isToggled
-                    ? '<p>त्रुटी: ग्राहक आयडी सापडला नाही.</p>'
-                    : '<p>Error: Customer ID not found.</p>';
+            content = isToggled
+                ? '<p>त्रुटी: ग्राहक आयडी सापडला नाही.</p>'
+                : '<p>Error: Customer ID not found.</p>';
             isLoading = false;
           });
         }
@@ -121,32 +118,29 @@ class _DisclaimerScreenState extends State<DisclaimerScreen> {
         if (jsonData['status'].toString() == "true") {
           if (mounted) {
             setState(() {
-              content =
-                  isToggled
-                      ? (jsonData['data']['page_content_in_local_language'] ??
-                          '<p>कोणताही मजकूर सापडला नाही.</p>')
-                      : (jsonData['data']['page_content'] ??
-                          '<p>No content found.</p>');
+              content = isToggled
+                  ? (jsonData['data']['page_content_in_local_language'] ??
+                        '<p>कोणताही मजकूर सापडला नाही.</p>')
+                  : (jsonData['data']['page_content'] ??
+                        '<p>No content found.</p>');
               log('Displayed Content: $content');
             });
           }
         } else {
           if (mounted) {
             setState(() {
-              content =
-                  isToggled
-                      ? '<p>मजकूर लोड करण्यात अयशस्वी.</p>'
-                      : '<p>Failed to load content.</p>';
+              content = isToggled
+                  ? '<p>मजकूर लोड करण्यात अयशस्वी.</p>'
+                  : '<p>Failed to load content.</p>';
             });
           }
         }
       } else {
         if (mounted) {
           setState(() {
-            content =
-                isToggled
-                    ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
-                    : '<p>Server error: ${response.statusCode}</p>';
+            content = isToggled
+                ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
+                : '<p>Server error: ${response.statusCode}</p>';
           });
         }
       }
@@ -154,10 +148,9 @@ class _DisclaimerScreenState extends State<DisclaimerScreen> {
       log("Exception: $e");
       if (mounted) {
         setState(() {
-          content =
-              isToggled
-                  ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
-                  : '<p>Something went wrong. Please try again.</p>';
+          content = isToggled
+              ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
+              : '<p>Something went wrong. Please try again.</p>';
         });
       }
     } finally {
@@ -210,9 +203,9 @@ class _DisclaimerScreenState extends State<DisclaimerScreen> {
             color: const Color(0xFF36322E),
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF36322E)),
-          onPressed: () => Navigator.pop(context),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: Divider(color: Colorfile.border, height: 0),
         ),
       ),
       body: RefreshIndicator(
@@ -220,26 +213,25 @@ class _DisclaimerScreenState extends State<DisclaimerScreen> {
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child:
-              isLoading
-                  ? buildShimmer()
-                  : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Html(
-                        data: content,
-                        style: {
-                          "body": Style(
-                            fontFamily: 'blinker',
-                            fontSize: FontSize(width * 0.04),
-                            color: const Color(0xFF36322E),
-                            lineHeight: const LineHeight(1.5),
-                            textAlign: TextAlign.center,
-                          ),
-                        },
-                      ),
-                    ],
-                  ),
+          child: isLoading
+              ? buildShimmer()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Html(
+                      data: content,
+                      style: {
+                        "body": Style(
+                          fontFamily: 'blinker',
+                          fontSize: FontSize(width * 0.04),
+                          color: const Color(0xFF36322E),
+                          lineHeight: const LineHeight(1.5),
+                          textAlign: TextAlign.start,
+                        ),
+                      },
+                    ),
+                  ],
+                ),
         ),
       ),
     );

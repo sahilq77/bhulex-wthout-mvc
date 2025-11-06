@@ -22,7 +22,7 @@ import '../sign_up_screens/signup1.dart';
 import 'about_bhulex.dart';
 import 'change_language.dart';
 import 'disclaimer.dart';
-import 'help&support.dart';
+import 'help_and_support.dart';
 import 'privacy_policy.dart';
 import 'terms_and_conditions.dart';
 
@@ -625,416 +625,410 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     const iconTextColor = Color(0xFF353B43);
-    return ScaffoldMessenger(
-      key: _scaffoldMessengerKey,
-      child: Scaffold(
-        backgroundColor: Colorfile.appbar,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back_sharp, color: Colors.black),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HomePage2(customer_id: '', customerId: ''),
-                    ),
-                  );
-                },
+    return Scaffold(
+      backgroundColor: Colorfile.appbar,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+
+        title: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back_sharp, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        HomePage2(customer_id: '', customerId: ''),
+                  ),
+                );
+              },
+            ),
+            Text(
+              BottomNavigationStrings.getString('myProfile', isToggled),
+              style: AppFontStyle2.blinker(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF353B43),
               ),
-              Text(
-                BottomNavigationStrings.getString('myProfile', isToggled),
-                style: AppFontStyle2.blinker(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF353B43),
+            ),
+          ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Center(
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundImage: (shareprefImageUrl.isNotEmpty)
+                        ? NetworkImage(shareprefImageUrl)
+                        : const AssetImage('assets/edit-02.png'),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () => showEditProfileImageBottomSheet(context),
+                      child: CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colorfile.bordertheme,
+                        child: const Icon(
+                          Icons.edit,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              customerName.isNotEmpty ? customerName : 'Customer Name',
+              style: AppFontStyle2.blinker(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: iconTextColor,
+              ),
+            ),
+            Text(
+              customerMobile.isNotEmpty
+                  ? customerMobile
+                  : 'Mobile number not available',
+              style: AppFontStyle2.blinker(fontSize: 18, color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: 400,
+              height: 620,
+              padding: const EdgeInsets.only(top: 7, bottom: 7),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Color(0xFFE5E7EB), width: 0.5),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
                 ),
               ),
-            ],
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              Center(
-                child: Stack(
+              child: Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+                color: Colorfile.body,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundImage: (shareprefImageUrl.isNotEmpty)
-                          ? NetworkImage(shareprefImageUrl)
-                          : const AssetImage('assets/edit-02.png'),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: () => showEditProfileImageBottomSheet(context),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colorfile.bordertheme,
-                          child: const Icon(
-                            Icons.edit,
-                            size: 20,
-                            color: Colors.white,
+                    ListTile(
+                      leading: Image.asset(
+                        'assets/privacy.png',
+                        width: 24,
+                        height: 24,
+                        color: iconTextColor,
+                      ),
+                      title: Text(
+                        isToggled ? 'आमच्याबद्दल' : 'About',
+                        style: AppFontStyle2.blinker(color: iconTextColor),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: iconTextColor,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AboutBhulexPage(),
                           ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1, color: Color(0xFFF2F4F7)),
+                    ListTile(
+                      leading: Image.asset(
+                        'assets/privacy.png',
+                        width: 24,
+                        height: 24,
+                        color: iconTextColor,
+                      ),
+                      title: Text(
+                        isToggled ? 'गोपनीयता धोरण' : 'Privacy Policy',
+                        style: AppFontStyle2.blinker(color: iconTextColor),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: iconTextColor,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrivacyPolicyScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1, color: Color(0xFFF2F4F7)),
+                    ListTile(
+                      leading: Image.asset(
+                        'assets/term.png',
+                        width: 24,
+                        height: 24,
+                        color: iconTextColor,
+                      ),
+                      title: Text(
+                        isToggled ? 'अटी आणि शर्ती' : 'Terms and Conditions',
+                        style: AppFontStyle2.blinker(color: iconTextColor),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: iconTextColor,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TermsAndConditionsScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1, color: Color(0xFFF2F4F7)),
+                    ListTile(
+                      leading: Image.asset(
+                        'assets/notification.png',
+                        width: 24,
+                        height: 24,
+                        color: iconTextColor,
+                      ),
+                      title: Text(
+                        isToggled ? 'अस्वीकरण' : 'Disclaimer',
+                        style: AppFontStyle2.blinker(color: iconTextColor),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: iconTextColor,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DisclaimerScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1, color: Color(0xFFF2F4F7)),
+                    ListTile(
+                      leading: Image.asset(
+                        'assets/help.png',
+                        width: 24,
+                        height: 24,
+                        color: iconTextColor,
+                      ),
+                      title: Text(
+                        isToggled ? 'भाषा बदला' : 'Change Language',
+                        style: AppFontStyle2.blinker(color: iconTextColor),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: iconTextColor,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChangeLanguageScreen(),
+                          ),
+                        ).then((_) {
+                          _loadToggleState(); // Refresh language when returning
+                        });
+                      },
+                    ),
+                    const Divider(height: 1, color: Color(0xFFF2F4F7)),
+                    ListTile(
+                      leading: Image.asset(
+                        'assets/help.png',
+                        width: 24,
+                        height: 24,
+                        color: iconTextColor,
+                      ),
+                      title: Text(
+                        isToggled ? 'मदत आणि समर्थन' : 'Help & Support',
+                        style: AppFontStyle2.blinker(color: iconTextColor),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: iconTextColor,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HelpSupportPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1, color: Color(0xFFF2F4F7)),
+                    ListTile(
+                      leading: Image.asset(
+                        'assets/notification.png',
+                        width: 24,
+                        height: 24,
+                        color: iconTextColor,
+                      ),
+                      title: Text(
+                        isToggled ? 'सूचना' : 'Notifications',
+                        style: AppFontStyle2.blinker(color: iconTextColor),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: iconTextColor,
+                      ),
+                      onTap: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => NotificationPage(),
+                        //   ),
+                        // );
+                      },
+                    ),
+                    const Divider(height: 1, color: Color(0xFFF2F4F7)),
+                    ListTile(
+                      leading: Image.asset(
+                        'assets/power.png',
+                        width: 24,
+                        height: 24,
+                        color: iconTextColor,
+                      ),
+                      title: Text(
+                        isToggled ? 'लॉगआउट' : 'Logout',
+                        style: AppFontStyle2.blinker(color: iconTextColor),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: iconTextColor,
+                      ),
+                      onTap: () => _showLogoutConfirmationDialog(context),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 15.0,
+                        left: 8,
+                        right: 8,
+                      ),
+                      child: Text(
+                        isToggled
+                            ? 'अस्वीकरण: भुलेक्स कोणत्याही सरकारी संस्थेशी संलग्न नाही आणि डेटाचा स्रोत प्रदान करणाऱ्या सरकारी संस्थांचे प्रतिनिधित्व करत नाही.'
+                            : 'Disclaimer: Bhulex is not affiliated with any government agency and does not represent government entities that provide the source of data.',
+                        style: AppFontStyle2.blinker(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF353B43),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
-              Text(
-                customerName.isNotEmpty ? customerName : 'Customer Name',
-                style: AppFontStyle2.blinker(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: iconTextColor,
-                ),
-              ),
-              Text(
-                customerMobile.isNotEmpty
-                    ? customerMobile
-                    : 'Mobile number not available',
-                style: AppFontStyle2.blinker(fontSize: 18, color: Colors.grey),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                width: 400,
-                height: 620,
-                padding: const EdgeInsets.only(top: 7, bottom: 7),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Color(0xFFE5E7EB), width: 0.5),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                ),
-                child: Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
-                  color: Colorfile.body,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        leading: Image.asset(
-                          'assets/privacy.png',
-                          width: 24,
-                          height: 24,
-                          color: iconTextColor,
-                        ),
-                        title: Text(
-                          isToggled ? 'आमच्याबद्दल' : 'About',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: iconTextColor,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AboutBhulexPage(),
-                            ),
-                          );
-                        },
-                      ),
-                      const Divider(height: 1, color: Color(0xFFF2F4F7)),
-                      ListTile(
-                        leading: Image.asset(
-                          'assets/privacy.png',
-                          width: 24,
-                          height: 24,
-                          color: iconTextColor,
-                        ),
-                        title: Text(
-                          isToggled ? 'गोपनीयता धोरण' : 'Privacy Policy',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: iconTextColor,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PrivacyPolicyScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      const Divider(height: 1, color: Color(0xFFF2F4F7)),
-                      ListTile(
-                        leading: Image.asset(
-                          'assets/term.png',
-                          width: 24,
-                          height: 24,
-                          color: iconTextColor,
-                        ),
-                        title: Text(
-                          isToggled ? 'अटी आणि शर्ती' : 'Terms & Conditions',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: iconTextColor,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TermsAndConditionsScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      const Divider(height: 1, color: Color(0xFFF2F4F7)),
-                      ListTile(
-                        leading: Image.asset(
-                          'assets/notification.png',
-                          width: 24,
-                          height: 24,
-                          color: iconTextColor,
-                        ),
-                        title: Text(
-                          isToggled ? 'अस्वीकरण' : 'Disclaimer',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: iconTextColor,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DisclaimerScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      const Divider(height: 1, color: Color(0xFFF2F4F7)),
-                      ListTile(
-                        leading: Image.asset(
-                          'assets/help.png',
-                          width: 24,
-                          height: 24,
-                          color: iconTextColor,
-                        ),
-                        title: Text(
-                          isToggled ? 'भाषा बदला' : 'Change Language',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: iconTextColor,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChangeLanguageScreen(),
-                            ),
-                          ).then((_) {
-                            _loadToggleState(); // Refresh language when returning
-                          });
-                        },
-                      ),
-                      const Divider(height: 1, color: Color(0xFFF2F4F7)),
-                      ListTile(
-                        leading: Image.asset(
-                          'assets/help.png',
-                          width: 24,
-                          height: 24,
-                          color: iconTextColor,
-                        ),
-                        title: Text(
-                          isToggled ? 'मदत आणि समर्थन' : 'Help & Support',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: iconTextColor,
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HelpSupportPage(),
-                            ),
-                          );
-                        },
-                      ),
-                      const Divider(height: 1, color: Color(0xFFF2F4F7)),
-                      ListTile(
-                        leading: Image.asset(
-                          'assets/notification.png',
-                          width: 24,
-                          height: 24,
-                          color: iconTextColor,
-                        ),
-                        title: Text(
-                          isToggled ? 'सूचना' : 'Notifications',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: iconTextColor,
-                        ),
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => NotificationPage(),
-                          //   ),
-                          // );
-                        },
-                      ),
-                      const Divider(height: 1, color: Color(0xFFF2F4F7)),
-                      ListTile(
-                        leading: Image.asset(
-                          'assets/power.png',
-                          width: 24,
-                          height: 24,
-                          color: iconTextColor,
-                        ),
-                        title: Text(
-                          isToggled ? 'लॉगआउट' : 'Logout',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: iconTextColor,
-                        ),
-                        onTap: () => _showLogoutConfirmationDialog(context),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 15.0,
-                          left: 8,
-                          right: 8,
-                        ),
-                        child: Text(
-                          isToggled
-                              ? 'अस्वीकरण: भुलेक्स कोणत्याही सरकारी संस्थेशी संलग्न नाही आणि डेटाचा स्रोत प्रदान करणाऱ्या सरकारी संस्थांचे प्रतिनिधित्व करत नाही.'
-                              : 'Disclaimer: Bhulex is not affiliated with any government agency and does not represent government entities that provide the source of data.',
-                          style: AppFontStyle2.blinker(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: const Color(0xFF353B43),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFFFFFFFF),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x14000000),
-                offset: Offset(2, 0),
-                blurRadius: 25,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: Obx(
-            () => BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              items: [
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.home),
-                  label: BottomNavigationStrings.getString(
-                    'home',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.support_agent_outlined),
-                  label: BottomNavigationStrings.getString(
-                    'customerCare',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.edit_document),
-                  label: BottomNavigationStrings.getString(
-                    'myOrder',
-                    languageController.isToggled.value,
-                  ),
-                ),
-
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.person),
-                  label: BottomNavigationStrings.getString(
-                    'myProfile',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                // BottomNavigationBarItem(
-                //   icon: const Icon(Icons.person),
-                //   label: BottomNavigationStrings.getString(
-                //     'package',
-                //     languageController.isToggled.value,
-                //   ),
-                // ),
-                BottomNavigationBarItem(
-                  icon: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/packageicon.png',
-                        width: 21,
-                        height: 22,
-                      ),
-                    ],
-                  ),
-                  label: BottomNavigationStrings.getString(
-                    'Package',
-                    languageController.isToggled.value,
-                  ),
-                ),
-              ],
-              currentIndex: _selectedIndex,
-              selectedItemColor: Colorfile.bordertheme,
-              unselectedItemColor: Colorfile.lightgrey,
-              onTap: _onItemTapped,
-              showUnselectedLabels: true,
-              showSelectedLabels: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
             ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFFFFFFFF),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x14000000),
+              offset: Offset(2, 0),
+              blurRadius: 25,
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+        child: Obx(
+          () => BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.home),
+                label: BottomNavigationStrings.getString(
+                  'home',
+                  languageController.isToggled.value,
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.support_agent_outlined),
+                label: BottomNavigationStrings.getString(
+                  'customerCare',
+                  languageController.isToggled.value,
+                ),
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.edit_document),
+                label: BottomNavigationStrings.getString(
+                  'myOrder',
+                  languageController.isToggled.value,
+                ),
+              ),
+
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.person),
+                label: BottomNavigationStrings.getString(
+                  'myProfile',
+                  languageController.isToggled.value,
+                ),
+              ),
+              // BottomNavigationBarItem(
+              //   icon: const Icon(Icons.person),
+              //   label: BottomNavigationStrings.getString(
+              //     'package',
+              //     languageController.isToggled.value,
+              //   ),
+              // ),
+              BottomNavigationBarItem(
+                icon: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/packageicon.png',
+                      width: 21,
+                      height: 22,
+                    ),
+                  ],
+                ),
+                label: BottomNavigationStrings.getString(
+                  'Package',
+                  languageController.isToggled.value,
+                ),
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colorfile.bordertheme,
+            unselectedItemColor: Colorfile.lightgrey,
+            onTap: _onItemTapped,
+            showUnselectedLabels: true,
+            showSelectedLabels: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
           ),
         ),
       ),

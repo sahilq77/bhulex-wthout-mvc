@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' show log;
+import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:bhulexapp/colors/order_fonts.dart';
 import 'package:bhulexapp/controller/order/language%20controller.dart';
 import 'package:bhulexapp/network/url.dart';
@@ -39,7 +40,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       await fetchPrivacyPolicy();
     }
   }
- Future<bool> _checkConnectivity() async {
+
+  Future<bool> _checkConnectivity() async {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
       return !connectivityResult.contains(ConnectivityResult.none);
@@ -48,7 +50,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       return false;
     }
   }
- Future<void> fetchPrivacyPolicy() async {
+
+  Future<void> fetchPrivacyPolicy() async {
     if (!mounted) return;
 
     // Check connectivity
@@ -57,15 +60,13 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder:
-              (context) => NoInternetPageone(
-                onRetry: () {
-                  fetchPrivacyPolicy(); // Retry fetching data
-                },
-              ),
+          builder: (context) => NoInternetPageone(
+            onRetry: () {
+              fetchPrivacyPolicy(); // Retry fetching data
+            },
+          ),
         ),
       );
-  
     }
 
     setState(() {
@@ -86,36 +87,32 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
 
         if (jsonData['status'].toString() == "true") {
           setState(() {
-            privacyHtmlContent =
-                isToggled
-                    ? (jsonData['data']['page_content_in_local_language'] ??
-                        '<p>कोणताही मजकूर उपलब्ध नाही.</p>')
-                    : (jsonData['data']['page_content'] ??
-                        '<p>No content available.</p>');
+            privacyHtmlContent = isToggled
+                ? (jsonData['data']['page_content_in_local_language'] ??
+                      '<p>कोणताही मजकूर उपलब्ध नाही.</p>')
+                : (jsonData['data']['page_content'] ??
+                      '<p>No content available.</p>');
             log('Displayed Content: $privacyHtmlContent');
           });
         } else {
           setState(() {
-            privacyHtmlContent =
-                isToggled
-                    ? '<p>मजकूर लोड करण्यात अयशस्वी.</p>'
-                    : '<p>Failed to load content.</p>';
+            privacyHtmlContent = isToggled
+                ? '<p>मजकूर लोड करण्यात अयशस्वी.</p>'
+                : '<p>Failed to load content.</p>';
           });
         }
       } else {
         setState(() {
-          privacyHtmlContent =
-              isToggled
-                  ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
-                  : '<p>Server error: ${response.statusCode}</p>';
+          privacyHtmlContent = isToggled
+              ? '<p>सर्व्हर त्रुटी: ${response.statusCode}</p>'
+              : '<p>Server error: ${response.statusCode}</p>';
         });
       }
     } catch (e) {
       setState(() {
-        privacyHtmlContent =
-            isToggled
-                ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
-                : '<p>Something went wrong. Please try again.</p>';
+        privacyHtmlContent = isToggled
+            ? '<p>काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</p>'
+            : '<p>Something went wrong. Please try again.</p>';
       });
       log("Exception: $e");
     } finally {
@@ -172,9 +169,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
             ),
           ),
         ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF36322E)),
-          onPressed: () => Navigator.pop(context),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: Divider(color: Colorfile.border, height: 0),
         ),
       ),
       body: RefreshIndicator(
@@ -195,7 +192,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           fontSize: FontSize(width * 0.04),
                           color: const Color(0xFF36322E),
                           lineHeight: const LineHeight(1.5),
-                          textAlign: TextAlign.center,
+                          textAlign: TextAlign.start,
                         ),
                       },
                     ),
