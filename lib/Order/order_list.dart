@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'package:bhulexapp/bottom_navigation/main_bottom_navigation.screen.dart';
 import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:bhulexapp/colors/order_fonts.dart';
+import 'package:bhulexapp/controller/bottom_navigation/bottom_navigation_controller.dart';
 import 'package:bhulexapp/language/hindi.dart';
 import 'package:bhulexapp/no%20internet.dart';
 import 'package:bhulexapp/profile/profile.dart';
@@ -13,8 +15,8 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../controller/order/my_order_controller.dart';
 import '../controller/order/language controller.dart';
-import '../customfiles/bottom_navigation_controller.dart';
-import '../customfiles/custom_bottom_navigation_bar.dart';
+
+
 import '../homepage.dart';
 import 'order_detail.dart';
 import '../My_package/package_details_new.dart';
@@ -29,8 +31,6 @@ class MyOrderScreen extends StatefulWidget {
 }
 
 class _MyOrderScreenState extends State<MyOrderScreen> {
-  final BottomNavigationController navigationController =
-      Get.find<BottomNavigationController>();
   final OrderController orderController = Get.find<OrderController>();
   final LanguageController languageController = Get.find<LanguageController>();
   final ScrollController _scrollController = ScrollController();
@@ -236,7 +236,6 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
     }
   }
 
-
   void _showFilterDialog() {
     Get.dialog(
       StatefulBuilder(
@@ -254,103 +253,96 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
               ),
             ),
             content: Obx(
-              () =>
-                  orderController.packageService.isEmpty
-                      ? const Text(
-                        'No services available to filter.',
-                        style: TextStyle(fontSize: 16),
-                      )
-                      : DropdownSearch<String>(
-                        popupProps: PopupProps.menu(
-                          showSearchBox: true,
-                          searchFieldProps: TextFieldProps(
-                            decoration: InputDecoration(
-                              labelText:
-                                  languageController.isToggled.value
-                                      ? 'सेवा शोधा'
-                                      : 'Search Service',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                        items:
-                            orderController.packageService
-                                .where(
-                                  (item) =>
-                                      item.id != null &&
-                                      item.serviceName != null &&
-                                      item.serviceName!.isNotEmpty,
-                                )
-                                .map(
-                                  (item) =>
-                                      languageController.isToggled.value &&
-                                              item.serviceNameInLocalLanguage !=
-                                                  null &&
-                                              item
-                                                  .serviceNameInLocalLanguage!
-                                                  .isNotEmpty
-                                          ? item.serviceNameInLocalLanguage!
-                                          : item.serviceName!,
-                                )
-                                .toSet()
-                                .toList(),
-                        onChanged: (String? value) {
-                          if (value == null) {
-                            setState(() {
-                              selectedServiceId = null;
-                            });
-                            return;
-                          }
-
-                          final selectedService = orderController.packageService
-                              .firstWhere(
-                                (item) =>
-                                    item.id != null &&
-                                    (languageController.isToggled.value &&
-                                                item.serviceNameInLocalLanguage !=
-                                                    null &&
-                                                item
-                                                    .serviceNameInLocalLanguage!
-                                                    .isNotEmpty
-                                            ? item.serviceNameInLocalLanguage
-                                            : item.serviceName) ==
-                                        value,
-                                orElse:
-                                    () => orderController.packageService.firstWhere(
-                                      (item) => item.id != null,
-                                      orElse: () {
-                                        print(
-                                          'No valid service found for value: $value',
-                                        );
-                                        return orderController
-                                            .packageService
-                                            .first;
-                                      },
-                                    ),
-                              );
-
-                          setState(() {
-                            selectedServiceId = selectedService.id;
-                          });
-
-                          print(
-                            'Selected Service: $value, ID: $selectedServiceId',
-                          );
-                        },
-                        dropdownDecoratorProps: DropDownDecoratorProps(
-                          dropdownSearchDecoration: InputDecoration(
-                            labelText:
-                                languageController.isToggled.value
-                                    ? 'सेवा निवडा'
-                                    : 'Select Service',
+              () => orderController.packageService.isEmpty
+                  ? const Text(
+                      'No services available to filter.',
+                      style: TextStyle(fontSize: 16),
+                    )
+                  : DropdownSearch<String>(
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            labelText: languageController.isToggled.value
+                                ? 'सेवा शोधा'
+                                : 'Search Service',
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                         ),
                       ),
+                      items: orderController.packageService
+                          .where(
+                            (item) =>
+                                item.id != null &&
+                                item.serviceName != null &&
+                                item.serviceName!.isNotEmpty,
+                          )
+                          .map(
+                            (item) =>
+                                languageController.isToggled.value &&
+                                    item.serviceNameInLocalLanguage != null &&
+                                    item.serviceNameInLocalLanguage!.isNotEmpty
+                                ? item.serviceNameInLocalLanguage!
+                                : item.serviceName!,
+                          )
+                          .toSet()
+                          .toList(),
+                      onChanged: (String? value) {
+                        if (value == null) {
+                          setState(() {
+                            selectedServiceId = null;
+                          });
+                          return;
+                        }
+
+                        final selectedService = orderController.packageService
+                            .firstWhere(
+                              (item) =>
+                                  item.id != null &&
+                                  (languageController.isToggled.value &&
+                                              item.serviceNameInLocalLanguage !=
+                                                  null &&
+                                              item
+                                                  .serviceNameInLocalLanguage!
+                                                  .isNotEmpty
+                                          ? item.serviceNameInLocalLanguage
+                                          : item.serviceName) ==
+                                      value,
+                              orElse: () =>
+                                  orderController.packageService.firstWhere(
+                                    (item) => item.id != null,
+                                    orElse: () {
+                                      print(
+                                        'No valid service found for value: $value',
+                                      );
+                                      return orderController
+                                          .packageService
+                                          .first;
+                                    },
+                                  ),
+                            );
+
+                        setState(() {
+                          selectedServiceId = selectedService.id;
+                        });
+
+                        print(
+                          'Selected Service: $value, ID: $selectedServiceId',
+                        );
+                      },
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: languageController.isToggled.value
+                              ? 'सेवा निवडा'
+                              : 'Select Service',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
             ),
             actions: [
               TextButton(
@@ -457,9 +449,8 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) =>
-                    ProfilePage(isToggled: languageController.isToggled.value),
+            builder: (context) =>
+                ProfilePage(isToggled: languageController.isToggled.value),
           ),
         );
         break;
@@ -467,13 +458,12 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => PackageScreen(
-                  customerId: '',
-                  package_id: '',
-                  tbl_name: '',
-                  customerid: '',
-                ),
+            builder: (context) => PackageScreen(
+              customerId: '',
+              package_id: '',
+              tbl_name: '',
+              customerid: '',
+            ),
           ),
         );
 
@@ -481,10 +471,20 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
     }
   }
 
+  final bottomController = Get.put(BottomNavigationController());
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
-      key: _scaffoldMessengerKey,
+    return WillPopScope(
+      onWillPop: () async {
+        print(
+          'Main: WillPopScope triggered, current route: ${Get.currentRoute}, selectedIndex: ${bottomController.selectedIndex.value}',
+        );
+
+        print('Main: Navigating to home');
+        bottomController.selectedIndex.value = 0;
+        bottomController.goToHome();
+        return false; // Prevent app exit
+      },
       child: Scaffold(
         appBar: AppBar(
           title: Obx(
@@ -499,24 +499,18 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
           ),
           backgroundColor: Colors.white,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+
           actions: [
             IconButton(
               icon: Icon(
                 Icons.filter_list,
                 color: hasConnection ? Colors.black : Colors.grey,
               ),
-              onPressed:
-                  hasConnection
-                      ? _showFilterDialog
-                      : () {
-                        _showNoInternetPopup();
-                      },
+              onPressed: hasConnection
+                  ? _showFilterDialog
+                  : () {
+                      _showNoInternetPopup();
+                    },
             ),
           ],
         ),
@@ -545,14 +539,13 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
             );
           },
           child: Obx(
-            () =>
-                hasConnection
-                    ? orderController.isLoading.value &&
-                            orderController.allOrders.isEmpty
-                        ? const Center(child: CircularProgressIndicator())
-                        : orderController.allOrders.isEmpty
-                        ? _buildNoDataScreen()
-                        : ListView.builder(
+            () => hasConnection
+                ? orderController.isLoading.value &&
+                          orderController.allOrders.isEmpty
+                      ? const Center(child: CircularProgressIndicator())
+                      : orderController.allOrders.isEmpty
+                      ? _buildNoDataScreen()
+                      : ListView.builder(
                           controller: _scrollController,
                           padding: const EdgeInsets.all(20),
                           itemCount:
@@ -623,32 +616,32 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                                   _buildRow(
                                     languageController.isToggled.value
                                         ? (order.package_name.isNotEmpty
-                                            ? "पॅकेज नाव"
-                                            : "सेवा नाव")
+                                              ? "पॅकेज नाव"
+                                              : "सेवा नाव")
                                         : (order.package_name.isNotEmpty
-                                            ? "Package Name"
-                                            : "Service Name"),
+                                              ? "Package Name"
+                                              : "Service Name"),
                                     order.package_name.isNotEmpty
                                         ? (languageController.isToggled.value
-                                            ? order
-                                                    .package_name_in_local_language
-                                                    .isNotEmpty
-                                                ? order
-                                                    .package_name_in_local_language
-                                                : order.package_name
-                                            : order.package_name)
+                                              ? order
+                                                        .package_name_in_local_language
+                                                        .isNotEmpty
+                                                    ? order
+                                                          .package_name_in_local_language
+                                                    : order.package_name
+                                              : order.package_name)
                                         : (order.serviceNameLocal != null &&
-                                                languageController
-                                                    .isToggled
-                                                    .value
-                                            ? order.serviceNameLocal!
-                                            : localizationOrderdetailsStrings
-                                                .getServiceName(
-                                                  order.serviceName,
                                                   languageController
                                                       .isToggled
-                                                      .value,
-                                                )),
+                                                      .value
+                                              ? order.serviceNameLocal!
+                                              : localizationOrderdetailsStrings
+                                                    .getServiceName(
+                                                      order.serviceName,
+                                                      languageController
+                                                          .isToggled
+                                                          .value,
+                                                    )),
                                   ),
                                   if (order.leadStatus == "1" ||
                                       order.leadStatus == "3")
@@ -680,37 +673,36 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                                             Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
-                                                builder:
-                                                    (context) => OrderDetail(
-                                                      order: {
-                                                        "orderId": order.id,
-                                                        "serviceName":
-                                                            order.serviceNameLocal !=
-                                                                        null &&
-                                                                    languageController
-                                                                        .isToggled
-                                                                        .value
-                                                                ? order
-                                                                    .serviceNameLocal!
-                                                                : localizationOrderStrings.getServiceName(
-                                                                  order
-                                                                      .serviceName,
-                                                                  languageController
-                                                                      .isToggled
-                                                                      .value,
-                                                                ),
-                                                        "status":
-                                                            statusDetails["text"],
-                                                        "customerId":
-                                                            orderController
-                                                                .customerId
-                                                                .value,
-                                                        "tbl_name":
-                                                            order.tblName,
-                                                      },
-                                                      customerid: '',
-                                                      package_Id: '',
-                                                    ),
+                                                builder: (context) => OrderDetail(
+                                                  order: {
+                                                    "orderId": order.id,
+                                                    "serviceName":
+                                                        order.serviceNameLocal !=
+                                                                null &&
+                                                            languageController
+                                                                .isToggled
+                                                                .value
+                                                        ? order
+                                                              .serviceNameLocal!
+                                                        : localizationOrderStrings
+                                                              .getServiceName(
+                                                                order
+                                                                    .serviceName,
+                                                                languageController
+                                                                    .isToggled
+                                                                    .value,
+                                                              ),
+                                                    "status":
+                                                        statusDetails["text"],
+                                                    "customerId":
+                                                        orderController
+                                                            .customerId
+                                                            .value,
+                                                    "tbl_name": order.tblName,
+                                                  },
+                                                  customerid: '',
+                                                  package_Id: '',
+                                                ),
                                               ),
                                             );
                                           },
@@ -744,95 +736,16 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                             );
                           },
                         )
-                    : SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height,
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
+                : SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: Center(child: CircularProgressIndicator()),
                     ),
+                  ),
           ),
         ),
-        bottomNavigationBar: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFFFFFFFF),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x14000000),
-                offset: Offset(2, 0),
-                blurRadius: 25,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: Obx(
-            () => BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              items: [
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.home),
-                  label: BottomNavigationStrings.getString(
-                    'home',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.support_agent_outlined),
-                  label: BottomNavigationStrings.getString(
-                    'customerCare',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.edit_document),
-                  label: BottomNavigationStrings.getString(
-                    'myOrder',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.person),
-                  label: BottomNavigationStrings.getString(
-                    'myProfile',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                // BottomNavigationBarItem(
-                //   icon: const Icon(Icons.person),
-                //   label: BottomNavigationStrings.getString(
-                //     'package',
-                //     languageController.isToggled.value,
-                //   ),
-                // ),
-
-                BottomNavigationBarItem(
-                  icon: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/packageicon.png',
-                        width: 21,
-                        height: 22,
-                      ),
-                    ],
-                  ),
-                  label: BottomNavigationStrings.getString(
-                    'Package',
-                    languageController.isToggled.value,
-                  ),
-                ),
-              ],
-              currentIndex: _selectedIndex,
-              selectedItemColor: Colorfile.bordertheme,
-              unselectedItemColor: Colorfile.lightgrey,
-              onTap: _onItemTapped,
-              showUnselectedLabels: true,
-              showSelectedLabels: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-            ),
-          ),
-        ),
+        bottomNavigationBar: CustomBottomBar(),
       ),
     );
   }

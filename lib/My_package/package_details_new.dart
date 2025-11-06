@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import '../controller/order/language controller.dart';
-import '../customfiles/bottom_navigation_controller.dart';
+
 import '../homepage.dart';
 
 class PackageScreen extends StatefulWidget {
@@ -35,8 +35,7 @@ class PackageScreen extends StatefulWidget {
 }
 
 class _PackageScreenState extends State<PackageScreen> {
-  final BottomNavigationController navigationController =
-      Get.find<BottomNavigationController>();
+
   final LanguageController languageController = Get.find<LanguageController>();
   final PackageOrderController packageController = Get.put(
     PackageOrderController(),

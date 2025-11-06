@@ -1,8 +1,9 @@
-import 'package:bhulexapp/Core/ColorFile.dart'; // Keep your color file
+import 'package:bhulexapp/Core/ColorFile.dart';
 import 'package:bhulexapp/controller/bottom_navigation/bottom_navigation_controller.dart';
 import 'package:bhulexapp/controller/order/language%20controller.dart';
 import 'package:bhulexapp/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // ← import
 import 'package:get/get.dart';
 
 class CustomBottomBar extends StatelessWidget {
@@ -32,8 +33,9 @@ class CustomBottomBar extends StatelessWidget {
           children: [
             _buildNavItem(
               index: 0,
-              icon: Icons.home_outlined,
-              selectedIcon: Icons.home,
+              icon: FontAwesomeIcons.house, // regular
+              selectedIcon:
+                  FontAwesomeIcons.house, // solid (or use houseUser, etc.)
               label: BottomNavigationStrings.getString(
                 'home',
                 languageController.isToggled.value,
@@ -42,8 +44,8 @@ class CustomBottomBar extends StatelessWidget {
             ),
             _buildNavItem(
               index: 1,
-              icon: Icons.headset_mic_outlined,
-              selectedIcon: Icons.headset_mic,
+              icon: FontAwesomeIcons.headset,
+              selectedIcon: FontAwesomeIcons.headset,
               label: BottomNavigationStrings.getString(
                 'customerCare',
                 languageController.isToggled.value,
@@ -52,8 +54,8 @@ class CustomBottomBar extends StatelessWidget {
             ),
             _buildNavItem(
               index: 2,
-              icon: Icons.receipt_long_outlined,
-              selectedIcon: Icons.receipt_long,
+              icon: FontAwesomeIcons.receipt,
+              selectedIcon: FontAwesomeIcons.receipt,
               label: BottomNavigationStrings.getString(
                 'myOrder',
                 languageController.isToggled.value,
@@ -62,8 +64,8 @@ class CustomBottomBar extends StatelessWidget {
             ),
             _buildNavItem(
               index: 3,
-              icon: Icons.person_outline,
-              selectedIcon: Icons.person,
+              icon: FontAwesomeIcons.user,
+              selectedIcon: FontAwesomeIcons.solidUser,
               label: BottomNavigationStrings.getString(
                 'myProfile',
                 languageController.isToggled.value,
@@ -78,7 +80,7 @@ class CustomBottomBar extends StatelessWidget {
 
   Widget _buildNavItem({
     required int index,
-    required IconData icon,
+    required IconData icon, // now FontAwesomeIcons.*
     required IconData selectedIcon,
     required String label,
     required BottomNavigationController controller,
@@ -94,7 +96,12 @@ class CustomBottomBar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(isSelected ? selectedIcon : icon, size: 24.0, color: color),
+            FaIcon(
+              // ← use FaIcon instead of Icon
+              isSelected ? selectedIcon : icon,
+              size: 24.0,
+              color: color,
+            ),
             const SizedBox(height: 4.0),
             Text(
               label,

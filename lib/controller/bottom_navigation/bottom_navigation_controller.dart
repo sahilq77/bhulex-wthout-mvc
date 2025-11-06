@@ -2,20 +2,21 @@ import 'package:bhulexapp/Order/order_list.dart';
 import 'package:bhulexapp/controller/order/language%20controller.dart';
 import 'package:bhulexapp/homepage.dart';
 import 'package:bhulexapp/profile/profile.dart';
+import 'package:bhulexapp/support/support_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BottomNavigationController extends GetxController {
   // Current selected index
   RxInt selectedIndex = 0.obs;
- // LanguageController get languageController => Get.find<LanguageController>();
+  // LanguageController get languageController => Get.find<LanguageController>();
   // List of pages (without passing empty strings)
   static final List<Widget> pages = [
     const HomePage2(
       customerId: "",
       customer_id: "",
     ), // Will be replaced properly later
-    const Text("Result Screen"),
+    const SupportPage(),
     const MyOrderScreen(),
     const ProfilePage(isToggled: false),
   ];

@@ -6,11 +6,11 @@ import 'package:get/get.dart';
 import 'controller/order/my_order_controller.dart';
 import 'controller/package/getallpackagecontroller.dart';
 import 'controller/package/my_package_controller.dart';
-import 'customfiles/bottom_navigation_controller.dart';
+
 import 'splash_screens/splash_screen1.dart';
 
 void main() {
-  Get.put(BottomNavigationController());
+  //Get.put(BottomNavigationControllers());
   Get.put(OrderController());
   Get.put(PackageController());
   Get.put(PackageEnquiryController());
@@ -31,10 +31,11 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Bhulex',
-      initialRoute: '/',
+      // initialRoute: '/',
       theme: ThemeData(
         scaffoldBackgroundColor: Colorfile.background,
         appBarTheme: AppBarTheme(
+          scrolledUnderElevation: 0.0,
           elevation: 0,
           backgroundColor: Colorfile.appbar,
           iconTheme: IconThemeData(color: Colorfile.textColor),

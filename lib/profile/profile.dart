@@ -39,10 +39,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  
   int _selectedIndex = 3;
   final ImagePicker _picker = ImagePicker();
   bool isUploading = false;
-  late bool isToggled;
+ // late bool isToggled;
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   //final NetworkChecker _networkChecker = NetworkChecker(); // Add NetworkChecker
@@ -51,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    isToggled = widget.isToggled;
+   // isToggled = widget.isToggled;
     loadProfileImageUrl();
     loadCachedCustomerData();
     // _networkChecker.startMonitoring(context); // Start network monitoring
@@ -77,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _loadToggleState() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isToggled = prefs.getBool('isToggled') ?? false;
+      languageController.isToggled.value = prefs.getBool('isToggled') ?? false;
     });
   }
 
@@ -104,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(
         content: Text(
-          isToggled ? 'इंटरनेट कनेक्शन नाही' : 'No internet connection',
+         languageController.isToggled.value ? 'इंटरनेट कनेक्शन नाही' : 'No internet connection',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.red,
@@ -176,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => ProfilePage(isToggled: isToggled),
+                builder: (context) => ProfilePage(isToggled: languageController.isToggled.value),
               ),
             );
           }
@@ -241,7 +242,7 @@ class _ProfilePageState extends State<ProfilePage> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return ProfilePage(isToggled: isToggled);
+                return ProfilePage(isToggled: languageController.isToggled.value);
               },
             ),
           ); // Close the modal
@@ -292,25 +293,29 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: Colors.orange,
                             ),
                             const SizedBox(height: 10),
-                            Text(
-                              isToggled
-                                  ? 'प्रोफाइल फोटो संपादित करा'
-                                  : 'Edit Profile Photo',
-                              style: AppFontStyle2.blinker(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF36322E),
+                            Obx(
+                             () =>  Text(
+                              languageController.isToggled.value
+                                    ? 'प्रोफाइल फोटो संपादित करा'
+                                    : 'Edit Profile Photo',
+                                style: AppFontStyle2.blinker(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF36322E),
+                                ),
                               ),
                             ),
                             const SizedBox(height: 10),
-                            Text(
-                              isToggled
-                                  ? 'आपला फोटो अपडेट करण्यासाठी एक पद्धत निवडा'
-                                  : 'Choose a method to update your photo',
-                              textAlign: TextAlign.center,
-                              style: AppFontStyle2.blinker(
-                                fontSize: 14,
-                                color: Colors.black54,
+                            Obx(
+                              () =>  Text(
+                             languageController.isToggled.value
+                                    ? 'आपला फोटो अपडेट करण्यासाठी एक पद्धत निवडा'
+                                    : 'Choose a method to update your photo',
+                                textAlign: TextAlign.center,
+                                style: AppFontStyle2.blinker(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 25),
@@ -344,12 +349,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    Text(
-                                      isToggled ? 'कॅमेरा' : 'Camera',
-                                      style: AppFontStyle2.blinker(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.orange.shade800,
+                                    Obx(
+                                    () =>  Text(
+                                       languageController.isToggled.value? 'कॅमेरा' : 'Camera',
+                                        style: AppFontStyle2.blinker(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.orange.shade800,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -380,12 +387,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    Text(
-                                      isToggled ? 'गॅलरी' : 'Gallery',
-                                      style: AppFontStyle2.blinker(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.orange.shade800,
+                                    Obx(
+                                      () =>
+                                       Text(
+                                      languageController.isToggled.value ? 'गॅलरी' : 'Gallery',
+                                        style: AppFontStyle2.blinker(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.orange.shade800,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -397,11 +407,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               onPressed: isUploading
                                   ? null
                                   : () => Navigator.pop(context),
-                              child: Text(
-                                isToggled ? 'रद्द करा' : 'Cancel',
-                                style: AppFontStyle2.blinker(
-                                  fontSize: 14,
-                                  color: Colors.red,
+                              child: Obx(
+                                () =>  Text(
+                                  languageController.isToggled.value ? 'रद्द करा' : 'Cancel',
+                                  style: AppFontStyle2.blinker(
+                                    fontSize: 14,
+                                    color: Colors.red,
+                                  ),
                                 ),
                               ),
                             ),
@@ -445,12 +457,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          isToggled ? 'लॉगआउट' : 'Logout',
-                          style: AppFontStyle.inter(
-                            fontSize: 21,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFFF26500),
+                        Obx(
+                     () =>  Text(
+                            languageController.isToggled.value ? 'लॉगआउट' : 'Logout',
+                            style: AppFontStyle.inter(
+                              fontSize: 21,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFFF26500),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -461,28 +475,32 @@ class _ProfilePageState extends State<ProfilePage> {
                           size: 50,
                           color: Colors.orange,
                         ),
-                        Text(
-                          isToggled ? 'लवकरच परत या!' : 'Come back soon!',
-                          style: AppFontStyle.poppins(
-                            // fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                            color: Color(0xFF36322E),
+                        Obx(
+                     () =>  Text(
+                            languageController.isToggled.value ? 'लवकरच परत या!' : 'Come back soon!',
+                            style: AppFontStyle.poppins(
+                              // fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                              color: Color(0xFF36322E),
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 10),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            isToggled
-                                ? 'लॉगआउट केल्याने आपले सत्र संपेल\nआपण पुढे जाऊ इच्छिता का?'
-                                : 'Logging out will end your session\nDo you wish to proceed?',
-                            textAlign: TextAlign.center,
-                            style: AppFontStyle.poppins(
-                              // fontFamily: 'Poppins',
-                              fontSize: 14,
-                              color: Colors.black54,
+                          child: Obx(
+                     () =>  Text(
+                            languageController.isToggled.value
+                                  ? 'लॉगआउट केल्याने आपले सत्र संपेल\nआपण पुढे जाऊ इच्छिता का?'
+                                  : 'Logging out will end your session\nDo you wish to proceed?',
+                              textAlign: TextAlign.center,
+                              style: AppFontStyle.poppins(
+                                // fontFamily: 'Poppins',
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
                             ),
                           ),
                         ),
@@ -513,11 +531,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                       ),
                                 ),
-                                child: Text(
-                                  isToggled ? 'रद्द करा' : 'Cancel',
-                                  style: AppFontStyle.inter(
-                                    fontSize: 14,
-                                    color: Colors.black,
+                                child:  Obx(
+                     () =>  Text(
+                            languageController.isToggled.value? 'रद्द करा' : 'Cancel',
+                                    style: AppFontStyle.inter(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -553,11 +573,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                       ),
                                 ),
-                                child: Text(
-                                  isToggled ? 'लॉगआउट' : 'Logout',
-                                  style: AppFontStyle.inter(
-                                    fontSize: 16,
-                                    color: Colors.white,
+                                child:  Obx(
+                     () =>  Text(
+                            languageController.isToggled.value? 'लॉगआउट' : 'Logout',
+                                    style: AppFontStyle.inter(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -649,7 +671,7 @@ class _ProfilePageState extends State<ProfilePage> {
           title: Row(
             children: [
               Text(
-                BottomNavigationStrings.getString('myProfile', isToggled),
+                BottomNavigationStrings.getString('myProfile', languageController.isToggled.value),
                 style: AppFontStyle2.blinker(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -739,9 +761,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 24,
                           color: iconTextColor,
                         ),
-                        title: Text(
-                          isToggled ? 'आमच्याबद्दल' : 'About',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
+                        title: Obx(
+                        () =>  Text(
+                            languageController.isToggled.value ? 'आमच्याबद्दल' : 'About',
+                            style: AppFontStyle2.blinker(color: iconTextColor),
+                          ),
                         ),
                         trailing: const Icon(
                           Icons.arrow_forward_ios,
@@ -765,9 +789,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 24,
                           color: iconTextColor,
                         ),
-                        title: Text(
-                          isToggled ? 'गोपनीयता धोरण' : 'Privacy Policy',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
+                        
+                        title: Obx(
+                ()=> Text(
+                            languageController.isToggled.value ? 'गोपनीयता धोरण' : 'Privacy Policy',
+                            style: AppFontStyle2.blinker(color: iconTextColor),
+                          ),
                         ),
                         trailing: const Icon(
                           Icons.arrow_forward_ios,
@@ -791,9 +818,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 24,
                           color: iconTextColor,
                         ),
-                        title: Text(
-                          isToggled ? 'अटी आणि शर्ती' : 'Terms and Conditions',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
+                        title:  Obx(
+                ()=> Text(
+                            languageController.isToggled.value ?  'अटी आणि शर्ती' : 'Terms and Conditions',
+                            style: AppFontStyle2.blinker(color: iconTextColor),
+                          ),
                         ),
                         trailing: const Icon(
                           Icons.arrow_forward_ios,
@@ -817,9 +846,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 24,
                           color: iconTextColor,
                         ),
-                        title: Text(
-                          isToggled ? 'अस्वीकरण' : 'Disclaimer',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
+                        title:  Obx(
+                ()=> Text(
+                            languageController.isToggled.value ?  'अस्वीकरण' : 'Disclaimer',
+                            style: AppFontStyle2.blinker(color: iconTextColor),
+                          ),
                         ),
                         trailing: const Icon(
                           Icons.arrow_forward_ios,
@@ -843,9 +874,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 24,
                           color: iconTextColor,
                         ),
-                        title: Text(
-                          isToggled ? 'भाषा बदला' : 'Change Language',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
+                        title:  Obx(
+                ()=> Text(
+                            languageController.isToggled.value ?  'भाषा बदला' : 'Change Language',
+                            style: AppFontStyle2.blinker(color: iconTextColor),
+                          ),
                         ),
                         trailing: const Icon(
                           Icons.arrow_forward_ios,
@@ -871,9 +904,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 24,
                           color: iconTextColor,
                         ),
-                        title: Text(
-                          isToggled ? 'मदत आणि समर्थन' : 'Help and Support',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
+                        title:  Obx(
+                ()=> Text(
+                            languageController.isToggled.value ?  'मदत आणि समर्थन' : 'Help and Support',
+                            style: AppFontStyle2.blinker(color: iconTextColor),
+                          ),
                         ),
                         trailing: const Icon(
                           Icons.arrow_forward_ios,
@@ -897,9 +932,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 24,
                           color: iconTextColor,
                         ),
-                        title: Text(
-                          isToggled ? 'सूचना' : 'Notifications',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
+                        title:  Obx(
+                ()=> Text(
+                            languageController.isToggled.value ?  'सूचना' : 'Notifications',
+                            style: AppFontStyle2.blinker(color: iconTextColor),
+                          ),
                         ),
                         trailing: const Icon(
                           Icons.arrow_forward_ios,
@@ -923,9 +960,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 24,
                           color: iconTextColor,
                         ),
-                        title: Text(
-                          isToggled ? 'लॉगआउट' : 'Logout',
-                          style: AppFontStyle2.blinker(color: iconTextColor),
+                        title:  Obx(
+                ()=> Text(
+                            languageController.isToggled.value ?  'लॉगआउट' : 'Logout',
+                            style: AppFontStyle2.blinker(color: iconTextColor),
+                          ),
                         ),
                         trailing: const Icon(
                           Icons.arrow_forward_ios,
@@ -940,14 +979,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           left: 8,
                           right: 8,
                         ),
-                        child: Text(
-                          isToggled
-                              ? 'अस्वीकरण: भुलेक्स कोणत्याही सरकारी संस्थेशी संलग्न नाही आणि डेटाचा स्रोत प्रदान करणाऱ्या सरकारी संस्थांचे प्रतिनिधित्व करत नाही.'
-                              : 'Disclaimer: Bhulex is not affiliated with any government agency and does not represent government entities that provide the source of data.',
-                          style: AppFontStyle2.blinker(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: const Color(0xFF353B43),
+                        child:  Obx(
+                ()=> Text(
+                            languageController.isToggled.value ?  'अस्वीकरण: भुलेक्स कोणत्याही सरकारी संस्थेशी संलग्न नाही आणि डेटाचा स्रोत प्रदान करणाऱ्या सरकारी संस्थांचे प्रतिनिधित्व करत नाही.'
+                                : 'Disclaimer: Bhulex is not affiliated with any government agency and does not represent government entities that provide the source of data.',
+                            style: AppFontStyle2.blinker(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF353B43),
+                            ),
                           ),
                         ),
                       ),
