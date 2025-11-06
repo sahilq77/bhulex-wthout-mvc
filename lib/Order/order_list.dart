@@ -16,7 +16,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../controller/order/my_order_controller.dart';
 import '../controller/order/language controller.dart';
 
-
 import '../homepage.dart';
 import 'order_detail.dart';
 import '../My_package/package_details_new.dart';
@@ -513,6 +512,10 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                     },
             ),
           ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(0),
+            child: Divider(color: Colorfile.border, height: 0),
+          ),
         ),
         backgroundColor: const Color(0xFFF8F8F8),
         body: RefreshIndicator(

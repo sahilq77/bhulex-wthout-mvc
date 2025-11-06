@@ -1,5 +1,6 @@
 import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:bhulexapp/colors/order_fonts.dart';
+import 'package:bhulexapp/controller/bottom_navigation/bottom_navigation_controller.dart';
 import 'package:bhulexapp/controller/package/package_enquiry_form_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,8 +10,12 @@ import 'controller/package/my_package_controller.dart';
 
 import 'splash_screens/splash_screen1.dart';
 
-void main() {
-  //Get.put(BottomNavigationControllers());
+void main()async {
+   WidgetsFlutterBinding.ensureInitialized();
+  Get.lazyPut<BottomNavigationController>(
+    () => BottomNavigationController(),
+    fenix: true,
+  );
   Get.put(OrderController());
   Get.put(PackageController());
   Get.put(PackageEnquiryController());
