@@ -64,7 +64,7 @@ class CustomBottomBar extends StatelessWidget {
             ),
             _buildNavItem(
               index: 3,
-              icon: FontAwesomeIcons.user,
+              icon: FontAwesomeIcons.solidUser,
               selectedIcon: FontAwesomeIcons.solidUser,
               label: BottomNavigationStrings.getString(
                 'myProfile',
