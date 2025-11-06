@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:bhulexapp/My_package/package_details_new.dart';
 import 'package:bhulexapp/Order/order_list.dart';
+import 'package:bhulexapp/bottom_navigation/main_bottom_navigation.screen.dart';
 import 'package:bhulexapp/colors/order_fonts.dart';
 import 'package:bhulexapp/controller/order/language%20controller.dart';
 import 'package:bhulexapp/controller/package/my_package_controller.dart';
@@ -37,7 +38,7 @@ import 'Order/all_packages.dart';
 import 'Order/package_details.dart';
 import 'colors/custom_color.dart';
 import 'controller/package/getallpackagecontroller.dart' show PackageController;
-import 'customfiles/bottom_navigation_controller.dart';
+
 import 'network/url.dart';
 
 class HomePage2 extends StatefulWidget {
@@ -71,8 +72,7 @@ class _HomePage2State extends State<HomePage2> {
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  final BottomNavigationController controller =
-      Get.find<BottomNavigationController>();
+ 
   final PackageController packageController = Get.put(PackageController());
   final LanguageController languageController = Get.put(LanguageController());
   final Map<String, String> instantTextMap = {
@@ -358,7 +358,18 @@ class _HomePage2State extends State<HomePage2> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => await _showExitDialog(context),
+      onWillPop: () async {
+        // If not on Home tab (index 0), switch to Home instead of exiting
+        if (_selectedIndex != 0) {
+          setState(() {
+            _selectedIndex = 0;
+          });
+          return false; // Prevent exit
+        }
+
+        // If on Home tab, show exit confirmation dialog
+        return await _showExitDialog(context);
+      },
       child: Scaffold(
         backgroundColor: const Color(0xFFF8F8F8),
         appBar: AppBar(
@@ -1327,85 +1338,117 @@ class _HomePage2State extends State<HomePage2> {
                   ),
                 ),
         ),
-        bottomNavigationBar: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFFFFFFFF),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x14000000),
-                offset: Offset(2, 0),
-                blurRadius: 25,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: Obx(
-            () => BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              items: [
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.home),
-                  label: BottomNavigationStrings.getString(
-                    'home',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.support_agent_outlined),
-                  label: BottomNavigationStrings.getString(
-                    'customerCare',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.edit_document),
-                  label: BottomNavigationStrings.getString(
-                    'myOrder',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.person),
-                  label: BottomNavigationStrings.getString(
-                    'myProfile',
-                    languageController.isToggled.value,
-                  ),
-                ),
-                // BottomNavigationBarItem(
-                //   icon: const Icon(Icons.person),
-                //   label: BottomNavigationStrings.getString(
-                //     'package',
-                //     languageController.isToggled.value,
-                //   ),
-                //),
-                BottomNavigationBarItem(
-                  icon: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/packageicon.png',
-                        width: 21,
-                        height: 22,
-                      ),
-                    ],
-                  ),
-                  label: BottomNavigationStrings.getString(
-                    'Package',
-                    languageController.isToggled.value,
-                  ),
-                ),
-              ],
-              currentIndex: _selectedIndex,
-              selectedItemColor: Colorfile.bordertheme,
-              unselectedItemColor: Colorfile.lightgrey,
-              onTap: _onItemTapped,
-              showUnselectedLabels: true,
-              showSelectedLabels: true,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-            ),
-          ),
-        ),
+        bottomNavigationBar: CustomBottomBar(),
+        // bottomNavigationBar: Container(
+        //   decoration: BoxDecoration(
+        //     color: Colors.white,
+        //     boxShadow: [
+        //       BoxShadow(
+        //         color: Colors.black.withOpacity(0.08),
+        //         blurRadius: 25,
+        //         offset: const Offset(0, -2),
+        //       ),
+        //     ],
+        //   ),
+        //   child: Obx(
+        //     () => BottomNavigationBar(
+        //       type: BottomNavigationBarType.fixed,
+        //       currentIndex: _selectedIndex,
+        //       backgroundColor: Colors.white,
+        //       elevation: 0,
+        //       selectedItemColor: Colorfile.bordertheme,
+        //       unselectedItemColor: Colorfile.lightgrey,
+        //       selectedFontSize: 12,
+        //       unselectedFontSize: 11,
+        //       showSelectedLabels: true,
+        //       showUnselectedLabels: true,
+        //       onTap: (index) {
+        //         if (_selectedIndex == index)
+        //           return; // Prevent re-tapping same tab
+
+        //         setState(() => _selectedIndex = index);
+
+        //         switch (index) {
+        //           case 0: // Home
+        //             // Already on Home
+        //             break;
+
+        //           case 1: // Support / Customer Care
+        //             ScaffoldMessenger.of(context).showSnackBar(
+        //               SnackBar(
+        //                 backgroundColor: Colorfile.bordertheme,
+        //                 content: Text(
+        //                   languageController.isToggled.value
+        //                       ? "ग्राहक सेवा लवकरच उपलब्ध होईल"
+        //                       : "Customer Support coming soon",
+        //                   style: const TextStyle(color: Colors.white),
+        //                 ),
+        //                 duration: const Duration(seconds: 2),
+        //               ),
+        //             );
+        //             break;
+
+        //           case 2: // My Orders
+        //             Navigator.pushReplacement(
+        //               context,
+        //               MaterialPageRoute(
+        //                 builder: (_) => MyOrderScreen(
+        //                   package_id: '',
+        //                   customer_id: widget.customer_id,
+        //                 ),
+        //               ),
+        //             );
+        //             break;
+
+        //           case 3: // Profile
+        //             Navigator.pushReplacement(
+        //               context,
+        //               MaterialPageRoute(
+        //                 builder: (_) => ProfilePage(
+        //                   isToggled: languageController.isToggled.value,
+        //                 ),
+        //               ),
+        //             );
+        //             break;
+        //         }
+        //       },
+        //       items:
+        //           const [
+        //             BottomNavigationBarItem(
+        //               icon: Icon(Icons.home_outlined),
+        //               activeIcon: Icon(Icons.home),
+        //               label: 'Home', // Will be auto-translated below
+        //             ),
+        //             BottomNavigationBarItem(
+        //               icon: Icon(Icons.headset_mic_outlined),
+        //               activeIcon: Icon(Icons.headset_mic),
+        //               label: 'Support',
+        //             ),
+        //             BottomNavigationBarItem(
+        //               icon: Icon(Icons.receipt_long_outlined),
+        //               activeIcon: Icon(Icons.receipt_long),
+        //               label: 'My Orders',
+        //             ),
+        //             BottomNavigationBarItem(
+        //               icon: Icon(Icons.person_outline),
+        //               activeIcon: Icon(Icons.person),
+        //               label: 'Profile',
+        //             ),
+        //           ].asMap().entries.map((entry) {
+        //             int idx = entry.key;
+        //             var item = entry.value;
+        //             return BottomNavigationBarItem(
+        //               icon: item.icon!,
+        //               activeIcon: item.activeIcon!,
+        //               label: BottomNavigationStrings.getString(
+        //                 ['home', 'support', 'myOrder', 'myProfile'][idx],
+        //                 languageController.isToggled.value,
+        //               ),
+        //             );
+        //           }).toList(),
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }
