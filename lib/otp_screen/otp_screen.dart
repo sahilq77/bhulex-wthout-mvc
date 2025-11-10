@@ -322,15 +322,7 @@ class _OtpScreenState extends State<OtpScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         titleSpacing: 0.0,
-        leading: IconButton(
-          icon: Image.asset('assets/eva_arrow-back-fill.png'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Signup1()),
-            );
-          },
-        ),
+
         // title: Text(
         //   'OTP Verification',
         //   style: GoogleFonts.poppins(
