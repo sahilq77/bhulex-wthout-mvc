@@ -28,6 +28,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -72,7 +73,7 @@ class _HomePage2State extends State<HomePage2> {
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
- 
+
   final PackageController packageController = Get.put(PackageController());
   final LanguageController languageController = Get.put(LanguageController());
   final Map<String, String> instantTextMap = {
@@ -434,20 +435,58 @@ class _HomePage2State extends State<HomePage2> {
                 ],
               ),
             ),
+            // Search Icon (using Icon widget)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.search,
-                  size: 30,
-                  color: Colorfile.lightblack,
-                ),
-                onPressed: () {
+              child: InkWell(
+                borderRadius: BorderRadius.circular(
+                  30,
+                ), // makes ripple circular
+                splashColor: Colors.grey.withOpacity(0.3),
+                highlightColor: Colors.grey.withOpacity(0.1),
+                onTap: () {
                   print('Search icon pressed');
                 },
+                child: Container(
+                  padding: const EdgeInsets.all(
+                    8,
+                  ), // same touch area as IconButton
+                  child: const Icon(
+                    Icons.search,
+                    size: 30,
+                    color: Colorfile.lightblack,
+                  ),
+                ),
+              ),
+            ),
+
+
+            // Notification Bell (using SVG)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(30),
+                splashColor: Colors.grey.withOpacity(0.3),
+                highlightColor: Colors.grey.withOpacity(0.1),
+                onTap: () {
+                  print('Bell icon pressed');
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  child: SvgPicture.asset(
+                    'assets/images/bell-icon.svg',
+                    width: 25,
+                    height: 25,
+                    color: Colorfile.lightblack, // optional: tint the SVG
+                  ),
+                ),
               ),
             ),
           ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(10),
+            child: Container(color: Colorfile.border, height: 1),
+          ),
         ),
         body: RefreshIndicator(
           onRefresh: _onRefresh,
@@ -548,6 +587,16 @@ class _HomePage2State extends State<HomePage2> {
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16,
                                       ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      width: double.infinity,
+                                      height: 0.5,
+                                      color: Colorfile.lightgrey,
                                     ),
                                   ),
                                   Obx(

@@ -59,4 +59,13 @@ class AppImages {
   static const String qcList = 'assets/images/qclist.png';
   static const String readystock = 'assets/images/readystock.png';
 
+  //bottom navigation icons
+  static const String homeIcon = 'assets/images/home_icon.svg';
+  static const String supportIcon = 'assets/images/support-icon.svg';
+  static const String ordersIcon = 'assets/images/my-order-icon.svg';
+  static const String profileIcon = 'assets/images/user-icon.svg';
+
+
+ static const String searchIcon = 'assets/images/search-icon.svg';
+  
 }

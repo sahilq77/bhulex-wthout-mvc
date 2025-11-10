@@ -1,8 +1,12 @@
+import 'package:bhulexapp/Core/AppImages.dart';
 import 'package:bhulexapp/Core/ColorFile.dart';
+import 'package:bhulexapp/Core/apputility.dart';
+import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:bhulexapp/controller/bottom_navigation/bottom_navigation_controller.dart';
 import 'package:bhulexapp/controller/order/language%20controller.dart';
 import 'package:bhulexapp/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // ← import
 import 'package:get/get.dart';
 
@@ -13,6 +17,12 @@ class CustomBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(BottomNavigationController());
     final LanguageController languageController = Get.put(LanguageController());
+    // Use fixed sizes for better control
+    const double bottomBarHeight = 70.0; // Fixed height
+    const double iconSize = 24.0; // Standard icon size
+    const double fontSize = 12.0; // Standard font size
+    const double verticalPadding = 8.0; // Reduced padding
+    const double spacing = 4.0; // Reduced spacing
 
     return Container(
       height: 70.0,
@@ -33,7 +43,7 @@ class CustomBottomBar extends StatelessWidget {
           children: [
             _buildNavItem(
               index: 0,
-              icon: FontAwesomeIcons.house, // regular
+              icon: AppImages.homeIcon, // regular
               selectedIcon:
                   FontAwesomeIcons.house, // solid (or use houseUser, etc.)
               label: BottomNavigationStrings.getString(
@@ -41,36 +51,60 @@ class CustomBottomBar extends StatelessWidget {
                 languageController.isToggled.value,
               ),
               controller: controller,
+              iconSize: iconSize,
+              fontSize: fontSize,
+              verticalPadding: verticalPadding,
+              horizontalPadding:
+                  verticalPadding, // Match vertical for consistency
+              spacing: spacing,
             ),
             _buildNavItem(
               index: 1,
-              icon: FontAwesomeIcons.headset,
+              icon: AppImages.supportIcon,
               selectedIcon: FontAwesomeIcons.headset,
               label: BottomNavigationStrings.getString(
                 'customerCare',
                 languageController.isToggled.value,
               ),
               controller: controller,
+              iconSize: iconSize,
+              fontSize: fontSize,
+              verticalPadding: verticalPadding,
+              horizontalPadding:
+                  verticalPadding, // Match vertical for consistency
+              spacing: spacing,
             ),
             _buildNavItem(
               index: 2,
-              icon: FontAwesomeIcons.receipt,
+              icon: AppImages.ordersIcon,
               selectedIcon: FontAwesomeIcons.receipt,
               label: BottomNavigationStrings.getString(
                 'myOrder',
                 languageController.isToggled.value,
               ),
               controller: controller,
+              iconSize: iconSize,
+              fontSize: fontSize,
+              verticalPadding: verticalPadding,
+              horizontalPadding:
+                  verticalPadding, // Match vertical for consistency
+              spacing: spacing,
             ),
             _buildNavItem(
               index: 3,
-              icon: FontAwesomeIcons.solidUser,
+              icon: AppImages.profileIcon,
               selectedIcon: FontAwesomeIcons.solidUser,
               label: BottomNavigationStrings.getString(
                 'myProfile',
                 languageController.isToggled.value,
               ),
               controller: controller,
+              iconSize: iconSize,
+              fontSize: fontSize,
+              verticalPadding: verticalPadding,
+              horizontalPadding:
+                  verticalPadding, // Match vertical for consistency
+              spacing: spacing,
             ),
           ],
         ),
@@ -80,9 +114,14 @@ class CustomBottomBar extends StatelessWidget {
 
   Widget _buildNavItem({
     required int index,
-    required IconData icon, // now FontAwesomeIcons.*
+    required String icon, // now FontAwesomeIcons.*
     required IconData selectedIcon,
     required String label,
+    required double iconSize,
+    required double fontSize,
+    required double verticalPadding,
+    required double horizontalPadding,
+    required double spacing,
     required BottomNavigationController controller,
   }) {
     final isSelected = controller.selectedIndex.value == index;
@@ -96,12 +135,14 @@ class CustomBottomBar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            FaIcon(
-              // ← use FaIcon instead of Icon
-              isSelected ? selectedIcon : icon,
-              size: 24.0,
-              color: color,
+            SvgPicture.asset(
+              icon,
+              width: iconSize,
+              height: iconSize,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+              semanticsLabel: label,
             ),
+
             const SizedBox(height: 4.0),
             Text(
               label,
