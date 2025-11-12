@@ -127,7 +127,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   );
                 } else {
                   //Existing customer → Go to HomePage2
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
