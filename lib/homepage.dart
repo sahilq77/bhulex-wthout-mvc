@@ -2,57 +2,67 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:bhulexapp/My_package/package_details_new.dart';
-import 'package:bhulexapp/Order/order_list.dart';
+
+import 'package:bhulexapp/E-Applications/aapli_chawadi_page.dart';
+import 'package:bhulexapp/E-Applications/area_converter_page.dart';
+import 'package:bhulexapp/E-Applications/e_property_valuation_page.dart';
 import 'package:bhulexapp/bottom_navigation/main_bottom_navigation.screen.dart';
-import 'package:bhulexapp/colors/order_fonts.dart';
-import 'package:bhulexapp/controller/order/language%20controller.dart';
-import 'package:bhulexapp/controller/package/my_package_controller.dart';
-import 'package:bhulexapp/investigate_reports_form/mortage_report.dart';
-import 'package:bhulexapp/investigate_reports_form/registered_document.dart';
-import 'package:bhulexapp/investigate_reports_form/rera%20builder.dart';
-import 'package:bhulexapp/language/hindi.dart';
-import 'package:bhulexapp/legal_advisory_forms/adhikar_abhilekh.dart';
-import 'package:bhulexapp/legal_advisory_forms/courtcases.dart';
-import 'package:bhulexapp/legal_advisory_forms/investigate.dart';
-import 'package:bhulexapp/legal_advisory_forms/legaldrafts.dart';
-import 'package:bhulexapp/old_records_form/old%20extract1.dart';
-import 'package:bhulexapp/profile/profile.dart';
-import 'package:bhulexapp/quicke_services_forms/digitally_sign1.dart';
-import 'package:bhulexapp/quicke_services_forms/digitally_sign_property_card.dart';
-import 'package:bhulexapp/quicke_services_forms/indexII_search.dart';
-import 'package:bhulexapp/quicke_services_forms/rera_certificate.dart';
+import 'package:bhulexapp/controller/bottom_navigation/bottom_navigation_controller.dart';
+import 'package:bhulexapp/controller/global_controller/global_controller.dart';
+import 'package:bhulexapp/investigate_reports_form/cersai_report.dart';
+import 'package:bhulexapp/old_records_form/old_revenue_records.dart';
 import 'package:cached_network_image/cached_network_image.dart'
     show CachedNetworkImage;
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+
 import 'Core/apputility.dart';
+
+import 'My_package/package_details_new.dart';
 import 'Order/all_packages.dart';
+import 'Order/order_list.dart';
 import 'Order/package_details.dart';
 import 'colors/custom_color.dart';
+import 'colors/order_fonts.dart';
+import 'controller/order/language controller.dart';
 import 'controller/package/getallpackagecontroller.dart' show PackageController;
-
+import 'controller/package/my_package_controller.dart';
+import 'investigate_reports_form/mortage_report.dart';
+import 'investigate_reports_form/registered_document.dart';
+import 'investigate_reports_form/rera builder.dart';
+import 'language/hindi.dart';
+import 'legal_advisory_forms/adhikar_abhilekh.dart';
+import 'legal_advisory_forms/courtcases.dart';
+import 'legal_advisory_forms/investigate.dart';
+import 'legal_advisory_forms/legal_drafts_new.dart';
+import 'legal_advisory_forms/legaldrafts.dart';
 import 'network/url.dart';
+import 'old_records_form/old extract1.dart';
+import 'profile/profile.dart';
+import 'quicke_services_forms/digitally_sign1.dart';
+import 'quicke_services_forms/digitally_sign_property_card.dart';
+import 'quicke_services_forms/indexII_search.dart';
+import 'quicke_services_forms/rera_certificate.dart';
 
 class HomePage2 extends StatefulWidget {
   final String? package;
   final String customer_id;
   final String? packageid;
   const HomePage2({
-    Key? key,
+    super.key,
     this.package,
     required this.customer_id,
     this.packageid,
     required String customerId,
-  }) : super(key: key);
+  });
 
   @override
   State<HomePage2> createState() => _HomePage2State();
@@ -68,14 +78,16 @@ class _HomePage2State extends State<HomePage2> {
   List<dynamic> customerList = [];
   String? selectedState;
   int _selectedIndex = 0;
-  bool isToggled = false; // State variable for language toggle
+  bool isToggled = false;
   bool hasConnection = true;
-  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-
+  final BottomNavigationController controller =
+      Get.find<BottomNavigationController>();
   final PackageController packageController = Get.put(PackageController());
   final LanguageController languageController = Get.put(LanguageController());
+  final StateController stateController = Get.put(StateController());
   final Map<String, String> instantTextMap = {
     'Quick Services': 'instant',
     'Old Records of Rights': 'within12Hours',
@@ -128,27 +140,27 @@ class _HomePage2State extends State<HomePage2> {
       }
     });
 
-    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((
-      List<ConnectivityResult> results,
-    ) {
-      _checkConnectivity().then((isConnected) {
-        if (!mounted) return;
-        if (isConnected != hasConnection) {
-          setState(() {
-            hasConnection = isConnected;
-          });
-          if (isConnected) {
-            fetchCategories();
-          }
-        }
-      });
-    });
+    // _connectivitySubscription = Connectivity().onConnectivityChanged.listen(
+    //   (ConnectivityResult result) {
+    //     _checkConnectivity().then((isConnected) {
+    //       if (!mounted) return;
+    //       if (isConnected != hasConnection) {
+    //         setState(() {
+    //           hasConnection = isConnected;
+    //         });
+    //         if (isConnected) {
+    //           fetchCategories();
+    //         }
+    //       }
+    //     });
+    //   },
+    // );
   }
 
   Future<bool> _checkConnectivity() async {
     try {
       var connectivityResult = await Connectivity().checkConnectivity();
-      bool isConnected = !connectivityResult.contains(ConnectivityResult.none);
+      bool isConnected = connectivityResult != ConnectivityResult.none;
       if (isConnected) {
         isConnected = await _hasInternet();
       }
@@ -162,7 +174,7 @@ class _HomePage2State extends State<HomePage2> {
     try {
       final result = await InternetAddress.lookup(
         'google.com',
-      ).timeout(Duration(seconds: 5));
+      ).timeout(const Duration(seconds: 5));
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
     } catch (e) {
       return false;
@@ -181,7 +193,7 @@ class _HomePage2State extends State<HomePage2> {
           style: AppFontStyle2.blinker(color: Colors.white),
         ),
         backgroundColor: Colors.red,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         action: SnackBarAction(
@@ -217,6 +229,7 @@ class _HomePage2State extends State<HomePage2> {
     setState(() {
       isLoading = true;
     });
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? customerId = prefs.getString('customer_id');
     var requestBody = {
@@ -225,6 +238,11 @@ class _HomePage2State extends State<HomePage2> {
     };
 
     final String url = URLS().get_all_category_apiUrl;
+
+    // Print the request URL and body
+    print("Request URL: $url");
+    print("Request Body: ${jsonEncode(requestBody)}");
+
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -232,8 +250,11 @@ class _HomePage2State extends State<HomePage2> {
         body: jsonEncode(requestBody),
       );
 
+      // Print the raw response
+      print("Response Status Code: ${response.statusCode}");
+      log("Response Body of category: ${response.body}");
+
       if (response.statusCode == 200) {
-        log("API Response: ${response.body}");
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         setState(() {
           categoryList = responseData['data'] ?? [];
@@ -259,7 +280,7 @@ class _HomePage2State extends State<HomePage2> {
     }
     await fetchCategories();
     await Get.find<PackageOrderController>().fetchPackageOrders(
-      customerId: widget.customer_id, // Assuming HomePage2 has customerId
+      customerId: widget.customer_id,
       customOffset: 0,
       isToggled: Get.find<LanguageController>().isToggled.value,
     );
@@ -277,13 +298,19 @@ class _HomePage2State extends State<HomePage2> {
         print("Customer Care tapped");
         break;
       case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                MyOrderScreen(package_id: '', customer_id: ''),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) =>
+        //         const MyOrderScreen(package_id: '', customer_id: ''),
+        //   ),
+        // );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => const OrderCardsPage(),
+        //   ),
+        // );
         break;
 
       case 3:
@@ -299,8 +326,11 @@ class _HomePage2State extends State<HomePage2> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                PackageScreen(customerId: '', package_id: '', customerid: ''),
+            builder: (context) => const PackageScreen(
+              customerId: '',
+              package_id: '',
+              customerid: '',
+            ),
           ),
         );
 
@@ -359,18 +389,7 @@ class _HomePage2State extends State<HomePage2> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        // If not on Home tab (index 0), switch to Home instead of exiting
-        if (_selectedIndex != 0) {
-          setState(() {
-            _selectedIndex = 0;
-          });
-          return false; // Prevent exit
-        }
-
-        // If on Home tab, show exit confirmation dialog
-        return await _showExitDialog(context);
-      },
+      onWillPop: () async => await _showExitDialog(context),
       child: Scaffold(
         backgroundColor: const Color(0xFFF8F8F8),
         appBar: AppBar(
@@ -460,7 +479,6 @@ class _HomePage2State extends State<HomePage2> {
               ),
             ),
 
-
             // Notification Bell (using SVG)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
@@ -511,13 +529,13 @@ class _HomePage2State extends State<HomePage2> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Container(
-                          margin: EdgeInsets.symmetric(
+                          margin: const EdgeInsets.symmetric(
                             horizontal: 30.0,
                             vertical: 10.0,
                           ),
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 8,
                             horizontal: 12,
                           ),
@@ -529,8 +547,12 @@ class _HomePage2State extends State<HomePage2> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.cancel, color: Colors.red, size: 20),
-                              SizedBox(width: 8),
+                              const Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
                               Text(
                                 languageController.isToggled.value
                                     ? 'इंटरनेट नाही'
@@ -543,7 +565,7 @@ class _HomePage2State extends State<HomePage2> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Obx(
                           () => Text(
                             languageController.isToggled.value
@@ -565,6 +587,110 @@ class _HomePage2State extends State<HomePage2> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Obx(
+                          () => stateController.isLoading.value
+                              ? const Center(child: CircularProgressIndicator())
+                              : Obx(() {
+                                  final isSelected = stateController
+                                      .selectedStateName
+                                      .value
+                                      .isNotEmpty;
+                                  final borderColor = isSelected
+                                      ? Color(0xFFF26500)
+                                      : Color(0xFFD9D9D9);
+
+                                  return DropdownSearch<String>(
+                                    items: stateController.states
+                                        .map((state) => state.stateName)
+                                        .toList(),
+                                    selectedItem: isSelected
+                                        ? stateController
+                                              .selectedStateName
+                                              .value
+                                        : null,
+                                    dropdownDecoratorProps:
+                                        DropDownDecoratorProps(
+                                          dropdownSearchDecoration:
+                                              InputDecoration(
+                                                labelText:
+                                                    languageController
+                                                        .isToggled
+                                                        .value
+                                                    ? 'राज्य निवडा'
+                                                    : 'Select State',
+                                                labelStyle:
+                                                    AppFontStyle2.blinker(
+                                                      color: Colors.black,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 14,
+                                                    ),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
+                                                  borderSide: BorderSide(
+                                                    color: borderColor,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide: BorderSide(
+                                                        color: borderColor,
+                                                        width: 1,
+                                                      ),
+                                                    ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide: BorderSide(
+                                                        color: borderColor,
+                                                        width: 1,
+                                                      ),
+                                                    ),
+                                                disabledBorder:
+                                                    OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide: BorderSide(
+                                                        color: borderColor,
+                                                        width: 1,
+                                                      ),
+                                                    ),
+                                              ),
+                                        ),
+                                    popupProps: const PopupProps.menu(
+                                      showSearchBox: true,
+                                      searchFieldProps: TextFieldProps(
+                                        decoration: InputDecoration(
+                                          hintText: 'Search State...',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                    ),
+                                    onChanged: (value) {
+                                      stateController.setSelectedState(value);
+                                    },
+                                  );
+                                }),
+                        ),
+                      ),
                       ...categoryList.map((category) {
                         var services = category['service'] ?? [];
                         return Padding(
@@ -572,48 +698,54 @@ class _HomePage2State extends State<HomePage2> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Obx(
-                                    () => Text(
-                                      languageController.isToggled.value
-                                          ? (category['category_name_in_local_language'] ??
-                                                category['category_name'] ??
-                                                '')
-                                          : (category['category_name'] ?? ''),
-                                      style: AppFontStyle2.blinker(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Obx(
+                                      () => Text(
+                                        languageController.isToggled.value
+                                            ? (category['category_name_in_local_language'] ??
+                                                  category['category_name'] ??
+                                                  '')
+                                            : (category['category_name'] ?? ''),
+                                        style: AppFontStyle2.blinker(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      width: double.infinity,
-                                      height: 0.5,
-                                      color: Colorfile.lightgrey,
-                                    ),
-                                  ),
-                                  Obx(
-                                    () => Text(
-                                      LocalizationStringsinstant.getString(
-                                        instantTextMap[category['category_name']] ??
-                                            '',
-                                        languageController.isToggled.value,
-                                      ),
-                                      style: AppFontStyle2.blinker(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colorfile.lightgrey,
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0,
+                                        ),
+                                        child: Container(
+                                          height: 1,
+                                          color: const Color(0xFF757575),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Obx(
+                                      () => Text(
+                                        LocalizationStringsinstant.getString(
+                                          instantTextMap[category['category_name']] ??
+                                              '',
+                                          languageController.isToggled.value,
+                                        ),
+                                        style: AppFontStyle2.blinker(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colorfile.lightgrey,
+                                        ),
+                                        textAlign: TextAlign.end,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                               const SizedBox(height: 10),
                               GridView.builder(
@@ -655,6 +787,7 @@ class _HomePage2State extends State<HomePage2> {
                                           "tbl_eighta_extract",
                                           "tbl_e_mutation_extract",
                                           "tbl_bhu_naksha",
+                                          "",
                                         ].contains(tblName)) {
                                           Navigator.push(
                                             context,
@@ -663,7 +796,6 @@ class _HomePage2State extends State<HomePage2> {
                                                 id: id,
                                                 packageId: "",
                                                 serviceName: serviceName,
-
                                                 tblName: tblName,
                                                 isToggled: languageController
                                                     .isToggled
@@ -674,8 +806,6 @@ class _HomePage2State extends State<HomePage2> {
                                                 lead_id: '',
                                                 customer_id: '',
                                                 package_lead_id: '',
-
-                                                // packageId: null,
                                               ),
                                             ),
                                           );
@@ -752,7 +882,6 @@ class _HomePage2State extends State<HomePage2> {
                                           "tbl_old_seven_twelve",
                                           "tbl_old_eighta_extract",
                                           "tbl_old_e_mutation_extract",
-                                          "tbl_old_bhu_naksha",
                                         ].contains(tblName)) {
                                           Navigator.push(
                                             context,
@@ -775,8 +904,32 @@ class _HomePage2State extends State<HomePage2> {
                                             ),
                                           );
                                         } else if ([
+                                          "tbl_old_bhu_naksha",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OldRevenueRecords(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        selectedService['service_name_in_local_language'] ??
+                                                        serviceName,
+                                                    lead_id: '',
+                                                    customer_id: '',
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                        } else if ([
                                           "tbl_mortage_report",
-                                          "tbl_ceersai_report",
                                         ].contains(tblName)) {
                                           Navigator.push(
                                             context,
@@ -799,8 +952,29 @@ class _HomePage2State extends State<HomePage2> {
                                             ),
                                           );
                                         } else if ([
-                                          "tbl_rera_builder_documents",
+                                          "tbl_ceersai_report",
                                         ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CersaiReport(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if (["tbl_rera_builder_documents"].contains(tblName)) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -821,9 +995,7 @@ class _HomePage2State extends State<HomePage2> {
                                               ),
                                             ),
                                           );
-                                        } else if ([
-                                          "tbl_registered_document",
-                                        ].contains(tblName)) {
+                                        } else if (["tbl_registered_document"].contains(tblName)) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -846,16 +1018,13 @@ class _HomePage2State extends State<HomePage2> {
                                                   ),
                                             ),
                                           );
-                                        } else if ([
-                                          "tbl_title_investigation_report",
-                                        ].contains(tblName)) {
+                                        } else if (["tbl_title_investigation_report"].contains(tblName)) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => Investigation(
                                                 id: id,
                                                 packageId: "",
-
                                                 serviceName: serviceName,
                                                 tblName: tblName,
                                                 isToggled: languageController
@@ -870,16 +1039,13 @@ class _HomePage2State extends State<HomePage2> {
                                               ),
                                             ),
                                           );
-                                        } else if ([
-                                          "tbl_legal_drafts",
-                                        ].contains(tblName)) {
+                                        } else if (["tbl_legal_drafts"].contains(tblName)) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => Legaldrafts(
+                                              builder: (context) => LegalDraftsNew(
                                                 id: id,
                                                 packageId: "",
-
                                                 serviceName: serviceName,
                                                 tblName: tblName,
                                                 isToggled: languageController
@@ -901,7 +1067,6 @@ class _HomePage2State extends State<HomePage2> {
                                               builder: (context) => Courtcases(
                                                 id: id,
                                                 packageId: "",
-
                                                 serviceName: serviceName,
                                                 tblName: tblName,
                                                 isToggled: languageController
@@ -924,7 +1089,6 @@ class _HomePage2State extends State<HomePage2> {
                                                   Adhikar_Abhilekh(
                                                     id: id,
                                                     packageId: "",
-
                                                     serviceName: serviceName,
                                                     tblName: tblName,
                                                     isToggled:
@@ -981,9 +1145,10 @@ class _HomePage2State extends State<HomePage2> {
                                           Text(
                                             displayName,
                                             style: AppFontStyle2.blinker(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colorfile.lightblack,
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w600,
+                                              height: 12 / 9,
+                                              color: Colorfile.servicename,
                                             ),
                                             textAlign: TextAlign.center,
                                             maxLines: 2,
@@ -998,7 +1163,242 @@ class _HomePage2State extends State<HomePage2> {
                             ],
                           ),
                         );
-                      }).toList(),
+                      }),
+                      // Dummy Category Section
+                      // Dummy Category Section
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Obx(
+                                    () => Text(
+                                      languageController.isToggled.value
+                                          ? dummyCategory['category_name_in_local_language']
+                                          : dummyCategory['category_name'],
+                                      style: AppFontStyle2.blinker(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                      ),
+                                      child: Container(
+                                        height: 1,
+                                        color: const Color(0xFF757575),
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Within 12 hours',
+                                    style: AppFontStyle2.blinker(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colorfile.lightgrey,
+                                    ),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: dummyCategory['service'].length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    childAspectRatio: 1.4,
+                                  ),
+                              itemBuilder: (context, serviceIndex) {
+                                var service =
+                                    dummyCategory['service'][serviceIndex];
+                                String serviceIcon = service['icon'] ?? '';
+                                return Obx(() {
+                                  String displayName =
+                                      languageController.isToggled.value
+                                      ? (service['service_name_in_local_language'] ??
+                                            service['service_name'] ??
+                                            '')
+                                      : (service['service_name'] ?? '');
+                                  return InkWell(
+                                    onTap: () {
+                                      final id = service['id'].toString();
+                                      final serviceName =
+                                          service['service_name'] ?? '';
+                                      final tblName = service['tbl_name'] ?? '';
+                                      final serviceNameInLocalLanguage =
+                                          service['service_name_in_local_language'] ??
+                                          serviceName;
+
+                                      // Navigation logic based on tbl_name
+                                      switch (tblName) {
+                                        case "tbl_e_property_valuation":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EPropertyValuationPage(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        serviceNameInLocalLanguage,
+                                                    lead_id: '',
+                                                    customer_id:
+                                                        widget.customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                          break;
+                                        case "tbl_aapli_chawadi":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AapliChawadiPage(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        serviceNameInLocalLanguage,
+                                                    lead_id: '',
+                                                    customer_id:
+                                                        widget.customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                          break;
+                                        case "tbl_area_converter":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AreaConverterPage(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        serviceNameInLocalLanguage,
+                                                    lead_id: '',
+                                                    customer_id:
+                                                        widget.customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                          break;
+                                        case "tbl_property_mutation":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => DigitallySign1(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    serviceNameInLocalLanguage,
+                                                lead_id: '',
+                                                customer_id: widget.customer_id,
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                          break;
+                                        default:
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Obx(
+                                                () => Text(
+                                                  languageController
+                                                          .isToggled
+                                                          .value
+                                                      ? "या निवडीसाठी सेवा उपलब्ध नाही."
+                                                      : "Service not available for this selection.",
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                      }
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        serviceIcon.isNotEmpty
+                                            ? Image.asset(
+                                                serviceIcon,
+                                                height: 25,
+                                                width: 25,
+                                                fit: BoxFit.contain,
+                                                errorBuilder: (ctx, _, __) =>
+                                                    const Icon(
+                                                      Icons.broken_image,
+                                                      size: 25,
+                                                    ),
+                                              )
+                                            : const Icon(
+                                                Icons.miscellaneous_services,
+                                                size: 30,
+                                              ),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          displayName,
+                                          style: AppFontStyle2.blinker(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.w600,
+                                            height: 12 / 9,
+                                            color: Colorfile.servicename,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -1014,7 +1414,7 @@ class _HomePage2State extends State<HomePage2> {
                                     : 'Packages',
                                 style: AppFontStyle2.blinker(
                                   fontSize: 18,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                   color: Colorfile.lightblack,
                                 ),
                               ),
@@ -1054,7 +1454,6 @@ class _HomePage2State extends State<HomePage2> {
                                   bottom: 15,
                                 ),
                                 child: SizedBox(
-                                  // Responsive height: 25% of screen height, capped at 200 for smaller screens
                                   height:
                                       MediaQuery.of(context).size.height *
                                               0.25 >
@@ -1088,7 +1487,7 @@ class _HomePage2State extends State<HomePage2> {
                                       final package =
                                           packageController.allPackages[index];
                                       if (package.packages.isEmpty) {
-                                        return const SizedBox.shrink(); // Skip empty packages
+                                        return const SizedBox.shrink();
                                       }
 
                                       return Padding(
@@ -1116,7 +1515,6 @@ class _HomePage2State extends State<HomePage2> {
                                             );
                                           },
                                           child: Container(
-                                            // Responsive width: 80% of screen width or fixed 290, whichever is smaller
                                             width:
                                                 MediaQuery.of(
                                                           context,
@@ -1132,13 +1530,12 @@ class _HomePage2State extends State<HomePage2> {
                                               borderRadius:
                                                   BorderRadius.circular(10),
                                               border: Border.all(
-                                                color: const Color(0xFFDFE6F8),
+                                                color: const Color(0xFFE5E7EB),
                                                 width: 0.5,
                                               ),
                                               color: Colors.white,
                                             ),
                                             child: SingleChildScrollView(
-                                              // Added SingleChildScrollView
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -1197,12 +1594,12 @@ class _HomePage2State extends State<HomePage2> {
                                                                           .packages
                                                                           .first
                                                                           .packageNameInLocalLanguage
-                                                                          ?.isNotEmpty ??
+                                                                          .isNotEmpty ??
                                                                       false
                                                                   ? package
                                                                         .packages
                                                                         .first
-                                                                        .packageNameInLocalLanguage!
+                                                                        .packageNameInLocalLanguage
                                                                   : PackageStrings.getPackageName(
                                                                       package
                                                                           .packages
@@ -1220,9 +1617,10 @@ class _HomePage2State extends State<HomePage2> {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w600,
-                                                              color: Color(
-                                                                0xFF353B43,
-                                                              ),
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF353B43,
+                                                                  ),
                                                             ),
                                                       ),
                                                     ),
@@ -1242,12 +1640,12 @@ class _HomePage2State extends State<HomePage2> {
                                                                           .packages
                                                                           .first
                                                                           .shortDescriptionInLocalLanguage
-                                                                          ?.isNotEmpty ??
+                                                                          .isNotEmpty ??
                                                                       false
                                                                   ? package
                                                                         .packages
                                                                         .first
-                                                                        .shortDescriptionInLocalLanguage!
+                                                                        .shortDescriptionInLocalLanguage
                                                                   : PackageStrings.getShortDescription(
                                                                       package
                                                                           .packages
@@ -1265,9 +1663,10 @@ class _HomePage2State extends State<HomePage2> {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w400,
-                                                              color: Color(
-                                                                0xFF4B5563,
-                                                              ),
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF4B5563,
+                                                                  ),
                                                             ),
                                                       ),
                                                     ),
@@ -1290,9 +1689,9 @@ class _HomePage2State extends State<HomePage2> {
                                                                     languageController
                                                                         .isToggled
                                                                         .value
-                                                                    ? ((package.packages.first.serviceNamesLocal?.isNotEmpty ??
+                                                                    ? ((package.packages.first.serviceNamesLocal.isNotEmpty ??
                                                                                   false) &&
-                                                                              package.packages.first.serviceNamesLocal!
+                                                                              package.packages.first.serviceNamesLocal
                                                                                       .split(
                                                                                         ',',
                                                                                       )
@@ -1305,7 +1704,7 @@ class _HomePage2State extends State<HomePage2> {
                                                                                       .indexOf(
                                                                                         serviceName,
                                                                                       )
-                                                                          ? package.packages.first.serviceNamesLocal!
+                                                                          ? package.packages.first.serviceNamesLocal
                                                                                 .split(
                                                                                   ',',
                                                                                 )[(package.packages.first.serviceNames ??
@@ -1389,112 +1788,74 @@ class _HomePage2State extends State<HomePage2> {
         ),
         bottomNavigationBar: CustomBottomBar(),
         // bottomNavigationBar: Container(
-        //   decoration: BoxDecoration(
-        //     color: Colors.white,
+        //   decoration: const BoxDecoration(
+        //     color: Color(0xFFFFFFFF),
         //     boxShadow: [
         //       BoxShadow(
-        //         color: Colors.black.withOpacity(0.08),
+        //         color: Color(0x14000000),
+        //         offset: Offset(2, 0),
         //         blurRadius: 25,
-        //         offset: const Offset(0, -2),
+        //         spreadRadius: 0,
         //       ),
         //     ],
         //   ),
         //   child: Obx(
         //     () => BottomNavigationBar(
         //       type: BottomNavigationBarType.fixed,
+        //       items: [
+        //         BottomNavigationBarItem(
+        //           icon: const Icon(Icons.home),
+        //           label: BottomNavigationStrings.getString(
+        //             'home',
+        //             languageController.isToggled.value,
+        //           ),
+        //         ),
+        //         BottomNavigationBarItem(
+        //           icon: const Icon(Icons.support_agent_outlined),
+        //           label: BottomNavigationStrings.getString(
+        //             'customerCare',
+        //             languageController.isToggled.value,
+        //           ),
+        //         ),
+        //         BottomNavigationBarItem(
+        //           icon: const Icon(Icons.edit_document),
+        //           label: BottomNavigationStrings.getString(
+        //             'myOrder',
+        //             languageController.isToggled.value,
+        //           ),
+        //         ),
+        //         BottomNavigationBarItem(
+        //           icon: const Icon(Icons.person),
+        //           label: BottomNavigationStrings.getString(
+        //             'myProfile',
+        //             languageController.isToggled.value,
+        //           ),
+        //         ),
+        //         // BottomNavigationBarItem(
+        //         //   icon: Stack(
+        //         //     alignment: Alignment.center,
+        //         //     children: [
+        //         //       Image.asset(
+        //         //         'assets/images/packageicon.png',
+        //         //         width: 21,
+        //         //         height: 22,
+        //         //       ),
+        //         //     ],
+        //         //   ),
+        //         //   label: BottomNavigationStrings.getString(
+        //         //     'Package',
+        //         //     languageController.isToggled.value,
+        //         //   ),
+        //         // ),
+        //       ],
         //       currentIndex: _selectedIndex,
-        //       backgroundColor: Colors.white,
-        //       elevation: 0,
         //       selectedItemColor: Colorfile.bordertheme,
         //       unselectedItemColor: Colorfile.lightgrey,
-        //       selectedFontSize: 12,
-        //       unselectedFontSize: 11,
-        //       showSelectedLabels: true,
+        //       onTap: _onItemTapped,
         //       showUnselectedLabels: true,
-        //       onTap: (index) {
-        //         if (_selectedIndex == index)
-        //           return; // Prevent re-tapping same tab
-
-        //         setState(() => _selectedIndex = index);
-
-        //         switch (index) {
-        //           case 0: // Home
-        //             // Already on Home
-        //             break;
-
-        //           case 1: // Support / Customer Care
-        //             ScaffoldMessenger.of(context).showSnackBar(
-        //               SnackBar(
-        //                 backgroundColor: Colorfile.bordertheme,
-        //                 content: Text(
-        //                   languageController.isToggled.value
-        //                       ? "ग्राहक सेवा लवकरच उपलब्ध होईल"
-        //                       : "Customer Support coming soon",
-        //                   style: const TextStyle(color: Colors.white),
-        //                 ),
-        //                 duration: const Duration(seconds: 2),
-        //               ),
-        //             );
-        //             break;
-
-        //           case 2: // My Orders
-        //             Navigator.pushReplacement(
-        //               context,
-        //               MaterialPageRoute(
-        //                 builder: (_) => MyOrderScreen(
-        //                   package_id: '',
-        //                   customer_id: widget.customer_id,
-        //                 ),
-        //               ),
-        //             );
-        //             break;
-
-        //           case 3: // Profile
-        //             Navigator.pushReplacement(
-        //               context,
-        //               MaterialPageRoute(
-        //                 builder: (_) => ProfilePage(
-        //                   isToggled: languageController.isToggled.value,
-        //                 ),
-        //               ),
-        //             );
-        //             break;
-        //         }
-        //       },
-        //       items:
-        //           const [
-        //             BottomNavigationBarItem(
-        //               icon: Icon(Icons.home_outlined),
-        //               activeIcon: Icon(Icons.home),
-        //               label: 'Home', // Will be auto-translated below
-        //             ),
-        //             BottomNavigationBarItem(
-        //               icon: Icon(Icons.headset_mic_outlined),
-        //               activeIcon: Icon(Icons.headset_mic),
-        //               label: 'Support',
-        //             ),
-        //             BottomNavigationBarItem(
-        //               icon: Icon(Icons.receipt_long_outlined),
-        //               activeIcon: Icon(Icons.receipt_long),
-        //               label: 'My Orders',
-        //             ),
-        //             BottomNavigationBarItem(
-        //               icon: Icon(Icons.person_outline),
-        //               activeIcon: Icon(Icons.person),
-        //               label: 'Profile',
-        //             ),
-        //           ].asMap().entries.map((entry) {
-        //             int idx = entry.key;
-        //             var item = entry.value;
-        //             return BottomNavigationBarItem(
-        //               icon: item.icon!,
-        //               activeIcon: item.activeIcon!,
-        //               label: BottomNavigationStrings.getString(
-        //                 ['home', 'support', 'myOrder', 'myProfile'][idx],
-        //                 languageController.isToggled.value,
-        //               ),
-        //             );
-        //           }).toList(),
+        //       showSelectedLabels: true,
+        //       backgroundColor: Colors.transparent,
+        //       elevation: 0,
         //     ),
         //   ),
         // ),
@@ -1503,7 +1864,34 @@ class _HomePage2State extends State<HomePage2> {
   }
 }
 
-// LocalizationStringsinstant class
+final Map<String, dynamic> dummyCategory = {
+  "category_name": "E-Applications",
+  "category_name_in_local_language": "मालमत्ता सेवा",
+  "service": [
+    {
+      "id": "1",
+      "service_name": "E-Property Valuation",
+      "service_name_in_local_language": "ई-मालमत्ता मूल्यांकन",
+      "icon": "assets/images/valuation.png",
+      "tbl_name": "tbl_e_property_valuation",
+    },
+    {
+      "id": "2",
+      "service_name": "Aapli Chawadi",
+      "service_name_in_local_language": "आपली चावडी",
+      "icon": "assets/images/chawadi.png",
+      "tbl_name": "tbl_aapli_chawadi",
+    },
+    {
+      "id": "3",
+      "service_name": "Area Converter",
+      "service_name_in_local_language": "क्षेत्र परिवर्तक",
+      "icon": "assets/images/area_converter.png",
+      "tbl_name": "tbl_area_converter",
+    },
+  ],
+};
+
 class LocalizationStringsinstant {
   static String getString(String key, bool isToggled) {
     final Map<String, Map<String, String>> strings = {
@@ -1517,14 +1905,12 @@ class LocalizationStringsinstant {
   }
 }
 
-// lib/language/bottom_navigation_strings.dart
 class BottomNavigationStrings {
   static String getString(String key, bool isToggled) {
     final Map<String, Map<String, String>> strings = {
       'home': {'en': 'Home', 'local': 'होम'},
       'customerCare': {'en': 'Customer Care', 'local': 'ग्राहक सेवा'},
       'myOrder': {'en': 'My Order', 'local': 'माझी ऑर्डर'},
-
       'packages': {'en': 'Packages', 'local': 'पॅकेजेस'},
       'myProfile': {'en': 'My Profile', 'local': 'माझे प्रोफाइल'},
     };
@@ -1534,7 +1920,6 @@ class BottomNavigationStrings {
   }
 }
 
-// lib/language/package_strings.dart
 class PackageStrings {
   static String getPackageName(String packageName, bool isToggled) {
     final Map<String, Map<String, String>> packageTranslations = {
