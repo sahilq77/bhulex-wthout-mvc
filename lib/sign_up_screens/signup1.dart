@@ -1,13 +1,17 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:bhulexapp/colors/order_fonts.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Core/AppImages.dart';
+import '../Core/ColorFile.dart';
 import '../Core/apputility.dart';
+import '../colors/order_fonts.dart';
 import '../network/url.dart';
 import '../onboarding_screens/onboarding_screen3.dart';
 import '../otp_screen/otp_screen.dart';
@@ -21,6 +25,7 @@ class Signup1 extends StatefulWidget {
 
 class _Signup1State extends State<Signup1> {
   bool isChecked = false;
+  bool isDisclaimerChecked = false;
   int? otp;
   TextEditingController mobileController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -39,7 +44,7 @@ class _Signup1State extends State<Signup1> {
             style: GoogleFonts.poppins(color: Colors.white),
           ),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
       return;
@@ -52,7 +57,7 @@ class _Signup1State extends State<Signup1> {
             style: GoogleFonts.poppins(color: Colors.white),
           ),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
       return;
@@ -69,13 +74,11 @@ class _Signup1State extends State<Signup1> {
       final String url = URLS().login_apiUrl;
       log('Request URL: $url');
 
-      var response = await http
-          .post(
-            Uri.parse(url),
-            body: jsonEncode(requestBody),
-            headers: {'Content-Type': 'application/json'},
-          )
-          .timeout(Duration(seconds: 10));
+      var response = await http.post(
+        Uri.parse(url),
+        body: jsonEncode(requestBody),
+        headers: {'Content-Type': 'application/json'},
+      ).timeout(const Duration(seconds: 10));
 
       log('Response Status Code: ${response.statusCode}');
       log('Response Body: ${response.body}');
@@ -96,8 +99,8 @@ class _Signup1State extends State<Signup1> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder:
-                  (context) => OtpScreen(mobilenumber: phoneNumber, otp: otp),
+              builder: (context) =>
+                  OtpScreen(mobilenumber: phoneNumber, otp: otp),
             ),
           );
           var data = jsonResponse['data'];
@@ -116,7 +119,7 @@ class _Signup1State extends State<Signup1> {
                 style: GoogleFonts.poppins(color: Colors.white),
               ),
               backgroundColor: Colors.green,
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
             ),
           );
         } else {
@@ -127,7 +130,7 @@ class _Signup1State extends State<Signup1> {
                 style: GoogleFonts.poppins(color: Colors.white),
               ),
               backgroundColor: Colors.red,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           );
         }
@@ -139,7 +142,7 @@ class _Signup1State extends State<Signup1> {
               style: GoogleFonts.poppins(color: Colors.white),
             ),
             backgroundColor: Colors.red,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
@@ -154,10 +157,10 @@ class _Signup1State extends State<Signup1> {
             style: GoogleFonts.poppins(color: Colors.white),
           ),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         ),
       );
-    } on Exception {
+    } on TimeoutException {
       setState(() {
         isLoading = false;
       });
@@ -168,7 +171,7 @@ class _Signup1State extends State<Signup1> {
             style: GoogleFonts.poppins(color: Colors.white),
           ),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         ),
       );
     }
@@ -181,7 +184,7 @@ class _Signup1State extends State<Signup1> {
 
     return WillPopScope(
       onWillPop: () async {
-        return false; // Prevent default back navigation
+        return false;
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -190,7 +193,7 @@ class _Signup1State extends State<Signup1> {
           elevation: 0,
           titleSpacing: 0.0,
           leading: IconButton(
-            icon: Image.asset('assets/eva_arrow-back-fill.png'),
+            icon: Image.asset(AppImages.backArrow),
             onPressed: () {
               Navigator.push(
                 context,
@@ -201,13 +204,11 @@ class _Signup1State extends State<Signup1> {
             },
           ),
           title: Text(
-            'Login',
+            'Login/Sign Up',
             style: AppFontStyle2.blinker(
               fontWeight: FontWeight.w600,
               fontSize: 19,
               height: 16 / 18,
-              //letterSpacing: 0,
-              //textStyle: AppFontStyle2.blinker(textBaseline: TextBaseline.alphabetic),
             ),
           ),
           bottom: const PreferredSize(
@@ -219,13 +220,13 @@ class _Signup1State extends State<Signup1> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 width: screenWidth,
-                height: screenHeight * 0.50,
+                height: screenHeight * 0.45,
                 child: Center(
                   child: Image.asset(
-                    'assets/images/bhulex login.png',
-                    width: screenWidth * 0.63,
+                    AppImages.loginImage,
+                    width: screenWidth * 0.60,
                     height: screenHeight * 0.30,
                     fit: BoxFit.contain,
                   ),
@@ -252,7 +253,7 @@ class _Signup1State extends State<Signup1> {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Enter your mobile number',
+                    'Enter your mobile number for OTP Verification.',
                     style: AppFontStyle2.blinker(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -284,7 +285,7 @@ class _Signup1State extends State<Signup1> {
                       child: Row(
                         children: [
                           Image.asset(
-                            'assets/images/Call.png',
+                            AppImages.call,
                             height: 20,
                             width: 20,
                           ),
@@ -332,6 +333,7 @@ class _Signup1State extends State<Signup1> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Checkbox(
                       value: isChecked,
@@ -340,16 +342,62 @@ class _Signup1State extends State<Signup1> {
                           isChecked = value!;
                         });
                       },
-                      activeColor: const Color.fromARGB(255, 108, 221, 2),
+                      activeColor: AppColors.checkBoxColor,
                       checkColor: Colors.white,
+                      side: const BorderSide(
+                        color: AppColors
+                            .checkBoxBorderColor, // Light gray color for border
+                        width: 2.0,
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        'A 4 digit security code will be sent via SMS to verify your mobile number!',
-                        style: AppFontStyle2.blinker(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF36322E),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Text(
+                          'A 4 digit security code will be sent via SMS to verify your mobile number!',
+                          style: AppFontStyle2.blinker(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF36322E),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Checkbox(
+                      value: isDisclaimerChecked,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isDisclaimerChecked = value!;
+                        });
+                      },
+                      activeColor: AppColors.checkBoxColor,
+                      checkColor: Colors.white,
+                      side:  BorderSide(
+                        color: AppColors
+                            .checkBoxBorderColor, // Light gray color for border
+                        width: 2.0,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Text(
+                          'Disclaimer: Bhulex is not government-affiliated. We do not represent the Government of State of Maharashtra and its entities that provides the data.',
+                          style: AppFontStyle2.blinker(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF36322E),
+                          ),
                         ),
                       ),
                     ),
@@ -367,50 +415,57 @@ class _Signup1State extends State<Signup1> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 11),
                   ),
-                  onPressed:
-                      isLoading
-                          ? null
-                          : () {
-                            if (isChecked) {
-                              _navigateToOTPPage();
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          if (isChecked && isDisclaimerChecked) {
+                            _navigateToOTPPage();
+                          } else {
+                            String message = '';
+                            if (!isChecked && !isDisclaimerChecked) {
+                              message =
+                                  'Please verify your mobile number and agree to the Disclaimer!';
+                            } else if (!isChecked) {
+                              message = 'Please verify your mobile number!';
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Please verify your mobile number!',
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  backgroundColor: Colors.red,
-                                  duration: const Duration(seconds: 3),
-                                  behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                              message = 'Please agree to the Disclaimer!';
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  message,
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
                                   ),
                                 ),
-                              );
-                            }
-                          },
+                                backgroundColor: Colors.red,
+                                duration: const Duration(seconds: 3),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            );
+                          }
+                        },
                   child: Center(
-                    child:
-                        isLoading
-                            ? SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                            : Text(
-                              'Login',
-                              style: AppFontStyle2.blinker(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
                             ),
+                          )
+                        : Text(
+                            'Get OTP',
+                            style: AppFontStyle2.blinker(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
                   ),
                 ),
               ),

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary color
-  static const Color primaryColor = Color(0xFFCC332B);
-
+  static const Color primaryColor = Color(0xFFF26500);
+  static const Color checkBoxColor = Color(0xFFF26500);
+  static const Color checkBoxBorderColor = Color(0xFFD0D0D0);
+  static const Color appBarTextColor = Color(0xFF36322E);
+  static const Color mobileNumberTextColor = Color(0xFF595959);
+  static const Color topLabelColor = Color(0xFF36322E);
   // Background and surface colors
   static const Color backgroundColor = Colors.white;
   static const Color surfaceColor = Colors.white;
