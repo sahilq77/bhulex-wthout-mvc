@@ -587,6 +587,13 @@ class _HomePage2State extends State<HomePage2> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                        "ddd",
+                        style: AppFontStyle2.blinker(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Obx(

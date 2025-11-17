@@ -37,8 +37,7 @@ class CustomBottomBar extends StatelessWidget {
           ),
         ],
       ),
-      child: Obx(
-        () => Row(
+      child:  Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildNavItem(
@@ -108,7 +107,7 @@ class CustomBottomBar extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      
     );
   }
 

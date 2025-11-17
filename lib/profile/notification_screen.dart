@@ -1,215 +1,354 @@
+import 'package:bhulexapp/colors/custom_color.dart';
 import 'package:flutter/material.dart';
-import 'package:bhulexapp/colors/custom_color.dart'; // Keep your custom colors
-import 'package:bhulexapp/colors/order_fonts.dart'; // Your font styles
-import 'package:intl/intl.dart'; // For formatting time (optional)
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../colors/order_fonts.dart';
+
+// Define a global navigator key
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({super.key});
-
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
+  _NotificationScreenState createState() => _NotificationScreenState();
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  // Sample data – replace with your API later
-  final List<NotificationItem> notifications = List.generate(
-    15,
-    (index) => NotificationItem(
-      title: "New Message",
-      message: "You have received one new message",
-      time: DateTime.now().subtract(const Duration(minutes: 3)),
-      isRead: index.isEven, // alternate read/unread for demo
-    ),
-  );
+  List<NotificationItemData> _allNotifications = [];
+  List<NotificationItemData> _displayedNotifications = [];
+  bool _isLoading = true;
+  bool _hasMore = true; // Indicates if there are more items to load
+  final int _initialLoadCount = 9; // Number of items to load initially
+  int _currentLoadCount = 9; // Number of items currently loaded
+
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+
+    // Load dummy notifications
+    _loadDummyNotifications();
+  }
+
+  void _loadDummyNotifications() {
+    _allNotifications = List.generate(
+      20,
+      (index) => NotificationItemData(
+        message: "New Message ",
+        text: "You have received one new message",
+        timeAgo: "${index + 1} min ago",
+        icon: Icons.notifications, // Using a default icon
+        appRedirectionUrl: "https://example.com",
+        recordId: "ID_${index + 1}",
+      ),
+    );
+
+    _displayedNotifications = _allNotifications
+        .take(_initialLoadCount)
+        .toList();
+    _isLoading = false;
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refreshNotifications() async {
+    setState(() {
+      _isLoading = true;
+      _currentLoadCount = _initialLoadCount; // Reset to initial load count
+      _displayedNotifications = [];
+    });
+    await Future.delayed(Duration(seconds: 1)); // Simulate refresh delay
+    _loadDummyNotifications();
+  }
+
+  void _loadMore() {
+    setState(() {
+      final remainingNotifications = _allNotifications
+          .skip(_currentLoadCount)
+          .toList();
+      final newLoadCount = _currentLoadCount + _initialLoadCount;
+      _displayedNotifications.addAll(
+        remainingNotifications.take(_initialLoadCount),
+      );
+      _currentLoadCount = newLoadCount;
+      _hasMore = remainingNotifications.length > _initialLoadCount;
+    });
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      if (_hasMore && !_isLoading) {
+        _loadMore();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-
     return Scaffold(
-      backgroundColor: Colorfile.background,
+      backgroundColor: Color(0xFFF9FAFB),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFDFDFD),
-        elevation: 0,
-
         title: Text(
           "Notification",
           style: AppFontStyle2.blinker(
             fontWeight: FontWeight.w600,
-            fontSize: width * 0.050,
-            color: const Color(0xFF36322E),
+            fontSize: width * 0.045,
+            color: Color(0xFF36322E),
           ),
         ),
+
+        elevation: 0,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: Colorfile.border, height: 1),
+          preferredSize: const Size.fromHeight(0),
+          child: Divider(color: Colorfile.border, height: 0),
         ),
       ),
-      body: notifications.isEmpty
+      body: _isLoading
+          ? _buildShimmer()
+          : _displayedNotifications.isEmpty
           ? Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment:
+                    MainAxisAlignment.center, // Center content vertically
                 children: [
-                  Icon(
-                    Icons.notifications_off,
-                    size: 80,
-                    color: Colors.grey.shade400,
+                  Image.asset(
+                    "assets/images/Frame.png", // Replace with your image path
+                    width: 90, // Adjust size as needed
+                    height: 90,
+                    fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 20), // Space between lines
                   Text(
-                    "No notifications yet",
-                    style: TextStyle(
-                      fontSize: width * 0.045,
-                      color: Colors.grey.shade600,
+                    "No Notifications",
+                    textAlign: TextAlign.center,
+                    style: AppFontStyle2.blinker(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF353B43),
+                    ),
+                  ),
+                  SizedBox(height: 5), // Space between lines
+                  Text(
+                    "We’ll let you know when there will be\n something to update you.",
+                    textAlign: TextAlign.center,
+                    style: AppFontStyle2.blinker(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF797979),
                     ),
                   ),
                 ],
               ),
             )
-          : ListView.builder(
-              padding: EdgeInsets.symmetric(
-                horizontal: width * 0.04,
-                vertical: 12,
+          : RefreshIndicator(
+              onRefresh: _refreshNotifications,
+              child: Scrollbar(
+                thickness: 10.0,
+                radius: Radius.circular(8.0),
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: EdgeInsets.only(top: 30.0, right: 15, left: 15),
+                  itemCount: _displayedNotifications.length,
+                  itemBuilder: (context, index) {
+                    final notification = _displayedNotifications[index];
+                    return NotificationItem(
+                      message: notification.message,
+                      text: notification.text,
+                      timeAgo: notification.timeAgo,
+                      icon: notification.icon,
+                      appRedirectionUrl: notification.appRedirectionUrl,
+                      recordId: notification.recordId,
+                    );
+                  },
+                ),
               ),
-              itemCount: notifications.length,
-              itemBuilder: (context, index) {
-                final noti = notifications[index];
-                return NotificationTile(notification: noti);
-              },
             ),
+    );
+  }
+
+  Widget _buildShimmer() {
+    return ListView.builder(
+      padding: EdgeInsets.all(16.0),
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: ListTile(
+            leading: CircleAvatar(backgroundColor: Colors.grey[300]),
+            title: Container(color: Colors.grey[300], height: 16.0),
+            subtitle: Container(color: Colors.grey[300], height: 14.0),
+            contentPadding: EdgeInsets.symmetric(vertical: 8.0),
+          ),
+        );
+      },
     );
   }
 }
 
-// Model
-class NotificationItem {
-  final String title;
+class NotificationItem extends StatelessWidget {
   final String message;
-  final DateTime time;
-  final bool isRead;
+  final String text;
 
-  NotificationItem({
-    required this.title,
+  final String timeAgo;
+  final IconData icon;
+  final String appRedirectionUrl;
+  final String recordId;
+
+  const NotificationItem({
+    Key? key,
     required this.message,
-    required this.time,
-    this.isRead = false,
-  });
-}
-
-// Single Tile Widget
-class NotificationTile extends StatelessWidget {
-  final NotificationItem notification;
-
-  const NotificationTile({super.key, required this.notification});
+    required this.text,
+    required this.timeAgo,
+    required this.icon,
+    required this.appRedirectionUrl,
+    required this.recordId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: notification.isRead
-            ? Colors.white
-            : const Color(0xFFFFF8E1), // Light yellow for unread
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: notification.isRead
-              ? Colors.grey.shade200
-              : const Color(0xFFFFC107),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Bell Icon with dot for unread
-          Stack(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: () async {},
+        child: Padding(
+          padding: const EdgeInsets.only(left: 12.0, right: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFF3E0),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.notifications,
-                  color: const Color(0xFFEF6C00),
-                  size: width * 0.07,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // First Row: Icon, Message, and Time Ago
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFFFEEEDE), // Background color added
+                            border: Border.all(
+                              color: Color(0xFFDFE6F8),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: Image.asset(
+                            'assets/Group.png', // Replace with your actual image path
+                            width: 35,
+                            height: 35,
+                          ),
+                        ),
+                        SizedBox(width: 9),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // First Row: Icon, Message, and Time Ago
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      message,
+                                      style: AppFontStyle2.blinker(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF353B43),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Text(
+                                    timeAgo, // Time ago on the left side
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFFA0A0A0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 2),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 9.0),
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: text,
+                                    style: AppFontStyle2.blinker(
+                                      fontSize: 11.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xFF7C7C7C),
+                                      height: 20 / 11,
+                                    ),
+                                  ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // Second Line: Additional Text
+                    const SizedBox(height: 8),
+                    // Divider
+                    Container(
+                      child: Divider(
+                        color: Color(0xFFD9D9D9),
+                        thickness: 1, // Adjust thickness if needed
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              if (!notification.isRead)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    width: 10,
-                    height: 10,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
+              // Divider
+              Container(
+                child: Divider(
+                  color: Color(0xFFD9D9D9),
+                  thickness: 1, // Adjust thickness if needed
                 ),
+              ),
+              // Optional Arrow Icon for Navigation (Uncomment if needed)
+              // Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
             ],
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  notification.title,
-                  style: AppFontStyle2.blinker(
-                    fontWeight: FontWeight.w600,
-                    fontSize: width * 0.045,
-                    color: const Color(0xFF36322E),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  notification.message,
-                  style: TextStyle(
-                    fontSize: width * 0.038,
-                    color: Colors.grey.shade700,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _formatTime(notification.time),
-                  style: TextStyle(
-                    fontSize: width * 0.033,
-                    color: Colors.grey.shade500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
+}
 
-  String _formatTime(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
+class NotificationItemData {
+  final String message;
+  final String text;
+  final String timeAgo;
+  final IconData icon;
+  final String appRedirectionUrl;
+  final String recordId;
 
-    if (difference.inMinutes < 1) {
-      return "Just now";
-    } else if (difference.inMinutes < 60) {
-      return "${difference.inMinutes} min ago";
-    } else if (difference.inHours < 24) {
-      return "${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago";
-    } else {
-      return DateFormat('dd MMM yyyy').format(dateTime);
-    }
-  }
+  NotificationItemData({
+    required this.message,
+    required this.text,
+    required this.timeAgo,
+    required this.icon,
+    required this.appRedirectionUrl,
+    required this.recordId,
+  });
 }
