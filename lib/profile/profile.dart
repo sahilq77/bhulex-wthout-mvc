@@ -724,11 +724,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: GestureDetector(
                         onTap: () => showEditProfileImageBottomSheet(context),
                         child: CircleAvatar(
-                          radius: 20,
+                          radius: 16,
                           backgroundColor: Colorfile.bordertheme,
                           child: const Icon(
                             Icons.edit,
-                            size: 20,
+                            size: 17,
                             color: Colors.white,
                           ),
                         ),
@@ -785,12 +785,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 24,
                           color: iconTextColor,
                         ),
-                        title: Obx(
-                          () => Text(
-                            languageController.isToggled.value
-                                ? 'आमच्याबद्दल'
-                                : 'About',
-                            style: AppFontStyle2.blinker(color: iconTextColor),
+                        title: Text(
+                          languageController.isToggled.value
+                              ? 'आमच्याबद्दल'
+                              : 'About Bhulex',
+                          style: AppFontStyle2.blinker(
+                            color: iconTextColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         trailing: const Icon(
@@ -821,7 +823,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             languageController.isToggled.value
                                 ? 'गोपनीयता धोरण'
                                 : 'Privacy Policy',
-                            style: AppFontStyle2.blinker(color: iconTextColor),
+                            style: AppFontStyle2.blinker(
+                              color: iconTextColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         trailing: const Icon(
@@ -851,7 +857,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             languageController.isToggled.value
                                 ? 'अटी आणि शर्ती'
                                 : 'Terms and Conditions',
-                            style: AppFontStyle2.blinker(color: iconTextColor),
+                            style: AppFontStyle2.blinker(
+                              color: iconTextColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         trailing: const Icon(
@@ -881,7 +891,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             languageController.isToggled.value
                                 ? 'अस्वीकरण'
                                 : 'Disclaimer',
-                            style: AppFontStyle2.blinker(color: iconTextColor),
+                            style: AppFontStyle2.blinker(
+                              color: iconTextColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         trailing: const Icon(
@@ -911,7 +925,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             languageController.isToggled.value
                                 ? 'भाषा बदला'
                                 : 'Change Language',
-                            style: AppFontStyle2.blinker(color: iconTextColor),
+                            style: AppFontStyle2.blinker(
+                              color: iconTextColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         trailing: const Icon(
@@ -943,7 +961,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             languageController.isToggled.value
                                 ? 'मदत आणि समर्थन'
                                 : 'Help and Support',
-                            style: AppFontStyle2.blinker(color: iconTextColor),
+                            style: AppFontStyle2.blinker(
+                              color: iconTextColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         trailing: const Icon(
@@ -973,7 +995,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             languageController.isToggled.value
                                 ? 'सूचना'
                                 : 'Notifications',
-                            style: AppFontStyle2.blinker(color: iconTextColor),
+                            style: AppFontStyle2.blinker(
+                              color: iconTextColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         trailing: const Icon(
@@ -1003,7 +1029,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             languageController.isToggled.value
                                 ? 'लॉगआउट'
                                 : 'Logout',
-                            style: AppFontStyle2.blinker(color: iconTextColor),
+                            style: AppFontStyle2.blinker(
+                              color: iconTextColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         trailing: const Icon(
