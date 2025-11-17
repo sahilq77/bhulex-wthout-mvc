@@ -587,15 +587,20 @@ class _HomePage2State extends State<HomePage2> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "ddd",
-                        style: AppFontStyle2.blinker(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          languageController.isToggled.value
+                              ? 'राज्य निवडा'
+                              : 'Select State',
+                          style: AppFontStyle2.blinker(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Obx(
                           () => stateController.isLoading.value
                               ? const Center(child: CircularProgressIndicator())
