@@ -1545,145 +1545,137 @@ class _HomePage2State extends State<HomePage2> {
                                                 color: const Color(0xFFE5E7EB),
                                                 width: 0.5,
                                               ),
-                                              color: Colors.white,
+                                              color: const Color(
+                                                0xFFFFF3E0,
+                                              ), // light orange background
                                             ),
                                             child: SingleChildScrollView(
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                          8.0,
-                                                        ),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            50,
-                                                          ),
-                                                      child: CachedNetworkImage(
-                                                        imageUrl:
-                                                            packageController
-                                                                .baseUrl
-                                                                .value +
-                                                            (package
-                                                                    .packages
-                                                                    .first
-                                                                    .icon ??
-                                                                ''),
-                                                        width: 40,
-                                                        height: 40,
-                                                        fit: BoxFit.cover,
-                                                        placeholder:
-                                                            (context, url) =>
-                                                                const CircularProgressIndicator(),
-                                                        errorWidget:
-                                                            (
-                                                              context,
-                                                              url,
-                                                              error,
-                                                            ) => Image.asset(
-                                                              'assets/images/package1.png',
-                                                              width: 40,
-                                                              height: 40,
-                                                              fit: BoxFit.cover,
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets.all(
+                                                              12,
                                                             ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                          5.0,
+                                                        decoration: BoxDecoration(
+                                                          color: const Color(
+                                                            0xFFFFF3E0,
+                                                          ), // light orange background
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                12,
+                                                              ),
                                                         ),
-                                                    child: Obx(
-                                                      () => Text(
-                                                        languageController
-                                                                .isToggled
-                                                                .value
-                                                            ? (package
-                                                                          .packages
-                                                                          .first
-                                                                          .packageNameInLocalLanguage
-                                                                          .isNotEmpty ??
-                                                                      false
-                                                                  ? package
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                50,
+                                                              ),
+                                                          child: CachedNetworkImage(
+                                                            imageUrl:
+                                                                packageController
+                                                                    .baseUrl
+                                                                    .value +
+                                                                (package
                                                                         .packages
                                                                         .first
-                                                                        .packageNameInLocalLanguage
-                                                                  : PackageStrings.getPackageName(
-                                                                      package
+                                                                        .icon ??
+                                                                    ''),
+                                                            width: 40,
+                                                            height: 40,
+                                                            fit: BoxFit.cover,
+                                                            placeholder:
+                                                                (
+                                                                  context,
+                                                                  url,
+                                                                ) =>
+                                                                    const CircularProgressIndicator(),
+                                                            errorWidget:
+                                                                (
+                                                                  context,
+                                                                  url,
+                                                                  error,
+                                                                ) => Image.asset(
+                                                                  'assets/images/package1.png',
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Obx(
+                                                              () => Text(
+                                                                languageController
+                                                                        .isToggled
+                                                                        .value
+                                                                    ? (package.packages.first.packageNameInLocalLanguage.isNotEmpty ??
+                                                                              false
+                                                                          ? package.packages.first.packageNameInLocalLanguage
+                                                                          : PackageStrings.getPackageName(
+                                                                              package.packages.first.packageName,
+                                                                              true,
+                                                                            ))
+                                                                    : package
                                                                           .packages
                                                                           .first
                                                                           .packageName,
-                                                                      true,
-                                                                    ))
-                                                            : package
-                                                                  .packages
-                                                                  .first
-                                                                  .packageName,
-                                                        style:
-                                                            AppFontStyle2.blinker(
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color:
-                                                                  const Color(
+                                                                style: AppFontStyle2.blinker(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: const Color(
                                                                     0xFF353B43,
                                                                   ),
+                                                                ),
+                                                              ),
                                                             ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 1),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 8.0,
-                                                        ),
-                                                    child: Obx(
-                                                      () => Text(
-                                                        languageController
-                                                                .isToggled
-                                                                .value
-                                                            ? (package
-                                                                          .packages
-                                                                          .first
-                                                                          .shortDescriptionInLocalLanguage
-                                                                          .isNotEmpty ??
-                                                                      false
-                                                                  ? package
-                                                                        .packages
-                                                                        .first
-                                                                        .shortDescriptionInLocalLanguage
-                                                                  : PackageStrings.getShortDescription(
-                                                                      package
+                                                            Obx(
+                                                              () => Text(
+                                                                languageController
+                                                                        .isToggled
+                                                                        .value
+                                                                    ? (package.packages.first.shortDescriptionInLocalLanguage.isNotEmpty ??
+                                                                              false
+                                                                          ? package.packages.first.shortDescriptionInLocalLanguage
+                                                                          : PackageStrings.getShortDescription(
+                                                                              package.packages.first.shortDescription,
+                                                                              true,
+                                                                            ))
+                                                                    : package
                                                                           .packages
                                                                           .first
                                                                           .shortDescription,
-                                                                      true,
-                                                                    ))
-                                                            : package
-                                                                  .packages
-                                                                  .first
-                                                                  .shortDescription,
-                                                        style:
-                                                            AppFontStyle2.blinker(
-                                                              fontSize: 9,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color:
-                                                                  const Color(
+                                                                style: AppFontStyle2.blinker(
+                                                                  fontSize: 9,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  color: const Color(
                                                                     0xFF4B5563,
                                                                   ),
+                                                                ),
+                                                              ),
                                                             ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                  const SizedBox(height: 5),
+                                                  SizedBox(height: 10),
                                                   Wrap(
                                                     spacing: 6,
                                                     runSpacing: 6,
@@ -1752,19 +1744,21 @@ class _HomePage2State extends State<HomePage2> {
                                                                           4,
                                                                     ),
                                                                     decoration: BoxDecoration(
-                                                                      color: const Color(
-                                                                        0xFFF5F4F1,
-                                                                      ),
+                                                                      color: Colorfile
+                                                                          .primaryColor
+                                                                          .withOpacity(
+                                                                            0.2,
+                                                                          ),
                                                                       borderRadius:
                                                                           BorderRadius.circular(
                                                                             5,
                                                                           ),
-                                                                      border: Border.all(
-                                                                        color: const Color(
-                                                                          0xFFE5E7EB,
-                                                                        ),
-                                                                      ),
+                                                                      // border: Border.all(
+                                                                      //   color: Colorfile
+                                                                      //       .primaryColor,
+                                                                      // ),
                                                                     ),
+
                                                                     child: Text(
                                                                       serviceNameText,
                                                                       style: AppFontStyle2.blinker(
