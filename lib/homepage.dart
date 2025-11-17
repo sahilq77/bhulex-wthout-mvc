@@ -9,6 +9,7 @@ import 'package:bhulexapp/bottom_navigation/main_bottom_navigation.screen.dart';
 import 'package:bhulexapp/controller/bottom_navigation/bottom_navigation_controller.dart';
 import 'package:bhulexapp/controller/global_controller/global_controller.dart';
 import 'package:bhulexapp/investigate_reports_form/cersai_report.dart';
+import 'package:bhulexapp/old_records_form/old%20extract1.dart';
 import 'package:bhulexapp/old_records_form/old_revenue_records.dart';
 import 'package:cached_network_image/cached_network_image.dart'
     show CachedNetworkImage;
@@ -47,7 +48,7 @@ import 'quicke_services_forms/digitally_sign1.dart';
 import 'quicke_services_forms/digitally_sign_property_card.dart';
 import 'quicke_services_forms/indexII_search.dart';
 import 'quicke_services_forms/rera_certificate.dart';
-import 'package:carousel_slider/carousel_slider.dart'; // ADD THIS
+import 'package:carousel_slider/carousel_slider.dart'; // ADDED
 
 class HomePage2 extends StatefulWidget {
   final String? package;
@@ -60,7 +61,6 @@ class HomePage2 extends StatefulWidget {
     this.packageid,
     required String customerId,
   });
-
   @override
   State<HomePage2> createState() => _HomePage2State();
 }
@@ -84,7 +84,6 @@ class _HomePage2State extends State<HomePage2> {
   final PackageController packageController = Get.put(PackageController());
   final LanguageController languageController = Get.put(LanguageController());
   final StateController stateController = Get.put(StateController());
-
   final Map<String, String> instantTextMap = {
     'Quick Services': 'instant',
     'Old Records of Rights': 'within12Hours',
@@ -535,7 +534,6 @@ class _HomePage2State extends State<HomePage2> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // State Dropdown
                       Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
@@ -651,8 +649,6 @@ class _HomePage2State extends State<HomePage2> {
                                 }),
                         ),
                       ),
-
-                      // Categories
                       ...categoryList.map((category) {
                         var services = category['service'] ?? [];
                         return Padding(
@@ -735,8 +731,354 @@ class _HomePage2State extends State<HomePage2> {
                                         : (service['service_name'] ?? '');
                                     return InkWell(
                                       onTap: () {
-                                        // [Your existing navigation logic]
-                                        // ... (unchanged)
+                                        var selectedService =
+                                            services[serviceIndex];
+                                        final id = selectedService['id']
+                                            .toString();
+                                        final serviceName =
+                                            selectedService['service_name'] ??
+                                            '';
+                                        final tblName =
+                                            selectedService['tbl_name'] ?? '';
+                                        if ([
+                                          "tbl_seven_twelve",
+                                          "tbl_eighta_extract",
+                                          "tbl_e_mutation_extract",
+                                          "tbl_bhu_naksha",
+                                          "",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => DigitallySign1(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_index_second_search",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => IndexSearch1(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: widget.customer_id,
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_rera_certificate",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => ReraCertificate(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_property_card",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => propertyCard(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                package_lead_id: '',
+                                                lead_id: '',
+                                                customer_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_old_seven_twelve",
+                                          "tbl_old_eighta_extract",
+                                          "tbl_old_e_mutation_extract",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => oldextract1(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_old_bhu_naksha",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OldRevenueRecords(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        selectedService['service_name_in_local_language'] ??
+                                                        serviceName,
+                                                    lead_id: '',
+                                                    customer_id: '',
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_mortage_report",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => MortgageReports(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if ([
+                                          "tbl_ceersai_report",
+                                        ].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => CersaiReport(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if (["tbl_rera_builder_documents"].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => RERA_Builder(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                customer_id: '',
+                                                lead_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if (["tbl_registered_document"].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RegisteredDocument(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        selectedService['service_name_in_local_language'] ??
+                                                        serviceName,
+                                                    lead_id: '',
+                                                    customer_id: '',
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                        } else if (["tbl_title_investigation_report"].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => Investigation(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                customer_id: '',
+                                                lead_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if (["tbl_legal_drafts"].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => LegalDraftsNew(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if (["tbl_court_cases"].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => Courtcases(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    selectedService['service_name_in_local_language'] ??
+                                                    serviceName,
+                                                lead_id: '',
+                                                customer_id: '',
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                        } else if (["tbl_adhikar_abhilekh"].contains(tblName)) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Adhikar_Abhilekh(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        selectedService['service_name_in_local_language'] ??
+                                                        serviceName,
+                                                    lead_id: '',
+                                                    customerid: customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Obx(
+                                                () => Text(
+                                                  languageController
+                                                          .isToggled
+                                                          .value
+                                                      ? "या निवडीसाठी सेवा उपलब्ध नाही."
+                                                      : "Service not available for this selection.",
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
                                       },
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -780,11 +1122,240 @@ class _HomePage2State extends State<HomePage2> {
                           ),
                         );
                       }),
+                      // Dummy Category Section (unchanged)
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Obx(
+                                    () => Text(
+                                      languageController.isToggled.value
+                                          ? dummyCategory['category_name_in_local_language']
+                                          : dummyCategory['category_name'],
+                                      style: AppFontStyle2.blinker(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                      ),
+                                      child: Container(
+                                        height: 1,
+                                        color: const Color(0xFF757575),
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Within 12 hours',
+                                    style: AppFontStyle2.blinker(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colorfile.lightgrey,
+                                    ),
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: dummyCategory['service'].length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    childAspectRatio: 1.4,
+                                  ),
+                              itemBuilder: (context, serviceIndex) {
+                                var service =
+                                    dummyCategory['service'][serviceIndex];
+                                String serviceIcon = service['icon'] ?? '';
+                                return Obx(() {
+                                  String displayName =
+                                      languageController.isToggled.value
+                                      ? (service['service_name_in_local_language'] ??
+                                            service['service_name'] ??
+                                            '')
+                                      : (service['service_name'] ?? '');
+                                  return InkWell(
+                                    onTap: () {
+                                      final id = service['id'].toString();
+                                      final serviceName =
+                                          service['service_name'] ?? '';
+                                      final tblName = service['tbl_name'] ?? '';
+                                      final serviceNameInLocalLanguage =
+                                          service['service_name_in_local_language'] ??
+                                          serviceName;
+                                      switch (tblName) {
+                                        case "tbl_e_property_valuation":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EPropertyValuationPage(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        serviceNameInLocalLanguage,
+                                                    lead_id: '',
+                                                    customer_id:
+                                                        widget.customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                          break;
+                                        case "tbl_aapli_chawadi":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AapliChawadiPage(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        serviceNameInLocalLanguage,
+                                                    lead_id: '',
+                                                    customer_id:
+                                                        widget.customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                          break;
+                                        case "tbl_area_converter":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AreaConverterPage(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        serviceNameInLocalLanguage,
+                                                    lead_id: '',
+                                                    customer_id:
+                                                        widget.customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                          break;
+                                        case "tbl_property_mutation":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => DigitallySign1(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    serviceNameInLocalLanguage,
+                                                lead_id: '',
+                                                customer_id: widget.customer_id,
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                          break;
+                                        default:
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Obx(
+                                                () => Text(
+                                                  languageController
+                                                          .isToggled
+                                                          .value
+                                                      ? "या निवडीसाठी सेवा उपलब्ध नाही."
+                                                      : "Service not available for this selection.",
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                      }
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        serviceIcon.isNotEmpty
+                                            ? Image.asset(
+                                                serviceIcon,
+                                                height: 25,
+                                                width: 25,
+                                                fit: BoxFit.contain,
+                                                errorBuilder: (ctx, _, __) =>
+                                                    const Icon(
+                                                      Icons.broken_image,
+                                                      size: 25,
+                                                    ),
+                                              )
+                                            : const Icon(
+                                                Icons.miscellaneous_services,
+                                                size: 30,
+                                              ),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          displayName,
+                                          style: AppFontStyle2.blinker(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.w600,
+                                            height: 12 / 9,
+                                            color: Colorfile.servicename,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
 
-                      // Dummy E-Applications
-                      // ... (unchanged)
-
-                      // ==================== PACKAGES CAROUSEL ====================
+                      // ======================= PACKAGES CAROUSEL SLIDER =======================
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
