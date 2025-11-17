@@ -4,6 +4,7 @@ class ResponsiveHelper {
   static late MediaQueryData _mediaQueryData;
   static late double screenWidth;
   static late double screenHeight;
+  
 
   // Initialize once in your main widget
   static void init(BuildContext context) {
@@ -123,4 +124,5 @@ extension ResponsiveContext on BuildContext {
   bool get isMobile => sw < 600;
   bool get isTablet => sw >= 600 && sw < 1200;
   bool get isDesktop => sw >= 1200;
+  
 }

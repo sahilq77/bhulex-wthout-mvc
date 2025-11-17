@@ -193,7 +193,6 @@ class _Signup1State extends State<Signup1> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          titleSpacing: 0.0,
 
           title: Text(
             'Login/Sign Up',

@@ -332,7 +332,6 @@ class _OtpScreenState extends State<OtpScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        titleSpacing: 0.0,
 
         title: const Text('OTP Verification'),
         bottom: const PreferredSize(

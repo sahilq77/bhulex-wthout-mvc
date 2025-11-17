@@ -11,8 +11,7 @@ class OtpVerification extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        titleSpacing: 0.0,
-       
+
         title: Text(
           'OTP Verification',
           style: GoogleFonts.poppins(
