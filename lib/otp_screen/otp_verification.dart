@@ -12,18 +12,7 @@ class OtpVerification extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         titleSpacing: 0.0,
-        leading: IconButton(
-          icon: Image.asset('assets/eva_arrow-back-fill.png'),
-          onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder:
-            //         (context) => const OtpScreen(mobilenumber: '', otp: 'null',),
-            //   ),
-            // );
-          },
-        ),
+       
         title: Text(
           'OTP Verification',
           style: GoogleFonts.poppins(

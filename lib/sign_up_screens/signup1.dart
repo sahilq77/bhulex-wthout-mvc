@@ -74,11 +74,13 @@ class _Signup1State extends State<Signup1> {
       final String url = URLS().login_apiUrl;
       log('Request URL: $url');
 
-      var response = await http.post(
-        Uri.parse(url),
-        body: jsonEncode(requestBody),
-        headers: {'Content-Type': 'application/json'},
-      ).timeout(const Duration(seconds: 10));
+      var response = await http
+          .post(
+            Uri.parse(url),
+            body: jsonEncode(requestBody),
+            headers: {'Content-Type': 'application/json'},
+          )
+          .timeout(const Duration(seconds: 10));
 
       log('Response Status Code: ${response.statusCode}');
       log('Response Body: ${response.body}');
@@ -192,17 +194,7 @@ class _Signup1State extends State<Signup1> {
           backgroundColor: Colors.white,
           elevation: 0,
           titleSpacing: 0.0,
-          leading: IconButton(
-            icon: Image.asset(AppImages.backArrow),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const OnboardingScreen3(),
-                ),
-              );
-            },
-          ),
+
           title: Text(
             'Login/Sign Up',
             style: AppFontStyle2.blinker(
@@ -284,11 +276,7 @@ class _Signup1State extends State<Signup1> {
                       ),
                       child: Row(
                         children: [
-                          Image.asset(
-                            AppImages.call,
-                            height: 20,
-                            width: 20,
-                          ),
+                          Image.asset(AppImages.call, height: 20, width: 20),
                           const SizedBox(width: 10),
                           Container(
                             width: 1,
@@ -381,7 +369,7 @@ class _Signup1State extends State<Signup1> {
                       },
                       activeColor: AppColors.checkBoxColor,
                       checkColor: Colors.white,
-                      side:  BorderSide(
+                      side: BorderSide(
                         color: AppColors
                             .checkBoxBorderColor, // Light gray color for border
                         width: 2.0,
