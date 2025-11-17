@@ -61,6 +61,7 @@ dependencies:
   flutter_svg: ^2.2.1   #added by sahil
   font_awesome_flutter: ^10.9.1
   readmore: ^3.0.0
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:

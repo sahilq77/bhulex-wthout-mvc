@@ -16,6 +16,10 @@ class PackageController extends GetxController {
   RxBool isLoadingMore = false.obs;
   RxInt offset = 0.obs;
   RxString baseUrl = ''.obs;
+
+  // ADD THIS LINE: Track current carousel slide
+  final RxInt currentCarouselIndex = 0.obs;
+
   final int limit = 10;
 
   @override
@@ -40,11 +44,11 @@ class PackageController extends GetxController {
         final String? customerId = prefs.getString('customer_id');
         customerIdbackup = customerId ?? '';
       }
+
       String createjson = Createjson().createJsonForgetvehicleloadingapi(
         customerIdbackup,
         offset: currentOffset,
         limit: limit,
-        
         packageId: packageId,
         lang: '',
       );
@@ -62,7 +66,9 @@ class PackageController extends GetxController {
           if (currentOffset == 0) {
             baseUrl.value = response[0].iconPath;
             allPackages.clear();
-            // Only add packages if they exist
+            // Reset carousel index when refreshing
+            currentCarouselIndex.value = 0;
+
             if (response[0].data.packages.isNotEmpty) {
               allPackages.addAll(
                 response[0].data.packages.map(
@@ -111,5 +117,10 @@ class PackageController extends GetxController {
       isLoadingMore.value = true;
       await fetchPackages();
     }
+  }
+
+  // Optional: Method to manually set carousel index (if needed elsewhere)
+  void setCarouselIndex(int index) {
+    currentCarouselIndex.value = index;
   }
 }
