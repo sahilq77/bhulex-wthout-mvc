@@ -281,6 +281,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
       Selectedcity = null;
       _surveyNoController.clear();
       _mutationNoController.clear();
+      _ByKhataNoController.clear();
       selectedVillageName = null;
       selectedTaluka = null;
       selectedLanguage = null;
@@ -828,6 +829,87 @@ class _DigitallySign1State extends State<DigitallySign1> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      if (widget.tblName == 'tbl_e_mutation_extract') ...[
+                        TextFormField(
+                          controller: _mutationNoController,
+                          decoration: InputDecoration(
+                            hintText: LocalizedStrings.getString(
+                              'mutationNo',
+                              widget.isToggled,
+                            ),
+                            labelText: LocalizedStrings.getString(
+                              'mutationNo',
+                              widget.isToggled,
+                            ),
+                            hintStyle: AppFontStyle2.blinker(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              height: 1.57,
+                              color: const Color(0xFF36322E),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              borderSide: BorderSide(color: Color(0xFFC5C5C5)),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              borderSide: BorderSide(color: Color(0xFFC5C5C5)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              borderSide: BorderSide(color: Color(0xFFC5C5C5)),
+                            ),
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                              RegExp(
+                                r'^[\u0900-\u097F\u0966-\u096F a-zA-Z0-9\s/]+$',
+                              ),
+                            ),
+                            TextInputFormatter.withFunction((
+                              oldValue,
+                              newValue,
+                            ) {
+                              String text = newValue.text;
+                              text = text.replaceAll(RegExp(r'\s+'), ' ');
+                              text = text.trim();
+
+                              return text == newValue.text
+                                  ? newValue
+                                  : TextEditingValue(
+                                      text: text,
+                                      selection: TextSelection.collapsed(
+                                        offset: text.length,
+                                      ),
+                                    );
+                            }),
+                            LengthLimitingTextInputFormatter(50),
+                          ],
+                          textCapitalization: TextCapitalization.words,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return ValidationMessagesseventweleve.getMessage(
+                                'pleaseEnterMutationNo',
+                                widget.isToggled,
+                              );
+                            }
+                            final trimmedValue = value.trim();
+                            if (RegExp(
+                              r'<.*?>|script|alert|on\w+=',
+                              caseSensitive: false,
+                            ).hasMatch(trimmedValue)) {
+                              return ValidationMessagesseventweleve.getMessage(
+                                'invalidCharacters',
+                                widget.isToggled,
+                              );
+                            }
+                            return null;
+                          },
+                          style: AppFontStyle2.blinker(),
+                        ),
+                        // const SizedBox(height: 16),
+                      ],
+                      const SizedBox(height: 16),
                       TextFormField(
                         controller: _surveyNoController,
                         decoration: InputDecoration(
@@ -923,197 +1005,65 @@ class _DigitallySign1State extends State<DigitallySign1> {
                         style: AppFontStyle2.blinker(),
                       ),
                       const SizedBox(height: 16),
-                      Visibility(
-                        visible: widget.tblName != 'tbl_e_mutation_extract',
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            FormField<String>(
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return ValidationMessagesseventweleve.getMessage(
-                                    'pleaseEnterByName',
-                                    widget.isToggled,
-                                  );
-                                }
-                                final trimmedValue = value.trim();
-                                if (RegExp(
-                                  r'<.*?>|script|alert|on\w+=',
-                                  caseSensitive: false,
-                                ).hasMatch(trimmedValue)) {
-                                  return ValidationMessagesseventweleve.getMessage(
-                                    'invalidCharacters',
-                                    widget.isToggled,
-                                  );
-                                }
-                                return null;
-                              },
-                              builder: (FormFieldState<String> state) {
-                                return TextFormField(
-                                  controller:
-                                      _ByNameIncasesurveynoisnotknownController,
-                                  decoration: InputDecoration(
-                                    label: RichText(
-                                      text: TextSpan(
-                                        text: LocalizedStrings.getString(
-                                          'byName',
-                                          widget.isToggled,
-                                        ),
-                                        style: AppFontStyle2.blinker(
-                                          color: state.hasError
-                                              ? Theme.of(context)
-                                                    .colorScheme
-                                                    .error // Natural error color on validation error
-                                              : const Color(
-                                                  0xFF36322E,
-                                                ), // Default color
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text:
-                                                ' ${LocalizedStrings.getString('byNameHint', widget.isToggled)}',
-                                            style: AppFontStyle.poppins(
-                                              color: state.hasError
-                                                  ? Theme.of(context)
-                                                        .colorScheme
-                                                        .error // Natural error color on validation error
-                                                  : const Color(
-                                                      0xFF36322E,
-                                                    ), // Default color
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      borderSide: BorderSide(
-                                        color: Color(0xFFC5C5C5),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      borderSide: BorderSide(
-                                        color: Color(0xFFC5C5C5),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      borderSide: BorderSide(
-                                        color: Color(0xFFC5C5C5),
-                                      ),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
-                                      ), // Natural error border
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
-                                      ), // Natural error border when focused
-                                    ),
-                                    errorStyle: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .error, // Natural error text color
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      RegExp(
-                                        r'^[\u0900-\u097F\u0966-\u096F a-zA-Z\s/]+$',
-                                      ),
-                                    ),
-                                    TextInputFormatter.withFunction((
-                                      oldValue,
-                                      newValue,
-                                    ) {
-                                      String text = newValue.text;
-                                      text = text.replaceAll(
-                                        RegExp(r'\s+'),
-                                        ' ',
-                                      );
-                                      text = text.trimLeft();
-
-                                      return text == newValue.text
-                                          ? newValue
-                                          : TextEditingValue(
-                                              text: text,
-                                              selection:
-                                                  TextSelection.collapsed(
-                                                    offset: text.length,
-                                                  ),
-                                            );
-                                    }),
-                                    LengthLimitingTextInputFormatter(50),
-                                  ],
-                                  textCapitalization: TextCapitalization.words,
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return ValidationMessagesseventweleve.getMessage(
-                                        'pleaseEnterByName',
-                                        widget.isToggled,
-                                      );
-                                    }
-                                    final trimmedValue = value.trim();
-                                    if (RegExp(
-                                      r'<.*?>|script|alert|on\w+=',
-                                      caseSensitive: false,
-                                    ).hasMatch(trimmedValue)) {
-                                      return ValidationMessagesseventweleve.getMessage(
-                                        'invalidCharacters',
-                                        widget.isToggled,
-                                      );
-                                    }
-                                    return null;
-                                  },
-                                  style: AppFontStyle2.blinker(),
-                                  onChanged: (value) {
-                                    state.didChange(
-                                      value,
-                                    ); // Update FormField state on text change
-                                  },
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                          ],
-                        ),
-                      ),
-                      if (widget.tblName == 'tbl_bhu_naksha') ...[
-                        Visibility(
-                          visible: widget.tblName != 'tbl_bhu_naksha',
-                          child: Column(
+                      FormField<String>(
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return ValidationMessagesseventweleve.getMessage(
+                              'pleaseEnterByName',
+                              widget.isToggled,
+                            );
+                          }
+                          final trimmedValue = value.trim();
+                          if (RegExp(
+                            r'<.*?>|script|alert|on\w+=',
+                            caseSensitive: false,
+                          ).hasMatch(trimmedValue)) {
+                            return ValidationMessagesseventweleve.getMessage(
+                              'invalidCharacters',
+                              widget.isToggled,
+                            );
+                          }
+                          return null;
+                        },
+                        builder: (FormFieldState<String> state) {
+                          return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TextFormField(
-                                controller: _mutationNoController,
+                                controller:
+                                    _ByNameIncasesurveynoisnotknownController,
                                 decoration: InputDecoration(
-                                  hintText: LocalizedStrings.getString(
-                                    'mutationNo',
-                                    widget.isToggled,
-                                  ),
-                                  labelText: LocalizedStrings.getString(
-                                    'mutationNo',
-                                    widget.isToggled,
-                                  ),
-                                  hintStyle: AppFontStyle2.blinker(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.57,
-                                    color: const Color(0xFF36322E),
+                                  label: RichText(
+                                    text: TextSpan(
+                                      text: LocalizedStrings.getString(
+                                        'byName',
+                                        widget.isToggled,
+                                      ),
+                                      style: AppFontStyle2.blinker(
+                                        color: state.hasError
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.error
+                                            : const Color(0xFF36322E),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              ' ${LocalizedStrings.getString('byNameHint', widget.isToggled)}',
+                                          style: AppFontStyle.poppins(
+                                            color: state.hasError
+                                                ? Theme.of(
+                                                    context,
+                                                  ).colorScheme.error
+                                                : const Color(0xFF36322E),
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(6),
@@ -1133,11 +1083,31 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                       color: Color(0xFFC5C5C5),
                                     ),
                                   ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                    ),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                    ),
+                                  ),
+                                  errorStyle: TextStyle(
+                                    color: Theme.of(context).colorScheme.error,
+                                    fontSize: 12,
+                                  ),
                                 ),
                                 inputFormatters: [
                                   FilteringTextInputFormatter.allow(
                                     RegExp(
-                                      r'^[\u0900-\u097F\u0966-\u096F a-zA-Z0-9\s/]+$',
+                                      r'^[\u0900-\u097F\u0966-\u096F a-zA-Z\s/]+$',
                                     ),
                                   ),
                                   TextInputFormatter.withFunction((
@@ -1146,7 +1116,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                   ) {
                                     String text = newValue.text;
                                     text = text.replaceAll(RegExp(r'\s+'), ' ');
-                                    text = text.trim();
+                                    text = text.trimLeft();
 
                                     return text == newValue.text
                                         ? newValue
@@ -1163,7 +1133,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
                                     return ValidationMessagesseventweleve.getMessage(
-                                      'pleaseEnterMutationNo',
+                                      'pleaseEnterByName',
                                       widget.isToggled,
                                     );
                                   }
@@ -1180,12 +1150,16 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                   return null;
                                 },
                                 style: AppFontStyle2.blinker(),
+                                onChanged: (value) {
+                                  state.didChange(value);
+                                },
                               ),
                               const SizedBox(height: 16),
                             ],
-                          ),
-                        ),
-                      ],
+                          );
+                        },
+                      ),
+
                       if (widget.tblName == 'tbl_eighta_extract') ...[
                         // const SizedBox(height: 16),
                         TextFormField(
