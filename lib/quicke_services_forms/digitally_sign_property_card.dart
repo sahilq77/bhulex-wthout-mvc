@@ -1,27 +1,27 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
-import 'package:bhulexapp/My_package/package_order_details.dart';
-import 'package:bhulexapp/colors/order_fonts.dart';
-import 'package:bhulexapp/form_internet.dart';
-import 'package:bhulexapp/language/hindi.dart';
-import 'package:bhulexapp/network/url.dart';
-import 'package:bhulexapp/quicke_services_forms/pay.dart';
-import 'package:bhulexapp/validations_chan_lang/propertycard.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Core/AppImages.dart';
+import '../My_package/package_order_details.dart';
+import '../colors/custom_color.dart';
+import '../colors/order_fonts.dart';
+import '../form_internet.dart';
+import '../language/hindi.dart';
+import '../network/url.dart';
+import '../validations_chan_lang/propertycard.dart';
+import 'pay.dart';
 
 class propertyCard extends StatefulWidget {
   final String id;
   final String serviceName;
   final String tblName;
-  final String packageId; // Add this parameter
+  final String packageId;
   final bool isToggled;
   final String serviceNameInLocalLanguage;
   final String package_lead_id;
@@ -48,34 +48,28 @@ class _propertyCardState extends State<propertyCard> {
   List<Map<String, dynamic>> CityData = [];
   String? Selectedcity;
   String? SelectedId;
+  List<Map<String, dynamic>> talukaData = [];
+  String? selectedTaluka;
+  String? selectedTalukaId;
   List<Map<String, dynamic>> villageData = [];
-  String? selectedVillageName;
+  String? selectedVillage;
   String? selectedVillageId;
-  String? _selectedregion;
-  String? selectedRegionId;
+  List<Map<String, dynamic>> officeData = [];
+  String? selectedOffice;
+  String? selectedOfficeId;
+  String? selectedLanguage;
   final _formKey = GlobalKey<FormState>();
   bool isLoading = true;
-  final NetworkChecker _networkChecker = NetworkChecker(); // Add NetworkChecker
-  String _selectedLanguage = 'en'; // Default: English
-  List<Map<String, dynamic>> regionData = [];
+  final NetworkChecker _networkChecker = NetworkChecker();
   final TextEditingController _CTSNoController = TextEditingController();
-  final TextEditingController _officeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     print(widget.tblName);
-    //checkNetworkConnection();
-    _networkChecker.startMonitoring(context); // Start network monitoring
-
+    _networkChecker.startMonitoring(context);
     _fetchCity();
-    _fetchRegion();
-  }
-
-  String _getCurrentLanguage() {
-    if (widget.isToggled) return 'mr'; // Marathi
-    if (_selectedLanguage == 'hi') return 'hi';
-    return 'en';
+    _fetchOffices();
   }
 
   Future<void> submitQuickServiceForm(
@@ -85,9 +79,7 @@ class _propertyCardState extends State<propertyCard> {
     final String url = URLS().submit_quick_service_enquiry_form_apiUrl;
 
     try {
-      // Print the request body
       print("Request Body: ${jsonEncode(formData)}");
-
       var response = await http.post(
         Uri.parse(url),
         body: jsonEncode(formData),
@@ -96,8 +88,6 @@ class _propertyCardState extends State<propertyCard> {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print("Response body: ${responseData}");
-        // Check if packageId is empty
         if (widget.packageId == "") {
           Navigator.pushReplacement(
             context,
@@ -142,60 +132,8 @@ class _propertyCardState extends State<propertyCard> {
     }
   }
 
-  void _fetchRegion() async {
-    final String url = URLS().get_all_region_apiUrl;
-    log('region URL: $url');
-    try {
-      var response = await http.get(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        log('➡ HTTP Status Code: ${response.statusCode}');
-        log('➡ Response Body: ${response.body}');
-
-        if (data != null &&
-            data is Map<String, dynamic> &&
-            data['status'].toString() == 'true' &&
-            data['data'] != null &&
-            data['data'] is List) {
-          setState(() {
-            regionData = List<Map<String, dynamic>>.from(data['data']);
-            isLoading = false;
-            print('Region Data Loaded: ${regionData.length} items');
-            print('Region Data Content: $regionData');
-          });
-        } else {
-          print(
-            'API returned invalid data: ${data['message'] ?? 'No message'}',
-          );
-          setState(() {
-            isLoading = false;
-            regionData = []; // Ensure empty list to avoid null issues
-          });
-        }
-      } else {
-        print('Server error: ${response.statusCode}');
-        setState(() {
-          isLoading = false;
-          regionData = [];
-        });
-      }
-    } catch (e) {
-      print('Exception: $e');
-      setState(() {
-        isLoading = false;
-        regionData = [];
-      });
-    }
-  }
-
   void _fetchCity() async {
     final String url = URLS().get_all_city_apiUrl;
-
-    // Fetch state_id from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('state_id', '22');
     print('state_id 22 saved to SharedPreferences');
@@ -216,8 +154,6 @@ class _propertyCardState extends State<propertyCard> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print('Response Status Code: ${response.statusCode}');
-        print('Raw Response Body: "${response.body}"');
         if (data['status'] == 'true') {
           setState(() {
             CityData = List<Map<String, dynamic>>.from(data['data'] ?? []);
@@ -244,19 +180,56 @@ class _propertyCardState extends State<propertyCard> {
     }
   }
 
-  void _fetchVillages(String cityId) async {
-    final url = URLS().get_all_village_by_city_apiUrl;
+  void _fetchTaluka(String cityId) async {
+    final String url = URLS().get_all_taluka_apiUrl;
     var requestBody = {"city_id": cityId};
+    log('Request Body: ${jsonEncode(requestBody)}');
 
     try {
-      final response = await http.post(
+      var response = await http.post(
         Uri.parse(url),
-        body: jsonEncode(requestBody),
         headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print('Taluka Response Status Code: ${response.statusCode}');
+        print('Taluka Raw Response Body: "${response.body}"');
+
+        if (data['status'] == 'true') {
+          setState(() {
+            talukaData = List<Map<String, dynamic>>.from(data['data']);
+            selectedTaluka = null;
+            selectedTalukaId = null;
+            villageData = [];
+            selectedVillage = null;
+            selectedVillageId = null;
+          });
+        }
+      }
+    } catch (e) {
+      print('Taluka fetch error: $e');
+    }
+  }
+
+  void _fetchVillage(String talukaId) async {
+    final String url = URLS().get_all_village_apiUrl;
+    var requestBody = {"taluka_id": talukaId};
+    log('Request Body: ${jsonEncode(requestBody)}');
+
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Village Response Status Code: ${response.statusCode}');
+        print('Village Raw Response Body: "${response.body}"');
+
         if (data['status'] == 'true') {
           setState(() {
             villageData = List<Map<String, dynamic>>.from(data['data']);
@@ -264,19 +237,55 @@ class _propertyCardState extends State<propertyCard> {
         }
       }
     } catch (e) {
-      print("Exception while fetching villages: $e");
+      print('Village fetch error: $e');
     }
+  }
+
+  void _fetchOffices() async {
+    // final String url =
+    //     URLS().get_all_offices_apiUrl; // Ensure this URL is defined
+    // var requestBody = {"state_id": "22"};
+    // log('Request Body: ${jsonEncode(requestBody)}');
+
+    // try {
+    //   var response = await http.post(
+    //     Uri.parse(url),
+    //     headers: {'Content-Type': 'application/json'},
+    //     body: jsonEncode(requestBody),
+    //   );
+
+    //   if (response.statusCode == 200) {
+    //     final data = jsonDecode(response.body);
+    //     print('Office Response Status Code: ${response.statusCode}');
+    //     print('Office Raw Response Body: "${response.body}"');
+
+    //     if (data['status'] == 'true') {
+    //       setState(() {
+    //         officeData = List<Map<String, dynamic>>.from(data['data']);
+    //       });
+    //     }
+    //   }
+    // } catch (e) {
+    //   print('Office fetch error: $e');
+    // }
   }
 
   Future<void> _onRefresh() async {
     setState(() {
       isLoading = true;
       Selectedcity = null;
+      SelectedId = null;
+      selectedTaluka = null;
+      selectedTalukaId = null;
+      selectedVillage = null;
+      selectedVillageId = null;
+      selectedOffice = null;
+      selectedOfficeId = null;
       _CTSNoController.clear();
-      selectedVillageName = null;
-      selectedRegionId = null;
-      _officeController.clear();
+      selectedLanguage = null;
     });
+    _fetchCity();
+    _fetchOffices();
   }
 
   @override
@@ -322,12 +331,40 @@ class _propertyCardState extends State<propertyCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.00,
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0x40F57C03),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            width: 0.5,
+                            color: const Color(0xFFFCCACA),
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
+                        child: Text(
+                          PropertyCardStrings.getString(
+                            'note',
+                            widget.isToggled,
+                          ),
+                          style: AppFontStyle2.blinker(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF36322E),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     Text(
                       PropertyCardStrings.getString(
                         'pleaseEnterYourDetails',
                         widget.isToggled,
                       ),
-
                       style: AppFontStyle.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -335,85 +372,6 @@ class _propertyCardState extends State<propertyCard> {
                         color: const Color(0xFF36322E),
                       ),
                       textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    FormField<String>(
-                      validator: (value) {
-                        if (_selectedregion == null ||
-                            _selectedregion!.trim().isEmpty) {
-                          return 'Please select a region';
-                        }
-                        return null;
-                      },
-                      builder: (FormFieldState<String> state) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            DropdownSearch<String>(
-                              items: regionData.map<String>((item) {
-                                return widget.isToggled
-                                    ? (item['region_name_in_local_language'])
-                                          .toString()
-                                    : (item['region_name']).toString();
-                              }).toList(),
-                              selectedItem: _selectedregion,
-                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                dropdownSearchDecoration: InputDecoration(
-                                  hintText: PropertyCardStrings.getString(
-                                    'region', // Changed from 'Region' to 'region' to match the key
-                                    widget.isToggled,
-                                  ),
-                                  hintStyle: AppFontStyle2.blinker(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.57,
-                                    color: const Color(0xFF36322E),
-                                  ),
-                                  border: OutlineInputBorder(),
-                                  errorText: state.errorText,
-                                ),
-                              ),
-                              popupProps: PopupProps.menu(
-                                showSearchBox: true,
-                                searchFieldProps: TextFieldProps(
-                                  decoration: InputDecoration(
-                                    hintText: widget.isToggled
-                                        ? 'प्रदेश शोधा...'
-                                        : 'Search Region...',
-                                    hintStyle: AppFontStyle2.blinker(),
-                                    border: OutlineInputBorder(),
-                                  ),
-                                ),
-                              ),
-                              dropdownButtonProps: DropdownButtonProps(
-                                icon: const Icon(
-                                  Icons.keyboard_arrow_down,
-                                  size: 28,
-                                  color: Color(0xFF9CA3AF),
-                                ),
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedregion = value;
-                                  final matchedRegion = regionData.firstWhere(
-                                    (element) =>
-                                        (widget.isToggled
-                                            ? (element['region_name_in_local_language'] ??
-                                                  element['region_name'])
-                                            : element['region_name']) ==
-                                        value,
-                                    orElse: () => {},
-                                  );
-                                  selectedRegionId = matchedRegion.isNotEmpty
-                                      ? matchedRegion['id'].toString()
-                                      : null;
-                                  state.didChange(value);
-                                });
-                              },
-                            ),
-                          ],
-                        );
-                      },
                     ),
                     const SizedBox(height: 16),
                     FormField<String>(
@@ -435,15 +393,6 @@ class _propertyCardState extends State<propertyCard> {
                             widget.isToggled,
                           );
                         }
-                        // if (!RegExp(
-                        //   r'^[\p{L}\s]+$',
-                        //   unicode: true,
-                        // ).hasMatch(trimmedValue)) {
-                        //   return ValidationMessagespropertycard.getMessage(
-                        //     'onlyAlphabetsAllowed',
-                        //     widget.isToggled,
-                        //   );
-                        // }
                         return null;
                       },
                       builder: (FormFieldState<String> state) {
@@ -476,7 +425,19 @@ class _propertyCardState extends State<propertyCard> {
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(6),
-                                    borderSide: const BorderSide(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
                                       color: Color(0xFFC5C5C5),
                                     ),
                                   ),
@@ -500,7 +461,21 @@ class _propertyCardState extends State<propertyCard> {
                                         ? 'जिल्हा शोधा...'
                                         : 'Search District...',
                                     hintStyle: AppFontStyle2.blinker(),
-                                    border: const OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -515,35 +490,26 @@ class _propertyCardState extends State<propertyCard> {
                                 if (value != null) {
                                   setState(() {
                                     Selectedcity = value;
-
-                                    // Find the matching city based on toggled state
-                                    final matchedCity = CityData.firstWhere(
-                                      (element) {
-                                        final displayName = widget.isToggled
-                                            ? (element['city_name_in_local_language'] ??
-                                                  element['city_name'] ??
-                                                  '')
-                                            : (element['city_name'] ?? '');
-                                        return displayName == value;
-                                      },
-                                      orElse: () =>
-                                          {}, // Return empty map if no match
-                                    );
-
-                                    // Set SelectedId safely
+                                    final matchedCity = CityData.firstWhere((
+                                      element,
+                                    ) {
+                                      final displayName = widget.isToggled
+                                          ? (element['city_name_in_local_language'] ??
+                                                element['city_name'] ??
+                                                '')
+                                          : (element['city_name'] ?? '');
+                                      return displayName == value;
+                                    }, orElse: () => {});
                                     SelectedId = matchedCity.isNotEmpty
                                         ? matchedCity['id'].toString()
                                         : null;
-
-                                    // Fetch villages if SelectedId is valid
                                     if (SelectedId != null) {
-                                      _fetchVillages(SelectedId!);
+                                      _fetchTaluka(SelectedId!);
                                     } else {
                                       print(
                                         "No matching city found for value: '$value'",
                                       );
                                     }
-
                                     state.didChange(value);
                                   });
                                 }
@@ -556,14 +522,14 @@ class _propertyCardState extends State<propertyCard> {
                     const SizedBox(height: 16),
                     FormField<String>(
                       validator: (value) {
-                        if (selectedVillageName == null ||
-                            selectedVillageName!.trim().isEmpty) {
+                        if (selectedTaluka == null ||
+                            selectedTaluka!.trim().isEmpty) {
                           return ValidationMessagespropertycard.getMessage(
-                            'pleaseSelectVillage',
+                            'pleaseSelectTaluka',
                             widget.isToggled,
                           );
                         }
-                        final trimmedValue = selectedVillageName!.trim();
+                        final trimmedValue = selectedTaluka!.trim();
                         if (RegExp(
                           r'<.*?>|script|alert|on\w+=',
                           caseSensitive: false,
@@ -573,12 +539,282 @@ class _propertyCardState extends State<propertyCard> {
                             widget.isToggled,
                           );
                         }
-                        if (!RegExp(
-                          r'^[\p{L}\s]+$',
-                          unicode: true,
+                        return null;
+                      },
+                      builder: (FormFieldState<String> state) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            DropdownSearch<String>(
+                              items: talukaData.map<String>((item) {
+                                return widget.isToggled
+                                    ? (item['taluka_name_in_local_language'] ??
+                                              item['taluka_name'] ??
+                                              '')
+                                          .toString()
+                                    : (item['taluka_name'] ?? '').toString();
+                              }).toList(),
+                              selectedItem: selectedTaluka,
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
+                                  hintText: PropertyCardStrings.getString(
+                                    'taluka',
+                                    widget.isToggled,
+                                  ),
+                                  hintStyle: AppFontStyle2.blinker(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.57,
+                                    color: const Color(0xFF36322E),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 14,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  errorText: state.errorText,
+                                ),
+                              ),
+                              popupProps: PopupProps.menu(
+                                showSearchBox: true,
+                                searchFieldProps: TextFieldProps(
+                                  textCapitalization: TextCapitalization.words,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(
+                                        r'^[a-zA-Z\u0900-\u095F\u0970-\u097F\s]+$',
+                                      ),
+                                    ),
+                                    LengthLimitingTextInputFormatter(50),
+                                  ],
+                                  decoration: InputDecoration(
+                                    hintText: widget.isToggled
+                                        ? 'तालुका शोधा...'
+                                        : 'Search Taluka...',
+                                    hintStyle: AppFontStyle2.blinker(),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              dropdownButtonProps: DropdownButtonProps(
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down,
+                                  size: 28,
+                                  color: Color(0xFF9CA3AF),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedTaluka = value;
+                                  final matchedTaluka = talukaData.firstWhere(
+                                    (element) =>
+                                        (widget.isToggled
+                                            ? (element['taluka_name_in_local_language'] ??
+                                                  element['taluka_name'])
+                                            : element['taluka_name']) ==
+                                        value,
+                                    orElse: () => {},
+                                  );
+                                  selectedTalukaId = matchedTaluka.isNotEmpty
+                                      ? matchedTaluka['id'].toString()
+                                      : null;
+                                  if (selectedTalukaId != null) {
+                                    _fetchVillage(selectedTalukaId!);
+                                  }
+                                  state.didChange(value);
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    FormField<String>(
+                      validator: (value) {
+                        if (selectedOffice == null ||
+                            selectedOffice!.trim().isEmpty) {
+                          return ValidationMessagespropertycard.getMessage(
+                            'pleaseSelectOffice',
+                            widget.isToggled,
+                          );
+                        }
+                        final trimmedValue = selectedOffice!.trim();
+                        if (RegExp(
+                          r'<.*?>|script|alert|on\w+=',
+                          caseSensitive: false,
                         ).hasMatch(trimmedValue)) {
                           return ValidationMessagespropertycard.getMessage(
-                            'onlyAlphabetsAllowed',
+                            'invalidCharacters',
+                            widget.isToggled,
+                          );
+                        }
+                        return null;
+                      },
+                      builder: (FormFieldState<String> state) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            DropdownSearch<String>(
+                              items: officeData.map<String>((item) {
+                                return widget.isToggled
+                                    ? (item['office_name_in_local_language'] ??
+                                              item['office_name'] ??
+                                              '')
+                                          .toString()
+                                    : (item['office_name'] ?? '').toString();
+                              }).toList(),
+                              selectedItem: selectedOffice,
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
+                                  hintText: PropertyCardStrings.getString(
+                                    'office',
+                                    widget.isToggled,
+                                  ),
+                                  hintStyle: AppFontStyle2.blinker(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.57,
+                                    color: const Color(0xFF36322E),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 14,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  errorText: state.errorText,
+                                ),
+                              ),
+                              popupProps: PopupProps.menu(
+                                showSearchBox: true,
+                                searchFieldProps: TextFieldProps(
+                                  textCapitalization: TextCapitalization.words,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(
+                                        r'^[a-zA-Z\u0900-\u095F\u0970-\u097F\s]+$',
+                                      ),
+                                    ),
+                                    LengthLimitingTextInputFormatter(50),
+                                  ],
+                                  decoration: InputDecoration(
+                                    hintText: widget.isToggled
+                                        ? 'कार्यालय शोधा...'
+                                        : 'Search Office...',
+                                    hintStyle: AppFontStyle2.blinker(),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              dropdownButtonProps: DropdownButtonProps(
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down,
+                                  size: 28,
+                                  color: Color(0xFF9CA3AF),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedOffice = value;
+                                  final matchedOffice = officeData.firstWhere(
+                                    (element) =>
+                                        (widget.isToggled
+                                            ? (element['office_name_in_local_language'] ??
+                                                  element['office_name'])
+                                            : element['office_name']) ==
+                                        value,
+                                    orElse: () => {},
+                                  );
+                                  selectedOfficeId = matchedOffice.isNotEmpty
+                                      ? matchedOffice['id'].toString()
+                                      : null;
+                                  state.didChange(value);
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    FormField<String>(
+                      validator: (value) {
+                        if (selectedVillage == null ||
+                            selectedVillage!.trim().isEmpty) {
+                          return ValidationMessagespropertycard.getMessage(
+                            'pleaseSelectVillage',
+                            widget.isToggled,
+                          );
+                        }
+                        final trimmedValue = selectedVillage!.trim();
+                        if (RegExp(
+                          r'<.*?>|script|alert|on\w+=',
+                          caseSensitive: false,
+                        ).hasMatch(trimmedValue)) {
+                          return ValidationMessagespropertycard.getMessage(
+                            'invalidCharacters',
                             widget.isToggled,
                           );
                         }
@@ -597,7 +833,7 @@ class _propertyCardState extends State<propertyCard> {
                                           .toString()
                                     : (item['village_name'] ?? '').toString();
                               }).toList(),
-                              selectedItem: selectedVillageName,
+                              selectedItem: selectedVillage,
                               dropdownDecoratorProps: DropDownDecoratorProps(
                                 dropdownSearchDecoration: InputDecoration(
                                   hintText: PropertyCardStrings.getString(
@@ -616,7 +852,19 @@ class _propertyCardState extends State<propertyCard> {
                                   ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(6),
-                                    borderSide: const BorderSide(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
                                       color: Color(0xFFC5C5C5),
                                     ),
                                   ),
@@ -640,8 +888,21 @@ class _propertyCardState extends State<propertyCard> {
                                         ? 'गाव शोधा...'
                                         : 'Search Village...',
                                     hintStyle: AppFontStyle2.blinker(),
-
-                                    border: const OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -654,8 +915,7 @@ class _propertyCardState extends State<propertyCard> {
                               ),
                               onChanged: (value) {
                                 setState(() {
-                                  selectedVillageName = value;
-
+                                  selectedVillage = value;
                                   final matchedVillage = villageData.firstWhere(
                                     (element) =>
                                         (widget.isToggled
@@ -665,11 +925,9 @@ class _propertyCardState extends State<propertyCard> {
                                         value,
                                     orElse: () => {},
                                   );
-
                                   selectedVillageId = matchedVillage.isNotEmpty
                                       ? matchedVillage['id'].toString()
                                       : null;
-
                                   state.didChange(value);
                                 });
                               },
@@ -677,92 +935,6 @@ class _propertyCardState extends State<propertyCard> {
                           ],
                         );
                       },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _officeController,
-                      decoration: InputDecoration(
-                        hintText: PropertyCardStrings.getString(
-                          'office',
-                          widget.isToggled,
-                        ),
-                        hintStyle: AppFontStyle2.blinker(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          height: 1.57,
-                          color: const Color(0xFF36322E),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFC5C5C5),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFC5C5C5),
-                          ),
-                        ),
-                      ),
-                      inputFormatters: [
-                        // Custom formatter to allow letters and single spaces
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'^[a-zA-Z\u0900-\u095F\u0970-\u097F\s]+$'),
-                        ),
-                        TextInputFormatter.withFunction((oldValue, newValue) {
-                          // Prevent multiple spaces and leading/trailing spaces
-                          String text = newValue.text;
-                          // Replace multiple spaces with single space
-                          text = text.replaceAll(RegExp(r'\s+'), ' ');
-                          // Remove leading space
-                          text = text.trimLeft();
-
-                          return text == newValue.text
-                              ? newValue
-                              : TextEditingValue(
-                                  text: text,
-                                  selection: TextSelection.collapsed(
-                                    offset: text.length,
-                                  ),
-                                );
-                        }),
-                        LengthLimitingTextInputFormatter(50),
-                      ],
-                      textCapitalization: TextCapitalization.words,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return ValidationMessagespropertycard.getMessage(
-                            'pleaseEnterOffice',
-                            widget.isToggled,
-                          );
-                        }
-                        final trimmedValue = value.trim();
-                        if (RegExp(
-                          r'<.*?>|script|alert|on\w+=',
-                          caseSensitive: false,
-                        ).hasMatch(trimmedValue)) {
-                          return ValidationMessagespropertycard.getMessage(
-                            'invalidCharacters',
-                            widget.isToggled,
-                          );
-                        }
-                        // Validate: only letters and single spaces between words
-                        if (!RegExp(
-                          r'^[\p{L}]+( [\p{L}]+)*$', // Letters + optional (space + letters) repeated
-                          unicode: true,
-                        ).hasMatch(trimmedValue)) {
-                          return ValidationMessagespropertycard.getMessage(
-                            'onlyAlphabetsAndSingleSpaces',
-                            widget.isToggled,
-                          );
-                        }
-                        return null;
-                      },
-                      style: AppFontStyle2.blinker(),
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -780,18 +952,15 @@ class _propertyCardState extends State<propertyCard> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide(color: Color(0xFFC5C5C5)),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFC5C5C5),
-                          ),
+                          borderSide: BorderSide(color: Color(0xFFC5C5C5)),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(6),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFC5C5C5),
-                          ),
+                          borderSide: BorderSide(color: Color(0xFFC5C5C5)),
                         ),
                       ),
                       inputFormatters: [
@@ -802,11 +971,8 @@ class _propertyCardState extends State<propertyCard> {
                         ),
                         TextInputFormatter.withFunction((oldValue, newValue) {
                           String text = newValue.text;
-                          // Replace multiple spaces with single space
                           text = text.replaceAll(RegExp(r'\s+'), ' ');
-                          // Remove leading space
                           text = text.trimLeft();
-
                           return text == newValue.text
                               ? newValue
                               : TextEditingValue(
@@ -840,97 +1006,125 @@ class _propertyCardState extends State<propertyCard> {
                       },
                       style: AppFontStyle2.blinker(),
                     ),
-                    // ============== LANGUAGE DROPDOWN (NEW) ==============
                     const SizedBox(height: 16),
-
-                    // ============== LANGUAGE DROPDOWN (3 LANGUAGES) added By Sahil ==============
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFC5C5C5)),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: _getCurrentLanguage(),
-                          isExpanded: true,
-                          icon: const Icon(
-                            Icons.arrow_drop_down,
-                            color: Color(0xFF9CA3AF),
-                          ),
-                          hint: Text(
-                            LocalizedStrings.getString(
-                              'selectLanguage',
-                              widget.isToggled,
-                            ),
-                            style: AppFontStyle2.blinker(
-                              fontSize: 16,
-                              color: Color(0xFF36322E),
-                            ),
-                          ),
-                          items: [
-                            DropdownMenuItem(
-                              value: 'en',
-                              child: Text(
-                                "English",
-                                style: AppFontStyle2.blinker(fontSize: 16),
+                    FormField<String>(
+                      validator: (value) {
+                        if (selectedLanguage == null ||
+                            selectedLanguage!.trim().isEmpty) {
+                          return ValidationMessagespropertycard.getMessage(
+                            'pleaseSelectLanguage',
+                            widget.isToggled,
+                          );
+                        }
+                        return null;
+                      },
+                      builder: (FormFieldState<String> state) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            DropdownSearch<String>(
+                              items: const ["English", "Marathi"],
+                              selectedItem: selectedLanguage,
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
+                                  hintText: LocalizedStrings.getString(
+                                    'selectLanguage',
+                                    widget.isToggled,
+                                  ),
+                                  labelText: LocalizedStrings.getString(
+                                    'selectLanguage',
+                                    widget.isToggled,
+                                  ),
+                                  hintStyle: AppFontStyle2.blinker(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.57,
+                                    color: const Color(0xFF36322E),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 14,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  errorText: state.errorText,
+                                ),
                               ),
-                            ),
-                            DropdownMenuItem(
-                              value: 'hi',
-                              child: Text(
-                                "हिंदी",
-                                style: AppFontStyle2.blinker(fontSize: 16),
+                              popupProps: PopupProps.menu(
+                                showSearchBox: true,
+                                searchFieldProps: TextFieldProps(
+                                  textCapitalization: TextCapitalization.words,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(r'^[a-zA-Z\s]+$'),
+                                    ),
+                                    LengthLimitingTextInputFormatter(50),
+                                  ],
+                                  decoration: InputDecoration(
+                                    hintText: widget.isToggled
+                                        ? 'भाषा शोधा...'
+                                        : 'Search Language...',
+                                    hintStyle: AppFontStyle2.blinker(),
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFFC5C5C5),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                            DropdownMenuItem(
-                              value: 'mr',
-                              child: Text(
-                                "मराठी",
-                                style: AppFontStyle2.blinker(fontSize: 16),
+                              dropdownButtonProps: const DropdownButtonProps(
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down,
+                                  size: 28,
+                                  color: Color(0xFF9CA3AF),
+                                ),
                               ),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedLanguage = value;
+                                  state.didChange(value);
+                                });
+                              },
                             ),
+                            const SizedBox(height: 16),
                           ],
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              setState(() {
-                                // Update toggle: true = Marathi, false = English, but now we support Hindi too
-                                // You can extend your logic here
-                                if (newValue == 'mr') {
-                                  _selectedLanguage = 'mr';
-                                } else if (newValue == 'hi') {
-                                  _selectedLanguage = 'hi';
-                                } else {
-                                  _selectedLanguage = 'en';
-                                }
-                              });
-
-                              // Save to SharedPreferences
-                              SharedPreferences.getInstance().then((prefs) {
-                                prefs.setString(
-                                  'app_language',
-                                  _selectedLanguage,
-                                );
-                              });
-
-                              // Trigger rebuild in parent if needed
-                              // widget.onLanguageChanged?.call(_selectedLanguage == 'mr');
-                            }
-                          },
-                        ),
-                      ),
+                        );
+                      },
                     ),
-
                     Padding(
-                      padding: const EdgeInsets.only(top: 50.0),
+                      padding: const EdgeInsets.only(top: 20.0),
                       child: Container(
                         width: double.infinity,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF57C03),
+                          color: const Color(0xFFF26500),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: TextButton(
@@ -947,17 +1141,15 @@ class _propertyCardState extends State<propertyCard> {
                               Map<String, dynamic> formData = {
                                 "tbl_name": widget.tblName,
                                 "lead_id": widget.package_lead_id,
-
-                                "package_id":
-                                    widget.packageId ??
-                                    "", // Send empty string if null
+                                "package_id": widget.packageId ?? "",
                                 "customer_id": customerId,
                                 "state_id": stateId,
                                 "city_id": SelectedId,
+                                "taluka_id": selectedTalukaId,
                                 "village_id": selectedVillageId,
-                                "region": selectedRegionId,
-                                "sro_office": _officeController.text,
+                                "sro_office": selectedOfficeId,
                                 "cts_no": _CTSNoController.text,
+                                "language": selectedLanguage,
                               };
                               submitQuickServiceForm(context, formData);
                             }
@@ -968,7 +1160,6 @@ class _propertyCardState extends State<propertyCard> {
                                 'next',
                                 widget.isToggled,
                               ),
-
                               style: AppFontStyle2.blinker(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -979,50 +1170,30 @@ class _propertyCardState extends State<propertyCard> {
                         ),
                       ),
                     ),
-
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                    SizedBox(
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          //    foregroundColor: Colors.black, // Text color
-                          backgroundColor: Colors.white,
-                          side: const BorderSide(color: Colors.black),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Text(
-                          'View Sample',
-                          style: AppFontStyle2.blinker(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                    const SizedBox(height: 16),
                     Container(
-                      width: double.infinity,
+                      height: 50,
                       decoration: BoxDecoration(
-                        color: const Color(0x40F57C03),
+                        border: Border.all(color: Colorfile.borderDark),
+                        color: Colorfile.white,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          width: 0.5,
-                          color: const Color(0xFFFCCACA),
-                        ),
                       ),
-                      padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
-                      child: Text(
-                        PropertyCardStrings.getString('note', widget.isToggled),
-
-                        style: AppFontStyle2.blinker(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF36322E),
+                      child: TextButton(
+                        onPressed: () {
+                          print("View Sample button pressed");
+                        },
+                        child: Center(
+                          child: Text(
+                            LocalizedStrings.getString(
+                              'viewSample',
+                              widget.isToggled,
+                            ),
+                            style: AppFontStyle2.blinker(
+                              color: Colorfile.lightblack,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ),

@@ -3,85 +3,46 @@ class LocalizedStrings {
     final Map<String, Map<String, String>> descriptionTranslations = {
       'selectServices': {
         'en': 'list  of  services',
-        'local': 'सेवाएँ चुनें',
+        'local': 'सेवांची यादी', // previously Hindi
       },
       'note': {
         'en':
             'Note : Our document drafting service is a professional offering provided by our in-house, highly qualified advocates. We prepare a variety of legal documents, including Sale Deeds, Wills, Gift Deeds, Mortgage Deeds, Leave and License Agreements, Lease Deeds, Partition Deeds, and other required documents, out of which some can be registered at any SRO office.',
         'local':
-            'नोट: हमारी दस्तावेज़ ड्राफ्टिंग सेवा हमारे अनुभवी और योग्य अधिवक्ताओं द्वारा प्रदान की जाने वाली एक पेशेवर सेवा है। हम बिक्री विलेख, वसीयत, उपहार विलेख, बंधक विलेख, लीव और लाइसेंस अनुबंध, लीज विलेख, विभाजन विलेख और अन्य आवश्यक कानूनी दस्तावेज़ तैयार करते हैं, जिनमें से कुछ को किसी भी SRO कार्यालय में पंजीकृत किया जा सकता है।',
+            'टीप: आमची दस्तऐवज तयार करण्याची सेवा ही आमच्या अंतर्गत अत्यंत पात्र वकिलांकडून दिली जाणारी व्यावसायिक सेवा आहे. आम्ही विक्री खत, वसीयत, दानपत्र, गहाणखत, सुट्टी आणि परवाना करार, भाडेपट्टी, फेरविभाग खत आणि इतर आवश्यक कायदेशीर दस्तऐवज तयार करतो, त्यापैकी काही कोणत्याही SRO कार्यालयात नोंदणी करता येऊ शकतात.',
       },
       'pleaseEnterYourDetails': {
         'en': 'Please Enter Your Details',
-        'local': 'कृपया अपने विवरण दर्ज करें',
+        'local': 'कृपया तुमची माहिती भरा',
       },
-      'district': {
-        'en': 'District',
-        'local': 'जिला',
-      },
-      'taluka': {
-        'en': 'Taluka/Tahshil',
-        'local': 'तालुका/तहसील',
-      },
-      'village': {
-        'en': 'Village/ Mouza',
-        'local': 'गांव/मौजा',
-      },
+      'district': {'en': 'District', 'local': 'जिल्हा'},
+      'taluka': {'en': 'Taluka/Tahshil', 'local': 'तालुका/तहसील'},
+      'village': {'en': 'Village/ Mouza', 'local': 'गाव/मौजे'},
       'fieldSurveyNo': {
         'en': 'Field Survey No./ CTS No',
-        'local': 'फील्ड सर्वे क्र.',
+        'local': 'फील्ड सर्वे नंबर / CTS नंबर',
       },
-      'byName': {
-        'en': 'By Name',
-        'local': 'नाम से',
-      },
+      'byName': {'en': 'By Name', 'local': 'नावाने'},
       'byNameHint': {
         'en': '(In case survey no. is not known)',
-        'local': '(यदि सर्वेक्षण संख्या ज्ञात नहीं है तो)',
+        'local': '(सर्वे नंबर माहित नसल्यास)',
       },
-      'mutationNo': {
-        'en': 'Mutation No./Ferfar No',
-        'local': 'फेरफार क्र.',
-      },
-      'mutationNoHint': {
-        'en': '',
-        'local': '(यदि उपलब्ध हो)',
-      },
-      'byKhataNo': {
-        'en': 'By Khata No.',
-        'local': 'खाता क्र.',
-      },
-      'byKhataNoHint': {
-        'en': '(If available)',
-        'local': '(यदि उपलब्ध हो)',
-      },
-      'next': {
-        'en': 'Submit',
-        'local': 'समीप भेजें',
-      },
-      'viewSample': {
-        'en': 'View Sample',
-        'local': 'नमूना देखें',
-      },
-      'bookCall': {
-        'en': 'Book Appointment',
-        'local': 'नमूना देखें',
-      },
-      'chatWithUs': {
-        'en': 'Chat with Us',
-        'local': 'हमसे चैट करें',
-      },
+      'mutationNo': {'en': 'Mutation No./Ferfar No', 'local': 'फेरफार क्रमांक'},
+      'mutationNoHint': {'en': '', 'local': '(जर उपलब्ध असेल तर)'},
+      'byKhataNo': {'en': 'By Khata No.', 'local': 'खाता क्रमांकाने'},
+      'byKhataNoHint': {'en': '(If available)', 'local': '(जर उपलब्ध असेल तर)'},
+      'next': {'en': 'Submit', 'local': 'सबमिट करा'},
+      'viewSample': {'en': 'View Sample', 'local': 'नमुना पहा'},
+      'bookCall': {'en': 'Book Appointment', 'local': 'अपॉइंटमेंट बुक करा'},
+      'chatWithUs': {'en': 'Chat with Us', 'local': 'आमच्याशी चॅट करा'},
       'additional benefits': {
         'en': 'Comprehensive package with additional benefits',
-        'local': 'अतिरिक्त लाभों के साथ समग्र पैकेज',
+        'local': 'अतिरिक्त फायद्यांसह संपूर्ण पॅकेज',
       },
-      'selectLanguage': {
-        'en': 'Select Language',
-        'local': 'भाषा चयन करें',
-      },
+      'selectLanguage': {'en': 'Select Language', 'local': 'भाषा निवडा'},
       'pleaseSelectLanguage': {
         'en': 'Please select a language',
-        'local': 'कृपया एक भाषा चयन करें',
+        'local': 'कृपया भाषा निवडा',
       },
     };
 
@@ -202,10 +163,7 @@ class IndexSearchStrings {
         'en': 'Select Village/Town/City',
         'local': 'गाव/नगर/शहर निवडा',
       },
-      'selectYear': {
-        'en': 'Year',
-        'local': 'वर्ष निवडा',
-      },
+      'selectYear': {'en': 'Year', 'local': 'वर्ष निवडा'},
       'ctsNo': {
         'en': 'Enter CTS No./FS No./Plot No',
         'local': 'सीटीएस क्रमांक/एफएस क्रमांक/प्लॉट क्रमांक प्रविष्ट करा',
@@ -243,14 +201,8 @@ class ReraCertificateStrings {
         'en': 'Builder/Promoter Name',
         'local': 'बांधकाम व्यावसायिक/प्रवर्तकाचे नाव',
       },
-      'pincode': {
-        'en': 'Pin Code',
-        'local': 'पिनकोड',
-      },
-      'city': {
-        'en': 'City',
-        'local': 'शहर',
-      },
+      'pincode': {'en': 'Pin Code', 'local': 'पिनकोड'},
+      'city': {'en': 'City', 'local': 'शहर'},
       'next': {'en': 'Submit', 'local': 'पुढे'},
       'note': {
         'en':
@@ -311,10 +263,7 @@ class RegisteredDocumentStrings {
         'local': 'सीटीएस क्रमांक/एफएस क्रमांक/प्लॉट क्रमांक प्रविष्ट करा',
       },
       'byName': {'en': 'Name', 'local': 'नाव'},
-      'byNameHint': {
-        'en': '',
-        'local': '',
-      },
+      'byNameHint': {'en': '', 'local': ''},
       'typeOfDocument': {
         'en': 'Type Of Document',
         'local': 'दस्तऐवजाचा प्रकार',
@@ -412,19 +361,19 @@ class PropertyStrings {
         'en':
             '​Note : The e-Valuation system by the Department of Registration & Stamps, Government of Maharashtra, is an online platform designed to determine the market value of properties across the state. This system aids in calculating the appropriate stamp duty and registration fees for property transactions and its valuation.​',
         'hi':
-            'नोट: महाराष्ट्र शासन के पंजीयन और मुद्रांक विभाग द्वारा विकसित ई-मूल्यांकन प्रणाली एक ऑनलाइन मंच है, जिसका उद्देश्य राज्य भर में संपत्तियों का बाजार मूल्य निर्धारित करना है। यह प्रणाली संपत्ति लेन-देन के लिए उपयुक्त मुद्रांक शुल्क और पंजीकरण शुल्क की गणना करने में सहायक है।'
+            'नोट: महाराष्ट्र शासन के पंजीयन और मुद्रांक विभाग द्वारा विकसित ई-मूल्यांकन प्रणाली एक ऑनलाइन मंच है, जिसका उद्देश्य राज्य भर में संपत्तियों का बाजार मूल्य निर्धारित करना है। यह प्रणाली संपत्ति लेन-देन के लिए उपयुक्त मुद्रांक शुल्क और पंजीकरण शुल्क की गणना करने में सहायक है।',
       },
       'pleaseEnterYourDetails': {
         'en': 'Please Enter Your Details',
-        'hi': 'कृपया अपनी संपत्ति का विवरण दर्ज करें'
+        'hi': 'कृपया अपनी संपत्ति का विवरण दर्ज करें',
       },
       'propertyType': {
         'en': 'Select Property Type',
-        'hi': 'संपत्ति का प्रकार चुनें'
+        'hi': 'संपत्ति का प्रकार चुनें',
       },
       'natureOfProperty': {
         'en': 'Select Nature of Property',
-        'hi': 'संपत्ति की प्रकृति चुनें'
+        'hi': 'संपत्ति की प्रकृति चुनें',
       },
       'district': {'en': 'District', 'hi': 'जिला चुनें'},
       'taluka': {'en': 'Taluka', 'hi': 'तहसील चुनें'},
@@ -447,44 +396,26 @@ class AreaConverterStrings {
         'en':
             'Note: Aapli Chawadi is a digital platform developed by the Government of Maharashtra to promote transparency and efficiency in local governance. It serves as a communication bridge between Gram Panchayats and citizens. The portal allows villagers to access important documents, notices, and meeting information online. It enhances public participation by providing real-time updates on Gram Sabha decisions and development works. Overall, Aapli Chawadi strengthens e-governance at the grassroots level. This section will provide information about any third-party rights created on a property.',
         'hi':
-            'नोट: आपली चावडी महाराष्ट्र सरकार द्वारा विकसित एक डिजिटल प्लेटफॉर्म है, जिसका उद्देश्य स्थानीय शासन में पारदर्शिता और दक्षता को बढ़ावा देना है। यह ग्राम पंचायतों और नागरिकों के बीच संवाद का माध्यम है। इस पोर्टल के ज़रिए ग्रामीण महत्वपूर्ण दस्तावेज़, सूचनाएं और बैठकों की जानकारी ऑनलाइन प्राप्त कर सकते हैं। यह ग्राम सभा के निर्णयों और विकास कार्यों की रियल-टाइम अपडेट प्रदान कर जनभागीदारी को बढ़ाता है। कुल मिलाकर, आपली चावडी जमीनी स्तर पर ई-गवर्नेंस को मजबूत करती है। इस अनुभाग में किसी भी संपत्ति पर बनाए गए तृतीय पक्ष अधिकारों की जानकारी उपलब्ध कराई जाएगी।'
+            'नोट: आपली चावडी महाराष्ट्र सरकार द्वारा विकसित एक डिजिटल प्लेटफॉर्म है, जिसका उद्देश्य स्थानीय शासन में पारदर्शिता और दक्षता को बढ़ावा देना है। यह ग्राम पंचायतों और नागरिकों के बीच संवाद का माध्यम है। इस पोर्टल के ज़रिए ग्रामीण महत्वपूर्ण दस्तावेज़, सूचनाएं और बैठकों की जानकारी ऑनलाइन प्राप्त कर सकते हैं। यह ग्राम सभा के निर्णयों और विकास कार्यों की रियल-टाइम अपडेट प्रदान कर जनभागीदारी को बढ़ाता है। कुल मिलाकर, आपली चावडी जमीनी स्तर पर ई-गवर्नेंस को मजबूत करती है। इस अनुभाग में किसी भी संपत्ति पर बनाए गए तृतीय पक्ष अधिकारों की जानकारी उपलब्ध कराई जाएगी।',
       },
       'pleaseEnterYourDetails': {
         'en': 'Please Enter Your Details',
-        'hi': 'कृपया अपनी संपत्ति का विवरण दर्ज करें'
+        'hi': 'कृपया अपनी संपत्ति का विवरण दर्ज करें',
       },
-      'stateHint': {
-        'en': 'Select State',
-        'hi': 'राज्य चुनें',
-      },
-      'stateError': {
-        'en': 'Please select a state',
-        'hi': 'कृपया राज्य निवडा',
-      },
-      'stateSearchHint': {
-        'en': 'Search State...',
-        'hi': 'राज्य शोधा...',
-      },
+      'stateHint': {'en': 'Select State', 'hi': 'राज्य चुनें'},
+      'stateError': {'en': 'Please select a state', 'hi': 'कृपया राज्य निवडा'},
+      'stateSearchHint': {'en': 'Search State...', 'hi': 'राज्य शोधा...'},
       'inputHint': {
         'en': 'Enter No. of Units',
         'hi': 'रूपांतरण के लिए मान दर्ज करें',
       },
-      'unitHint': {
-        'en': 'Unit',
-        'hi': 'एकक',
-      },
-      'swapTooltip': {
-        'en': 'Swap Units',
-        'hi': 'एकके बदला',
-      },
+      'unitHint': {'en': 'Unit', 'hi': 'एकक'},
+      'swapTooltip': {'en': 'Swap Units', 'hi': 'एकके बदला'},
       'resultPlaceholder': {
         'en': 'Enter a value to convert',
         'hi': 'रूपांतरासाठी मूल्य प्रविष्ट करा',
       },
-      'submit': {
-        'en': 'Submit',
-        'hi': 'जमा करें',
-      },
+      'submit': {'en': 'Submit', 'hi': 'जमा करें'},
       'successMessage': {
         'en': 'Form submitted successfully!',
         'hi': 'फॉर्म यशस्वीरीत्या सबमिट केला!',
@@ -506,19 +437,19 @@ class Aaplichawli {
         'en':
             'Note : Aapli Chawadi is a digital platform developed by the Government of Maharashtra to promote transparency and efficiency in local governance. It serves as a communication bridge between Gram Panchayats and citizens. The portal allows villagers to access important documents, notices, and meeting information online. It enhances public participation by providing real-time updates on Gram Sabha decisions and development works. Overall, Aapli Chawadi strengthens e-governance at the grassroots level. Here will provide information of third party rights created on any property.​',
         'hi':
-            'नोट: आपली चावडी महाराष्ट्र सरकार द्वारा विकसित एक डिजिटल प्लेटफॉर्म है, जिसका उद्देश्य स्थानीय शासन में पारदर्शिता और दक्षता को बढ़ावा देना है। यह ग्राम पंचायतों और नागरिकों के बीच संवाद का सेतु बनता है। इस पोर्टल के माध्यम से ग्रामीण महत्वपूर्ण दस्तावेज़, सूचनाएं और बैठक संबंधी जानकारी ऑनलाइन प्राप्त कर सकते हैं। यह ग्राम सभा के निर्णयों और विकास कार्यों की वास्तविक समय में जानकारी देकर जनभागीदारी को बढ़ाता है। कुल मिलाकर, आपली चावडी जमीनी स्तर पर ई-शासन को सशक्त बनाती है। यहाँ किसी भी संपत्ति पर बनाए गए तृतीय पक्ष अधिकारों की जानकारी प्रदान की जाएगी।'
+            'नोट: आपली चावडी महाराष्ट्र सरकार द्वारा विकसित एक डिजिटल प्लेटफॉर्म है, जिसका उद्देश्य स्थानीय शासन में पारदर्शिता और दक्षता को बढ़ावा देना है। यह ग्राम पंचायतों और नागरिकों के बीच संवाद का सेतु बनता है। इस पोर्टल के माध्यम से ग्रामीण महत्वपूर्ण दस्तावेज़, सूचनाएं और बैठक संबंधी जानकारी ऑनलाइन प्राप्त कर सकते हैं। यह ग्राम सभा के निर्णयों और विकास कार्यों की वास्तविक समय में जानकारी देकर जनभागीदारी को बढ़ाता है। कुल मिलाकर, आपली चावडी जमीनी स्तर पर ई-शासन को सशक्त बनाती है। यहाँ किसी भी संपत्ति पर बनाए गए तृतीय पक्ष अधिकारों की जानकारी प्रदान की जाएगी।',
       },
       'pleaseEnterYourDetails': {
         'en': 'Please Enter Your Details',
-        'hi': 'कृपया अपनी संपत्ति का विवरण दर्ज करें'
+        'hi': 'कृपया अपनी संपत्ति का विवरण दर्ज करें',
       },
       'propertyType': {
         'en': 'Select Property Type',
-        'hi': 'संपत्ति का प्रकार चुनें'
+        'hi': 'संपत्ति का प्रकार चुनें',
       },
       'natureOfProperty': {
         'en': 'Select Nature of Property',
-        'hi': 'संपत्ति की प्रकृति चुनें'
+        'hi': 'संपत्ति की प्रकृति चुनें',
       },
       'district': {'en': 'District', 'hi': 'जिला चुनें'},
       'taluka': {'en': 'Taluka', 'hi': 'तहसील चुनें'},
@@ -543,68 +474,26 @@ class CourtcasesStrings {
         'en': 'Please Enter Your Details',
         'local': 'कृपया आपला तपशील प्रविष्ट करा',
       },
-      'district': {
-        'en': 'District',
-        'local': 'जिल्हा',
-      },
-      'selectCourt': {
-        'en': 'Select Court',
-        'local': 'न्यायालय निवडा',
-      },
-      'partyNames': {
-        'en': 'Party Name',
-        'local': 'पक्षकारांची नावे',
-      },
-      'caseNo': {
-        'en': 'Case No.',
-        'local': 'प्रकरण क्रमांक',
-      },
-      'dateFormatHint': {
-        'en': 'DD-MM-YYYY',
-        'local': 'दिनांक-महिना-वर्ष',
-      },
-      'next': {
-        'en': 'Submit',
-        'local': 'पुढे',
-      },
+      'district': {'en': 'District', 'local': 'जिल्हा'},
+      'selectCourt': {'en': 'Select Court', 'local': 'न्यायालय निवडा'},
+      'partyNames': {'en': 'Party Name', 'local': 'पक्षकारांची नावे'},
+      'caseNo': {'en': 'Case No.', 'local': 'प्रकरण क्रमांक'},
+      'dateFormatHint': {'en': 'DD-MM-YYYY', 'local': 'दिनांक-महिना-वर्ष'},
+      'next': {'en': 'Submit', 'local': 'पुढे'},
       'description': {
         'en':
             "Note: Here, you can search for litigations between parties or if you know the case number. We provide comprehensive information regarding cases pending or disposed of in the Hon'ble Supreme Court, Hon'ble Bombay High Court and its benches, as well as lower courts.",
         'local':
-            "नोट: यहां आप पक्षकारों के बीच मुकदमे या यदि आपको मामला संख्या ज्ञात हो, तो उसकी जानकारी खोज सकते हैं। हम माननीय सर्वोच्च न्यायालय, माननीय बॉम्बे उच्च न्यायालय और उसकी पीठों तथा अधीनस्थ न्यायालयों में लंबित या निपटाए गए मामलों की संपूर्ण जानकारी प्रदान करते हैं।"
+            "नोट: यहां आप पक्षकारों के बीच मुकदमे या यदि आपको मामला संख्या ज्ञात हो, तो उसकी जानकारी खोज सकते हैं। हम माननीय सर्वोच्च न्यायालय, माननीय बॉम्बे उच्च न्यायालय और उसकी पीठों तथा अधीनस्थ न्यायालयों में लंबित या निपटाए गए मामलों की संपूर्ण जानकारी प्रदान करते हैं।",
       },
-      'caseType': {
-        'en': 'Case Type',
-        'local': 'प्रकरणाचा प्रकार',
-      },
-      'caseNumber': {
-        'en': 'Case Number',
-        'local': 'प्रकरण क्रमांक',
-      },
-      'caseYear': {
-        'en': 'Case Year',
-        'local': 'प्रकरण वर्ष',
-      },
-      'ifNotKnown': {
-        'en': 'if not known then',
-        'local': 'जर माहित नसेल',
-      },
-      'partyName': {
-        'en': 'Party Name',
-        'local': 'पक्षकाराचे नाव',
-      },
-      'partyYear': {
-        'en': 'Party Year',
-        'local': 'पक्षकार वर्ष',
-      },
-      'selectBench': {
-        'en': 'Select Bench',
-        'local': 'बेंच निवडा',
-      },
-      'department': {
-        'en': 'Department',
-        'local': 'विभाग',
-      },
+      'caseType': {'en': 'Case Type', 'local': 'प्रकरणाचा प्रकार'},
+      'caseNumber': {'en': 'Case Number', 'local': 'प्रकरण क्रमांक'},
+      'caseYear': {'en': 'Case Year', 'local': 'प्रकरण वर्ष'},
+      'ifNotKnown': {'en': 'if not known then', 'local': 'जर माहित नसेल'},
+      'partyName': {'en': 'Party Name', 'local': 'पक्षकाराचे नाव'},
+      'partyYear': {'en': 'Party Year', 'local': 'पक्षकार वर्ष'},
+      'selectBench': {'en': 'Select Bench', 'local': 'बेंच निवडा'},
+      'department': {'en': 'Department', 'local': 'विभाग'},
     };
 
     final language = isToggled ? 'local' : 'en';
@@ -639,7 +528,7 @@ class AdhikarAbhilekhStrings {
             'Note: Legal consultation clears the haze, guiding you through the complex legal maze. Protect your rights, avoid the fall — smart advice can save it all. Need legal advice? We\'re here to guide, with trusted experts by your side. From contracts to court, we’ve got your back. Book your consultation — stay on track.',
         'local':
             'नोट: पेमेंट के बाद दस्तावेज़ को ऑर्डर सेक्शन से केवल एक बार डाउनलोड किया जा सकता है, जिसे आप शेयर कर सकते हैं।',
-      }
+      },
     };
 
     final language = isToggled ? 'local' : 'en';
@@ -675,10 +564,7 @@ class LocalizationStringsinstant {
 class localizationOrderStrings {
   static String getServiceName(String serviceName, bool isToggled) {
     final Map<String, Map<String, String>> serviceNames = {
-      'Property Search': {
-        'en': 'Property Search',
-        'local': 'मालमत्ता शोध',
-      },
+      'Property Search': {'en': 'Property Search', 'local': 'मालमत्ता शोध'},
       'Rera Certificate': {
         'en': 'Rera Certificate',
         'local': 'रेरा प्रमाणपत्र',
@@ -717,10 +603,7 @@ class localizationOrderdetailsStrings {
 class PackageStrings {
   static String getPackageName(String packageName, bool isToggled) {
     final Map<String, Map<String, String>> packageTranslations = {
-      'package1': {
-        'en': 'package1',
-        'local': 'पॅकेज १',
-      },
+      'package1': {'en': 'package1', 'local': 'पॅकेज १'},
       'Basic Package': {'en': 'Basic Package', 'local': 'मूलभूत पॅकेज'},
       'Premium Package': {'en': 'Premium Package', 'local': 'प्रिमियम पॅकेज'},
     };
@@ -731,10 +614,7 @@ class PackageStrings {
 
   static String getShortDescription(String description, bool isToggled) {
     final Map<String, Map<String, String>> descriptionTranslations = {
-      'package': {
-        'en': 'package',
-        'local': 'पॅकेज',
-      },
+      'package': {'en': 'package', 'local': 'पॅकेज'},
       'Includes basic services': {
         'en': 'Includes basic services',
         'local': 'मूलभूत सेवा समाविष्ट करते',
