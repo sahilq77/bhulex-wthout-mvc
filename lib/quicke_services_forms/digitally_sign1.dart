@@ -1459,7 +1459,9 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                       _ByNameIncasesurveynoisnotknownController
                                           .text,
                                   "mutation_no": _mutationNoController.text,
-                                  "language": selectedLanguage,
+                                  "language": selectedLanguage == "English"
+                                      ? "0"
+                                      : "1",
                                 };
                                 submitQuickServiceForm(context, formData);
                               }
