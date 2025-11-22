@@ -1,7 +1,11 @@
 // ignore_for_file: camel_case_types
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'package:bhulexapp/network/url.dart';
+import 'package:bhulexapp/validations_chan_lang/propertycard.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -48,6 +52,12 @@ class ReraCertificate extends StatefulWidget {
 class _ReraCertificateState extends State<ReraCertificate> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = true;
+  List<Map<String, dynamic>> CityData = [];
+  String? Selectedcity;
+  String? SelectedId;
+  List<Map<String, dynamic>> villageData = [];
+  String? selectedVillage;
+  String? selectedVillageId;
   final NetworkChecker _networkChecker = NetworkChecker();
 
   final TextEditingController _projectController = TextEditingController();
@@ -68,6 +78,7 @@ class _ReraCertificateState extends State<ReraCertificate> {
   void initState() {
     super.initState();
     _networkChecker.startMonitoring(context);
+    _fetchCity();
   }
 
   Future<void> _onRefresh() async {
@@ -78,6 +89,82 @@ class _ReraCertificateState extends State<ReraCertificate> {
       _pincodeController.clear();
       _cityController.clear();
     });
+  }
+
+  void _fetchCity() async {
+    final String url = URLS().get_all_city_apiUrl;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('state_id', '22');
+    print('state_id 22 saved to SharedPreferences');
+
+    var requestBody = {"state_id": "22"};
+    print('Request URL: $url');
+    print('Request Body: ${jsonEncode(requestBody)}');
+
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      print('Response Status Code: ${response.statusCode}');
+      print('Raw Response Body: "${response.body}"');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['status'] == 'true') {
+          setState(() {
+            CityData = List<Map<String, dynamic>>.from(data['data'] ?? []);
+            isLoading = false;
+          });
+          print('Fetched City Data: ${data['data']}');
+        } else {
+          print('Failed to load city: ${data['message'] ?? 'Unknown error'}');
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } else {
+        print('Failed to load data. Status code: ${response.statusCode}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _fetchVillage(String talukaId) async {
+    final String url = URLS().get_all_village_apiUrl;
+    var requestBody = {"taluka_id": talukaId};
+    log('Request Body: ${jsonEncode(requestBody)}');
+
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Village Response Status Code: ${response.statusCode}');
+        print('Village Raw Response Body: "${response.body}"');
+
+        if (data['status'] == 'true') {
+          setState(() {
+            villageData = List<Map<String, dynamic>>.from(data['data']);
+          });
+        }
+      }
+    } catch (e) {
+      print('Village fetch error: $e');
+    }
   }
 
   Future<void> submitQuickServiceForm(
@@ -293,6 +380,152 @@ class _ReraCertificateState extends State<ReraCertificate> {
                     },
                   ),
                   const SizedBox(height: 16),
+                  FormField<String>(
+                    validator: (value) {
+                      if (Selectedcity == null ||
+                          Selectedcity!.trim().isEmpty) {
+                        return ValidationMessagespropertycard.getMessage(
+                          'pleaseSelectDistrict',
+                          widget.isToggled,
+                        );
+                      }
+                      final trimmedValue = Selectedcity!.trim();
+                      if (RegExp(
+                        r'<.*?>|script|alert|on\w+=',
+                        caseSensitive: false,
+                      ).hasMatch(trimmedValue)) {
+                        return ValidationMessagespropertycard.getMessage(
+                          'invalidCharacters',
+                          widget.isToggled,
+                        );
+                      }
+                      return null;
+                    },
+                    builder: (FormFieldState<String> state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DropdownSearch<String>(
+                            items: CityData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['city_name_in_local_language'])
+                                        .toString()
+                                  : (item['city_name']).toString();
+                            }).toList(),
+                            selectedItem: Selectedcity,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: PropertyCardStrings.getString(
+                                  'district',
+                                  widget.isToggled,
+                                ),
+                                hintStyle: AppFontStyle2.blinker(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.57,
+                                  color: const Color(0xFF36322E),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                errorText: state.errorText,
+                              ),
+                            ),
+                            popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                textCapitalization: TextCapitalization.words,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(
+                                      r'^[a-zA-Z\u0900-\u095F\u0970-\u097F\s]+$',
+                                    ),
+                                  ),
+                                  LengthLimitingTextInputFormatter(50),
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: widget.isToggled
+                                      ? 'जिल्हा शोधा...'
+                                      : 'Search District...',
+                                  hintStyle: AppFontStyle2.blinker(),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            dropdownButtonProps: DropdownButtonProps(
+                              icon: const Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 28,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  Selectedcity = value;
+                                  final matchedCity = CityData.firstWhere((
+                                    element,
+                                  ) {
+                                    final displayName = widget.isToggled
+                                        ? (element['city_name_in_local_language'] ??
+                                              element['city_name'] ??
+                                              '')
+                                        : (element['city_name'] ?? '');
+                                    return displayName == value;
+                                  }, orElse: () => {});
+                                  SelectedId = matchedCity.isNotEmpty
+                                      ? matchedCity['id'].toString()
+                                      : null;
+                                  if (SelectedId != null) {
+                                    // _fetchTaluka(SelectedId!);
+                                  } else {
+                                    print(
+                                      "No matching city found for value: '$value'",
+                                    );
+                                  }
+                                  state.didChange(value);
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: _pincodeController,
                     decoration: InputDecoration(
@@ -339,68 +572,142 @@ class _ReraCertificateState extends State<ReraCertificate> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _cityController,
-                    decoration: InputDecoration(
-                      hintText: ReraCertificateStrings.getString(
-                        'city',
-                        widget.isToggled,
-                      ),
-                      hintStyle: AppFontStyle2.blinker(
-                        color: Color(0xFF36322E),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
-                      ),
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r'^[\u0900-\u097F\u0966-\u096F a-zA-Z\s]+$'),
-                      ),
-                      TextInputFormatter.withFunction((oldValue, newValue) {
-                        String text = newValue.text;
-                        text = text.replaceAll(RegExp(r'\s+'), ' ');
-                        text = text.trimLeft();
-                        return text == newValue.text
-                            ? newValue
-                            : TextEditingValue(
-                                text: text,
-                                selection: TextSelection.collapsed(
-                                  offset: text.length,
-                                ),
-                              );
-                      }),
-                      LengthLimitingTextInputFormatter(50),
-                    ],
-                    textCapitalization: TextCapitalization.words,
+
+                  FormField<String>(
                     validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return ValidationMessagesrera.getMessage(
-                          'pleaseEnterCity',
+                      if (selectedVillage == null ||
+                          selectedVillage!.trim().isEmpty) {
+                        return ValidationMessagespropertycard.getMessage(
+                          'pleaseSelectVillage',
                           widget.isToggled,
                         );
                       }
-                      final trimmedValue = value.trim();
+                      final trimmedValue = selectedVillage!.trim();
                       if (RegExp(
                         r'<.*?>|script|alert|on\w+=',
                         caseSensitive: false,
                       ).hasMatch(trimmedValue)) {
-                        return ValidationMessagesrera.getMessage(
+                        return ValidationMessagespropertycard.getMessage(
                           'invalidCharacters',
                           widget.isToggled,
                         );
                       }
                       return null;
+                    },
+                    builder: (FormFieldState<String> state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DropdownSearch<String>(
+                            items: villageData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['village_name_in_local_language'] ??
+                                            item['village_name'] ??
+                                            '')
+                                        .toString()
+                                  : (item['village_name'] ?? '').toString();
+                            }).toList(),
+                            selectedItem: selectedVillage,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: PropertyCardStrings.getString(
+                                  'village',
+                                  widget.isToggled,
+                                ),
+                                hintStyle: AppFontStyle2.blinker(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.57,
+                                  color: const Color(0xFF36322E),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                errorText: state.errorText,
+                              ),
+                            ),
+                            popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                textCapitalization: TextCapitalization.words,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(
+                                      r'^[a-zA-Z\u0900-\u095F\u0970-\u097F\s]+$',
+                                    ),
+                                  ),
+                                  LengthLimitingTextInputFormatter(50),
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: widget.isToggled
+                                      ? 'गाव शोधा...'
+                                      : 'Search Village...',
+                                  hintStyle: AppFontStyle2.blinker(),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            dropdownButtonProps: DropdownButtonProps(
+                              icon: const Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 28,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedVillage = value;
+                                final matchedVillage = villageData.firstWhere(
+                                  (element) =>
+                                      (widget.isToggled
+                                          ? (element['village_name_in_local_language'] ??
+                                                element['village_name'])
+                                          : element['village_name']) ==
+                                      value,
+                                  orElse: () => {},
+                                );
+                                selectedVillageId = matchedVillage.isNotEmpty
+                                    ? matchedVillage['id'].toString()
+                                    : null;
+                                state.didChange(value);
+                              });
+                            },
+                          ),
+                        ],
+                      );
                     },
                   ),
                   const SizedBox(height: 16),

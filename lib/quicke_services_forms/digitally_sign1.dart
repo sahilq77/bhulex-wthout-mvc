@@ -512,7 +512,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                         ? matchedCity['id'].toString()
                                         : null;
 
-                                    if (SelectedId != null) {
+                                    if (SelectedId != null){
                                       _fetchTaluka(SelectedId!);
                                     }
 
