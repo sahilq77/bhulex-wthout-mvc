@@ -96,27 +96,27 @@ class LocalizedStrings {
 class PropertyCardStrings {
   // English Strings
   static const String pleaseEnterYourDetailsEn = 'Please Enter Your Details';
-  static const String districtEn = 'Select District';
+  static const String districtEn = 'Select District *';
   static const String talukaEn = 'Taluka/Tahshil';
-  static const String villageEn = 'Village';
+  static const String villageEn = 'Village *';
   static const String nextEn = 'Submit';
   static const String noteEn =
       'Note: After payment document can be downloaded from order section only once which you can share.';
   static const String regionEn = 'Region';
-  static const String officeEn = 'Select Office';
+  static const String officeEn = 'Select Office *';
   static const String ctsNoEn = 'CTS No.';
 
   // Marathi Strings
   static const String pleaseEnterYourDetailsMr =
       'कृपया आपला तपशील प्रविष्ट करा';
-  static const String districtMr = 'जिल्हा';
+  static const String districtMr = 'जिल्हा *';
   static const String talukaMr = 'तालुका';
-  static const String villageMr = 'गाव';
+  static const String villageMr = 'गाव *';
   static const String nextMr = 'पुढे';
   static const String noteMr =
       'टीप: पेमेंट केल्यानंतर दस्तऐवज केवळ एकदाच ऑर्डर विभागातून डाउनलोड केला जाऊ शकतो, जो आपण शेअर करू शकता.';
   static const String regionMr = 'प्रदेश';
-  static const String officeMr = 'कार्यालय';
+  static const String officeMr = 'कार्यालय *';
   static const String ctsNoMr = 'सीटीएस क्रमांक प्रविष्ट करा';
 
   // Method to get string based on toggle state

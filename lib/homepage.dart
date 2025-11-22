@@ -747,7 +747,7 @@ class _HomePage2State extends State<HomePage2> {
                                           "tbl_eighta_extract",
                                           "tbl_e_mutation_extract",
                                           "tbl_bhu_naksha",
-                                          "",
+                                          "tbl_cts_map",
                                         ].contains(tblName)) {
                                           Navigator.push(
                                             context,

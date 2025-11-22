@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:bhulexapp/validations_chan_lang/seventwelveextract.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,6 +46,8 @@ class propertyCard extends StatefulWidget {
 }
 
 class _propertyCardState extends State<propertyCard> {
+  final TextEditingController _ByNameIncasesurveynoisnotknownController =
+      TextEditingController();
   List<Map<String, dynamic>> CityData = [];
   String? Selectedcity;
   String? SelectedId;
@@ -519,147 +522,147 @@ class _propertyCardState extends State<propertyCard> {
                         );
                       },
                     ),
-                    const SizedBox(height: 16),
-                    FormField<String>(
-                      validator: (value) {
-                        if (selectedTaluka == null ||
-                            selectedTaluka!.trim().isEmpty) {
-                          return ValidationMessagespropertycard.getMessage(
-                            'pleaseSelectTaluka',
-                            widget.isToggled,
-                          );
-                        }
-                        final trimmedValue = selectedTaluka!.trim();
-                        if (RegExp(
-                          r'<.*?>|script|alert|on\w+=',
-                          caseSensitive: false,
-                        ).hasMatch(trimmedValue)) {
-                          return ValidationMessagespropertycard.getMessage(
-                            'invalidCharacters',
-                            widget.isToggled,
-                          );
-                        }
-                        return null;
-                      },
-                      builder: (FormFieldState<String> state) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            DropdownSearch<String>(
-                              items: talukaData.map<String>((item) {
-                                return widget.isToggled
-                                    ? (item['taluka_name_in_local_language'] ??
-                                              item['taluka_name'] ??
-                                              '')
-                                          .toString()
-                                    : (item['taluka_name'] ?? '').toString();
-                              }).toList(),
-                              selectedItem: selectedTaluka,
-                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                dropdownSearchDecoration: InputDecoration(
-                                  hintText: PropertyCardStrings.getString(
-                                    'taluka',
-                                    widget.isToggled,
-                                  ),
-                                  hintStyle: AppFontStyle2.blinker(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.57,
-                                    color: const Color(0xFF36322E),
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 14,
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(6),
-                                    borderSide: BorderSide(
-                                      color: Color(0xFFC5C5C5),
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(6),
-                                    borderSide: BorderSide(
-                                      color: Color(0xFFC5C5C5),
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(6),
-                                    borderSide: BorderSide(
-                                      color: Color(0xFFC5C5C5),
-                                    ),
-                                  ),
-                                  errorText: state.errorText,
-                                ),
-                              ),
-                              popupProps: PopupProps.menu(
-                                showSearchBox: true,
-                                searchFieldProps: TextFieldProps(
-                                  textCapitalization: TextCapitalization.words,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      RegExp(
-                                        r'^[a-zA-Z\u0900-\u095F\u0970-\u097F\s]+$',
-                                      ),
-                                    ),
-                                    LengthLimitingTextInputFormatter(50),
-                                  ],
-                                  decoration: InputDecoration(
-                                    hintText: widget.isToggled
-                                        ? 'तालुका शोधा...'
-                                        : 'Search Taluka...',
-                                    hintStyle: AppFontStyle2.blinker(),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xFFC5C5C5),
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xFFC5C5C5),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xFFC5C5C5),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              dropdownButtonProps: DropdownButtonProps(
-                                icon: const Icon(
-                                  Icons.keyboard_arrow_down,
-                                  size: 28,
-                                  color: Color(0xFF9CA3AF),
-                                ),
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedTaluka = value;
-                                  final matchedTaluka = talukaData.firstWhere(
-                                    (element) =>
-                                        (widget.isToggled
-                                            ? (element['taluka_name_in_local_language'] ??
-                                                  element['taluka_name'])
-                                            : element['taluka_name']) ==
-                                        value,
-                                    orElse: () => {},
-                                  );
-                                  selectedTalukaId = matchedTaluka.isNotEmpty
-                                      ? matchedTaluka['id'].toString()
-                                      : null;
-                                  if (selectedTalukaId != null) {
-                                    _fetchVillage(selectedTalukaId!);
-                                  }
-                                  state.didChange(value);
-                                });
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                    // const SizedBox(height: 16),
+                    // FormField<String>(
+                    //   validator: (value) {
+                    //     if (selectedTaluka == null ||
+                    //         selectedTaluka!.trim().isEmpty) {
+                    //       return ValidationMessagespropertycard.getMessage(
+                    //         'pleaseSelectTaluka',
+                    //         widget.isToggled,
+                    //       );
+                    //     }
+                    //     final trimmedValue = selectedTaluka!.trim();
+                    //     if (RegExp(
+                    //       r'<.*?>|script|alert|on\w+=',
+                    //       caseSensitive: false,
+                    //     ).hasMatch(trimmedValue)) {
+                    //       return ValidationMessagespropertycard.getMessage(
+                    //         'invalidCharacters',
+                    //         widget.isToggled,
+                    //       );
+                    //     }
+                    //     return null;
+                    //   },
+                    //   builder: (FormFieldState<String> state) {
+                    //     return Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         DropdownSearch<String>(
+                    //           items: talukaData.map<String>((item) {
+                    //             return widget.isToggled
+                    //                 ? (item['taluka_name_in_local_language'] ??
+                    //                           item['taluka_name'] ??
+                    //                           '')
+                    //                       .toString()
+                    //                 : (item['taluka_name'] ?? '').toString();
+                    //           }).toList(),
+                    //           selectedItem: selectedTaluka,
+                    //           dropdownDecoratorProps: DropDownDecoratorProps(
+                    //             dropdownSearchDecoration: InputDecoration(
+                    //               hintText: PropertyCardStrings.getString(
+                    //                 'taluka',
+                    //                 widget.isToggled,
+                    //               ),
+                    //               hintStyle: AppFontStyle2.blinker(
+                    //                 fontSize: 16,
+                    //                 fontWeight: FontWeight.w500,
+                    //                 height: 1.57,
+                    //                 color: const Color(0xFF36322E),
+                    //               ),
+                    //               contentPadding: const EdgeInsets.symmetric(
+                    //                 horizontal: 12,
+                    //                 vertical: 14,
+                    //               ),
+                    //               border: OutlineInputBorder(
+                    //                 borderRadius: BorderRadius.circular(6),
+                    //                 borderSide: BorderSide(
+                    //                   color: Color(0xFFC5C5C5),
+                    //                 ),
+                    //               ),
+                    //               enabledBorder: OutlineInputBorder(
+                    //                 borderRadius: BorderRadius.circular(6),
+                    //                 borderSide: BorderSide(
+                    //                   color: Color(0xFFC5C5C5),
+                    //                 ),
+                    //               ),
+                    //               focusedBorder: OutlineInputBorder(
+                    //                 borderRadius: BorderRadius.circular(6),
+                    //                 borderSide: BorderSide(
+                    //                   color: Color(0xFFC5C5C5),
+                    //                 ),
+                    //               ),
+                    //               errorText: state.errorText,
+                    //             ),
+                    //           ),
+                    //           popupProps: PopupProps.menu(
+                    //             showSearchBox: true,
+                    //             searchFieldProps: TextFieldProps(
+                    //               textCapitalization: TextCapitalization.words,
+                    //               inputFormatters: [
+                    //                 FilteringTextInputFormatter.allow(
+                    //                   RegExp(
+                    //                     r'^[a-zA-Z\u0900-\u095F\u0970-\u097F\s]+$',
+                    //                   ),
+                    //                 ),
+                    //                 LengthLimitingTextInputFormatter(50),
+                    //               ],
+                    //               decoration: InputDecoration(
+                    //                 hintText: widget.isToggled
+                    //                     ? 'तालुका शोधा...'
+                    //                     : 'Search Taluka...',
+                    //                 hintStyle: AppFontStyle2.blinker(),
+                    //                 border: OutlineInputBorder(
+                    //                   borderSide: BorderSide(
+                    //                     color: Color(0xFFC5C5C5),
+                    //                   ),
+                    //                 ),
+                    //                 enabledBorder: OutlineInputBorder(
+                    //                   borderSide: BorderSide(
+                    //                     color: Color(0xFFC5C5C5),
+                    //                   ),
+                    //                 ),
+                    //                 focusedBorder: OutlineInputBorder(
+                    //                   borderSide: BorderSide(
+                    //                     color: Color(0xFFC5C5C5),
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           dropdownButtonProps: DropdownButtonProps(
+                    //             icon: const Icon(
+                    //               Icons.keyboard_arrow_down,
+                    //               size: 28,
+                    //               color: Color(0xFF9CA3AF),
+                    //             ),
+                    //           ),
+                    //           onChanged: (value) {
+                    //             setState(() {
+                    //               selectedTaluka = value;
+                    //               final matchedTaluka = talukaData.firstWhere(
+                    //                 (element) =>
+                    //                     (widget.isToggled
+                    //                         ? (element['taluka_name_in_local_language'] ??
+                    //                               element['taluka_name'])
+                    //                         : element['taluka_name']) ==
+                    //                     value,
+                    //                 orElse: () => {},
+                    //               );
+                    //               selectedTalukaId = matchedTaluka.isNotEmpty
+                    //                   ? matchedTaluka['id'].toString()
+                    //                   : null;
+                    //               if (selectedTalukaId != null) {
+                    //                 _fetchVillage(selectedTalukaId!);
+                    //               }
+                    //               state.didChange(value);
+                    //             });
+                    //           },
+                    //         ),
+                    //       ],
+                    //     );
+                    //   },
+                    // ),
                     const SizedBox(height: 16),
                     FormField<String>(
                       validator: (value) {
@@ -1007,6 +1010,155 @@ class _propertyCardState extends State<propertyCard> {
                       style: AppFontStyle2.blinker(),
                     ),
                     const SizedBox(height: 16),
+
+                    FormField<String>(
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return ValidationMessagesseventweleve.getMessage(
+                            'pleaseEnterByName',
+                            widget.isToggled,
+                          );
+                        }
+                        final trimmedValue = value.trim();
+                        if (RegExp(
+                          r'<.*?>|script|alert|on\w+=',
+                          caseSensitive: false,
+                        ).hasMatch(trimmedValue)) {
+                          return ValidationMessagesseventweleve.getMessage(
+                            'invalidCharacters',
+                            widget.isToggled,
+                          );
+                        }
+                        return null;
+                      },
+                      builder: (FormFieldState<String> state) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextFormField(
+                              controller:
+                                  _ByNameIncasesurveynoisnotknownController,
+                              decoration: InputDecoration(
+                                label: RichText(
+                                  text: TextSpan(
+                                    text: LocalizedStrings.getString(
+                                      'byName',
+                                      widget.isToggled,
+                                    ),
+                                    style: AppFontStyle2.blinker(
+                                      color: state.hasError
+                                          ? Theme.of(context).colorScheme.error
+                                          : const Color(0xFF36322E),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text:
+                                            ' ${LocalizedStrings.getString('byNameHint', widget.isToggled)}',
+                                        style: AppFontStyle.poppins(
+                                          color: state.hasError
+                                              ? Theme.of(
+                                                  context,
+                                                ).colorScheme.error
+                                              : const Color(0xFF36322E),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                                ),
+                                errorStyle: TextStyle(
+                                  color: Theme.of(context).colorScheme.error,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(
+                                    r'^[\u0900-\u097F\u0966-\u096F a-zA-Z\s/]+$',
+                                  ),
+                                ),
+                                TextInputFormatter.withFunction((
+                                  oldValue,
+                                  newValue,
+                                ) {
+                                  String text = newValue.text;
+                                  text = text.replaceAll(RegExp(r'\s+'), ' ');
+                                  text = text.trimLeft();
+
+                                  return text == newValue.text
+                                      ? newValue
+                                      : TextEditingValue(
+                                          text: text,
+                                          selection: TextSelection.collapsed(
+                                            offset: text.length,
+                                          ),
+                                        );
+                                }),
+                                LengthLimitingTextInputFormatter(50),
+                              ],
+                              textCapitalization: TextCapitalization.words,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return ValidationMessagesseventweleve.getMessage(
+                                    'pleaseEnterByName',
+                                    widget.isToggled,
+                                  );
+                                }
+                                final trimmedValue = value.trim();
+                                if (RegExp(
+                                  r'<.*?>|script|alert|on\w+=',
+                                  caseSensitive: false,
+                                ).hasMatch(trimmedValue)) {
+                                  return ValidationMessagesseventweleve.getMessage(
+                                    'invalidCharacters',
+                                    widget.isToggled,
+                                  );
+                                }
+                                return null;
+                              },
+                              style: AppFontStyle2.blinker(),
+                              onChanged: (value) {
+                                state.didChange(value);
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        );
+                      },
+                    ),
                     FormField<String>(
                       validator: (value) {
                         if (selectedLanguage == null ||
@@ -1149,7 +1301,12 @@ class _propertyCardState extends State<propertyCard> {
                                 "village_id": selectedVillageId,
                                 "sro_office": selectedOfficeId,
                                 "cts_no": _CTSNoController.text,
-                                "language": selectedLanguage,
+                                "name":
+                                    _ByNameIncasesurveynoisnotknownController
+                                        .text,
+                                "language": selectedLanguage == "English"
+                                    ? "0"
+                                    : "1",
                               };
                               submitQuickServiceForm(context, formData);
                             }

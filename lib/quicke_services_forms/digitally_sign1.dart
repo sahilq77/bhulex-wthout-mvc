@@ -828,8 +828,9 @@ class _DigitallySign1State extends State<DigitallySign1> {
                           );
                         },
                       ),
-                      const SizedBox(height: 16),
+
                       if (widget.tblName == 'tbl_e_mutation_extract') ...[
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _mutationNoController,
                           decoration: InputDecoration(

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:bhulexapp/document_preview.dart';
+import 'package:bhulexapp/validations_chan_lang/seventwelveextract.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Core/AppImages.dart';
 import '../My_package/package_order_details.dart';
-
 import '../colors/custom_color.dart';
 import '../colors/order_fonts.dart';
 import '../form_internet.dart';
@@ -60,6 +61,9 @@ class _IndexSearch1State extends State<IndexSearch1> {
   String? selectedVillageName;
   String? selectedYear;
   bool isLoading = true;
+  List<Map<String, dynamic>> talukaData = [];
+  String? selectedTaluka;
+  String? selectedTalukaId;
   final NetworkChecker _networkChecker = NetworkChecker();
 
   String? Selectedcity;
@@ -82,11 +86,39 @@ class _IndexSearch1State extends State<IndexSearch1> {
     yearList = List.generate(100, (index) => (currentYear - index).toString());
   }
 
+  void _fetchTaluka(String cityId) async {
+    final String url = URLS().get_all_taluka_apiUrl;
+    var requestBody = {"city_id": cityId};
+    log('Request Body: ${jsonEncode(requestBody)}');
+
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        log('Response Status Code: ${response.statusCode}');
+        log('Raw Response Body: "${data}"');
+
+        if (data['status'] == 'true') {
+          setState(() {
+            talukaData = List<Map<String, dynamic>>.from(data['data']);
+          });
+        }
+      }
+    } catch (e) {
+      log('Taluka fetch error: $e');
+    }
+  }
+
   void _fetchSroOffice(int cityId) async {
     final String url = URLS().get_all_sro_office_apiUrl;
-    print('Request URL: $url');
+    log('Request URL: $url');
     var requestBody = {"city_id": cityId};
-    print('Request Body: ${jsonEncode(requestBody)}');
+    log('Request Body: ${jsonEncode(requestBody)}');
 
     try {
       var response = await http.post(
@@ -95,35 +127,39 @@ class _IndexSearch1State extends State<IndexSearch1> {
         headers: {'Content-Type': 'application/json'},
       );
 
-      print('SRO Office Response Status Code: ${response.statusCode}');
-      print('SRO Office Raw Response Body: "${response.body}"');
+      log('SRO Office Response Status Code: ${response.statusCode}');
+      log('SRO Office Raw Response Body: "${response.body}"');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['status'] == 'true') {
           setState(() {
             sroOfficeList = List<Map<String, dynamic>>.from(data['data'] ?? []);
-            print('SRO Office List: $sroOfficeList');
+            log('SRO Office List: $sroOfficeList');
           });
           log('Fetched SRO Office Data: ${data['data']}');
         } else {
-          print(
+          log(
             'Failed to load SRO Office: ${data['message'] ?? 'Unknown error'}',
           );
         }
       } else {
-        print('Failed to load SRO Office. Status code: ${response.statusCode}');
+        log('Failed to load SRO Office. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching SRO Office: $e');
+      log('Error fetching SRO Office: $e');
     }
   }
 
-  void _fetchVillage(int cityId, String sroOfficeId) async {
+  // FIXED: Now takes cityId AND talukaId
+  void _fetchVillage(int cityId, int talukaId) async {
     final String url = URLS().get_all_village_apiUrl;
-    print('Village Request URL: $url');
-    var requestBody = {"city_id": cityId, "sro_office_id": sroOfficeId};
-    print('Village Request Body: ${jsonEncode(requestBody)}');
+    log('Village Request URL: $url');
+    var requestBody = {
+      "city_id": cityId.toString(),
+      "taluka_id": talukaId.toString(),
+    };
+    log('Village Request Body: ${jsonEncode(requestBody)}');
 
     try {
       var response = await http.post(
@@ -132,27 +168,34 @@ class _IndexSearch1State extends State<IndexSearch1> {
         headers: {'Content-Type': 'application/json'},
       );
 
-      print('Village Response Status Code: ${response.statusCode}');
-      print('Village Raw Response Body: "${response.body}"');
+      log('Village Response Status Code: ${response.statusCode}');
+      log('Village Raw Response Body: "${response.body}"');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['status'] == 'true') {
           setState(() {
             villageData = List<Map<String, dynamic>>.from(data['data'] ?? []);
-            print('Village List: $villageData');
+            log('Village List: $villageData');
           });
           log('Fetched Village Data: ${data['data']}');
         } else {
-          print(
-            'Failed to load Village: ${data['message'] ?? 'Unknown error'}',
-          );
+          log('Failed to load Village: ${data['message'] ?? 'Unknown error'}');
+          setState(() {
+            villageData = [];
+          });
         }
       } else {
-        print('Failed to load Village. Status code: ${response.statusCode}');
+        log('Failed to load Village. Status code: ${response.statusCode}');
+        setState(() {
+          villageData = [];
+        });
       }
     } catch (e) {
-      print('Error fetching Village: $e');
+      log('Error fetching Village: $e');
+      setState(() {
+        villageData = [];
+      });
     }
   }
 
@@ -161,8 +204,8 @@ class _IndexSearch1State extends State<IndexSearch1> {
     Map<String, dynamic> formData,
   ) async {
     final String url = URLS().submit_quick_service_enquiry_form_apiUrl;
-    print("Submitting to URL: $url");
-    print("Form Data: ${jsonEncode(formData)}");
+    log("Submitting to URL: $url");
+    log("Form Data: ${jsonEncode(formData)}");
 
     try {
       var response = await http.post(
@@ -171,12 +214,12 @@ class _IndexSearch1State extends State<IndexSearch1> {
         headers: {'Content-Type': 'application/json'},
       );
 
-      print("Response Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
+      log("Response Status Code: ${response.statusCode}");
+      log("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print("Success Response Data: $responseData");
+        log("Success Response Data: $responseData");
 
         if (widget.packageId == "") {
           Navigator.pushReplacement(
@@ -228,11 +271,11 @@ class _IndexSearch1State extends State<IndexSearch1> {
     final String url = URLS().get_all_city_apiUrl;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('state_id', '22');
-    print('state_id 22 saved to SharedPreferences');
+    log('state_id 22 saved to SharedPreferences');
 
     var requestBody = {"state_id": "22"};
-    print('Request URL: $url');
-    print('Request Body: ${jsonEncode(requestBody)}');
+    log('Request URL: $url');
+    log('Request Body: ${jsonEncode(requestBody)}');
 
     try {
       var response = await http.post(
@@ -241,8 +284,8 @@ class _IndexSearch1State extends State<IndexSearch1> {
         body: jsonEncode(requestBody),
       );
 
-      print('Response Status Code: ${response.statusCode}');
-      print('Raw Response Body: "${response.body}"');
+      log('Response Status Code: ${response.statusCode}');
+      log('Raw Response Body: "${response.body}"');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -251,21 +294,21 @@ class _IndexSearch1State extends State<IndexSearch1> {
             CityData = List<Map<String, dynamic>>.from(data['data'] ?? []);
             isLoading = false;
           });
-          print('Fetched City Data: ${data['data']}');
+          log('Fetched City Data: ${data['data']}');
         } else {
-          print('Failed to load city: ${data['message'] ?? 'Unknown error'}');
+          log('Failed to load city: ${data['message'] ?? 'Unknown error'}');
           setState(() {
             isLoading = false;
           });
         }
       } else {
-        print('Failed to load data. Status code: ${response.statusCode}');
+        log('Failed to load data. Status code: ${response.statusCode}');
         setState(() {
           isLoading = false;
         });
       }
     } catch (e) {
-      print('Error: $e');
+      log('Error: $e');
       setState(() {
         isLoading = false;
       });
@@ -283,6 +326,9 @@ class _IndexSearch1State extends State<IndexSearch1> {
       _ByNameIncasesurveynoisnotknownController.clear();
       villageData.clear();
       sroOfficeList.clear();
+      talukaData.clear();
+      selectedTaluka = null;
+      selectedTalukaId = null;
     });
     _fetchCity();
   }
@@ -353,6 +399,7 @@ class _IndexSearch1State extends State<IndexSearch1> {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: 16),
                   Text(
                     IndexSearchStrings.getString(
@@ -366,6 +413,108 @@ class _IndexSearch1State extends State<IndexSearch1> {
                       color: const Color(0xFF36322E),
                     ),
                     textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  FormField<String>(
+                    validator: (value) {
+                      if (selectedYear == null ||
+                          selectedYear!.trim().isEmpty) {
+                        return indexValidationMessages.getMessage(
+                          'pleaseSelectYear',
+                          widget.isToggled,
+                        );
+                      }
+                      return null;
+                    },
+                    builder: (FormFieldState<String> state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DropdownSearch<String>(
+                            items: yearList,
+                            selectedItem: selectedYear,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: IndexSearchStrings.getString(
+                                  'selectYear',
+                                  widget.isToggled,
+                                ),
+                                hintStyle: AppFontStyle2.blinker(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.57,
+                                  color: const Color(0xFF36322E),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                errorText: state.errorText,
+                              ),
+                            ),
+                            popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(4),
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: widget.isToggled
+                                      ? 'वर्ष शोधा...'
+                                      : 'Search Year...',
+                                  hintStyle: AppFontStyle2.blinker(),
+                                  border: const OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            dropdownButtonProps: const DropdownButtonProps(
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 28,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedYear = value;
+                                state.didChange(value);
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 16),
                   FormField<String>(
@@ -503,14 +652,317 @@ class _IndexSearch1State extends State<IndexSearch1> {
                                 villageData.clear();
                                 selectedVillageName = null;
                                 selectedVillageId = null;
+                                talukaData.clear();
+                                selectedTaluka = null;
+                                selectedTalukaId = null;
 
                                 if (SelectedId != null) {
+                                  _fetchTaluka(SelectedId!);
                                   _fetchSroOffice(int.parse(SelectedId!));
                                 } else {
-                                  print(
+                                  log(
                                     'No matching city found for value: $value',
                                   );
                                 }
+
+                                state.didChange(value);
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  FormField<String>(
+                    validator: (value) {
+                      if (selectedTaluka == null ||
+                          selectedTaluka!.trim().isEmpty) {
+                        return ValidationMessagesseventweleve.getMessage(
+                          'pleaseSelectTaluka',
+                          widget.isToggled,
+                        );
+                      }
+                      final trimmedValue = selectedTaluka!.trim();
+                      if (RegExp(
+                        r'<.*?>|script|alert|on\w+=',
+                        caseSensitive: false,
+                      ).hasMatch(trimmedValue)) {
+                        return ValidationMessagesseventweleve.getMessage(
+                          'invalidCharacters',
+                          widget.isToggled,
+                        );
+                      }
+                      return null;
+                    },
+                    builder: (FormFieldState<String> state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DropdownSearch<String>(
+                            items: talukaData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['taluka_name_in_local_language'] ??
+                                            item['taluka_name'] ??
+                                            '')
+                                        .toString()
+                                  : (item['taluka_name'] ?? '').toString();
+                            }).toList(),
+                            selectedItem: selectedTaluka,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: LocalizedStrings.getString(
+                                  'taluka',
+                                  widget.isToggled,
+                                ),
+                                labelText: LocalizedStrings.getString(
+                                  'taluka',
+                                  widget.isToggled,
+                                ),
+                                hintStyle: AppFontStyle2.blinker(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.57,
+                                  color: const Color(0xFF36322E),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                errorText: state.errorText,
+                              ),
+                            ),
+                            popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                textCapitalization: TextCapitalization.words,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(
+                                      r'^[a-zA-Z\u0900-\u095F\u0970-\u097F\s]+$',
+                                    ),
+                                  ),
+                                  LengthLimitingTextInputFormatter(50),
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: widget.isToggled
+                                      ? 'तालुका शोधा...'
+                                      : 'Search Taluka...',
+                                  hintStyle: AppFontStyle2.blinker(),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xFFC5C5C5),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            dropdownButtonProps: const DropdownButtonProps(
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 28,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              log('${widget.isToggled}');
+                              setState(() {
+                                selectedTaluka = value;
+                                final matchedTaluka = talukaData.firstWhere(
+                                  (element) =>
+                                      (widget.isToggled
+                                          ? (element['taluka_name_in_local_language'] ??
+                                                element['taluka_name'])
+                                          : element['taluka_name']) ==
+                                      value,
+                                  orElse: () => {},
+                                );
+                                selectedTalukaId = matchedTaluka.isNotEmpty
+                                    ? matchedTaluka['id'].toString()
+                                    : null;
+
+                                // FIXED: Now correctly properly with cityId and talukaId
+                                if (selectedTalukaId != null &&
+                                    SelectedId != null) {
+                                  int cityId = int.tryParse(SelectedId!) ?? 0;
+                                  int talukaIdInt =
+                                      int.tryParse(selectedTalukaId!) ?? 0;
+                                  if (cityId > 0 && talukaIdInt > 0) {
+                                    _fetchVillage(cityId, talukaIdInt);
+
+                                    // Clear village when taluka changes
+                                    selectedVillageName = null;
+                                    selectedVillageId = null;
+                                    villageData = [];
+                                  }
+                                }
+                                state.didChange(value);
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 16),
+                  FormField<String>(
+                    validator: (value) {
+                      if (selectedVillageName == null ||
+                          selectedVillageName!.trim().isEmpty) {
+                        return indexValidationMessages.getMessage(
+                          'pleaseSelectVillage',
+                          widget.isToggled,
+                        );
+                      }
+                      final trimmedValue = selectedVillageName!.trim();
+                      if (RegExp(
+                        r'<.*?>|script|alert|on\w+=',
+                        caseSensitive: false,
+                      ).hasMatch(trimmedValue)) {
+                        return indexValidationMessages.getMessage(
+                          'invalidCharacters',
+                          widget.isToggled,
+                        );
+                      }
+                      return null;
+                    },
+                    builder: (FormFieldState<String> state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DropdownSearch<String>(
+                            items: villageData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['village_name_in_local_language'] ??
+                                            item['village_name'] ??
+                                            '')
+                                        .toString()
+                                  : (item['village_name'] ?? '').toString();
+                            }).toList(),
+                            selectedItem: selectedVillageName,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: IndexSearchStrings.getString(
+                                  'selectVillage',
+                                  widget.isToggled,
+                                ),
+                                hintStyle: AppFontStyle2.blinker(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.57,
+                                  color: const Color(0xFF36322E),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                errorText: state.errorText,
+                              ),
+                            ),
+                            popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                textCapitalization: TextCapitalization.words,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'[\p{L}\s]', unicode: true),
+                                  ),
+                                  LengthLimitingTextInputFormatter(50),
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: widget.isToggled
+                                      ? 'गाव/नगर/शहर शोधा...'
+                                      : 'Search Village/Town/City...',
+                                  hintStyle: AppFontStyle2.blinker(),
+                                  border: const OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            dropdownButtonProps: const DropdownButtonProps(
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 28,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedVillageName = value;
+
+                                final selectedItem = villageData.firstWhere(
+                                  (item) =>
+                                      (widget.isToggled
+                                          ? (item['village_name_in_local_language'] ??
+                                                item['village_name'])
+                                          : item['village_name']) ==
+                                      value,
+                                  orElse: () => {},
+                                );
+
+                                selectedVillageId = selectedItem.isNotEmpty
+                                    ? selectedItem['id']?.toString()
+                                    : null;
+
+                                log("Selected Village ID: $selectedVillageId");
 
                                 state.didChange(value);
                               });
@@ -649,265 +1101,10 @@ class _IndexSearch1State extends State<IndexSearch1> {
                                     ? selectedItem['id']?.toString()
                                     : null;
 
-                                villageData.clear();
-                                selectedVillageName = null;
-                                selectedVillageId = null;
-
-                                if (SelectedId != null &&
-                                    selectedSroOfficeId != null) {
-                                  _fetchVillage(
-                                    int.parse(SelectedId!),
-                                    selectedSroOfficeId!,
-                                  );
-                                }
-
-                                print(
+                                log(
                                   "Selected SRO Office ID: $selectedSroOfficeId",
                                 );
 
-                                state.didChange(value);
-                              });
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  FormField<String>(
-                    validator: (value) {
-                      if (selectedVillageName == null ||
-                          selectedVillageName!.trim().isEmpty) {
-                        return indexValidationMessages.getMessage(
-                          'pleaseSelectVillage',
-                          widget.isToggled,
-                        );
-                      }
-                      final trimmedValue = selectedVillageName!.trim();
-                      if (RegExp(
-                        r'<.*?>|script|alert|on\w+=',
-                        caseSensitive: false,
-                      ).hasMatch(trimmedValue)) {
-                        return indexValidationMessages.getMessage(
-                          'invalidCharacters',
-                          widget.isToggled,
-                        );
-                      }
-                      return null;
-                    },
-                    builder: (FormFieldState<String> state) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          DropdownSearch<String>(
-                            items: villageData.map<String>((item) {
-                              return widget.isToggled
-                                  ? (item['village_name_in_local_language'] ??
-                                            item['village_name'] ??
-                                            '')
-                                        .toString()
-                                  : (item['village_name'] ?? '').toString();
-                            }).toList(),
-                            selectedItem: selectedVillageName,
-                            dropdownDecoratorProps: DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                hintText: IndexSearchStrings.getString(
-                                  'selectVillage',
-                                  widget.isToggled,
-                                ),
-                                hintStyle: AppFontStyle2.blinker(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.57,
-                                  color: const Color(0xFF36322E),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 14,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFFC5C5C5),
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFFC5C5C5),
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFFC5C5C5),
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                errorText: state.errorText,
-                              ),
-                            ),
-                            popupProps: PopupProps.menu(
-                              showSearchBox: true,
-                              searchFieldProps: TextFieldProps(
-                                textCapitalization: TextCapitalization.words,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                    RegExp(r'[\p{L}\s]', unicode: true),
-                                  ),
-                                  LengthLimitingTextInputFormatter(50),
-                                ],
-                                decoration: InputDecoration(
-                                  hintText: widget.isToggled
-                                      ? 'गाव/नगर/शहर शोधा...'
-                                      : 'Search Village/Town/City...',
-                                  hintStyle: AppFontStyle2.blinker(),
-                                  border: const OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-                            dropdownButtonProps: const DropdownButtonProps(
-                              icon: Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 28,
-                                color: Color(0xFF9CA3AF),
-                              ),
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedVillageName = value;
-
-                                final selectedItem = villageData.firstWhere(
-                                  (item) =>
-                                      (widget.isToggled
-                                          ? (item['village_name_in_local_language'] ??
-                                                item['village_name'])
-                                          : item['village_name']) ==
-                                      value,
-                                  orElse: () => {},
-                                );
-
-                                selectedVillageId = selectedItem.isNotEmpty
-                                    ? selectedItem['id']?.toString()
-                                    : null;
-
-                                print(
-                                  "Selected Village ID: $selectedVillageId",
-                                );
-
-                                state.didChange(value);
-                              });
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  FormField<String>(
-                    validator: (value) {
-                      if (selectedYear == null ||
-                          selectedYear!.trim().isEmpty) {
-                        return indexValidationMessages.getMessage(
-                          'pleaseSelectYear',
-                          widget.isToggled,
-                        );
-                      }
-                      return null;
-                    },
-                    builder: (FormFieldState<String> state) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          DropdownSearch<String>(
-                            items: yearList,
-                            selectedItem: selectedYear,
-                            dropdownDecoratorProps: DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                hintText: IndexSearchStrings.getString(
-                                  'selectYear',
-                                  widget.isToggled,
-                                ),
-                                hintStyle: AppFontStyle2.blinker(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.57,
-                                  color: const Color(0xFF36322E),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 14,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFFC5C5C5),
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFFC5C5C5),
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xFFC5C5C5),
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  borderSide: const BorderSide(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                errorText: state.errorText,
-                              ),
-                            ),
-                            popupProps: PopupProps.menu(
-                              showSearchBox: true,
-                              searchFieldProps: TextFieldProps(
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(4),
-                                ],
-                                decoration: InputDecoration(
-                                  hintText: widget.isToggled
-                                      ? 'वर्ष शोधा...'
-                                      : 'Search Year...',
-                                  hintStyle: AppFontStyle2.blinker(),
-                                  border: const OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
-                            dropdownButtonProps: const DropdownButtonProps(
-                              icon: Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 28,
-                                color: Color(0xFF9CA3AF),
-                              ),
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedYear = value;
                                 state.didChange(value);
                               });
                             },
@@ -1154,7 +1351,13 @@ class _IndexSearch1State extends State<IndexSearch1> {
                     ),
                     child: TextButton(
                       onPressed: () {
-                        print("View Sample button pressed");
+                        log("View Sample button pressed");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DocumentPreviewPage(),
+                          ),
+                        );
                       },
                       child: Center(
                         child: Text(
