@@ -372,7 +372,7 @@ class _MortgageReportsState extends State<CersaiReport> {
                             items: CityData.map<String>((item) {
                               return widget.isToggled
                                   ? (item['city_name_in_local_language'])
-                                      .toString()
+                                        .toString()
                                   : (item['city_name']).toString();
                             }).toList(),
                             selectedItem: Selectedcity,
@@ -437,8 +437,7 @@ class _MortgageReportsState extends State<CersaiReport> {
                                 final matchedCity = CityData.firstWhere(
                                   (element) =>
                                       (widget.isToggled
-                                          ? (element[
-                                              'city_name_in_local_language'])
+                                          ? (element['city_name_in_local_language'])
                                           : element['city_name']) ==
                                       value,
                                   orElse: () => {},
@@ -490,9 +489,9 @@ class _MortgageReportsState extends State<CersaiReport> {
                             items: talukaData.map<String>((item) {
                               return widget.isToggled
                                   ? (item['taluka_name_in_local_language'] ??
-                                          item['taluka_name'] ??
-                                          '')
-                                      .toString()
+                                            item['taluka_name'] ??
+                                            '')
+                                        .toString()
                                   : (item['taluka_name'] ?? '').toString();
                             }).toList(),
                             selectedItem: selectedTaluka,
@@ -556,9 +555,8 @@ class _MortgageReportsState extends State<CersaiReport> {
                                 final matchedTaluka = talukaData.firstWhere(
                                   (element) =>
                                       (widget.isToggled
-                                          ? (element[
-                                                  'taluka_name_in_local_language'] ??
-                                              element['taluka_name'])
+                                          ? (element['taluka_name_in_local_language'] ??
+                                                element['taluka_name'])
                                           : element['taluka_name']) ==
                                       value,
                                   orElse: () => {},
@@ -613,9 +611,9 @@ class _MortgageReportsState extends State<CersaiReport> {
                             items: villageData.map<String>((item) {
                               return widget.isToggled
                                   ? (item['village_name_in_local_language'] ??
-                                          item['village_name'] ??
-                                          '')
-                                      .toString()
+                                            item['village_name'] ??
+                                            '')
+                                        .toString()
                                   : (item['village_name'] ?? '').toString();
                             }).toList(),
                             selectedItem: selectedVillageName,
@@ -679,9 +677,8 @@ class _MortgageReportsState extends State<CersaiReport> {
                                 final matchedVillage = villageData.firstWhere(
                                   (element) =>
                                       (widget.isToggled
-                                          ? (element[
-                                                  'village_name_in_local_language'] ??
-                                              element['village_name'])
+                                          ? (element['village_name_in_local_language'] ??
+                                                element['village_name'])
                                           : element['village_name']) ==
                                       value,
                                   orElse: () => {},
@@ -873,8 +870,9 @@ class _MortgageReportsState extends State<CersaiReport> {
                   TextFormField(
                     controller: _debtorNameController,
                     decoration: InputDecoration(
-                      hintText:
-                          widget.isToggled ? 'देनदार का नाम' : 'Name of Debtor',
+                      hintText: widget.isToggled
+                          ? 'देनदार का नाम'
+                          : 'Name of Debtor',
                       hintStyle: AppFontStyle2.blinker(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -988,77 +986,31 @@ class _MortgageReportsState extends State<CersaiReport> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.borderDark,
-                              ),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colorfile.borderDark),
+                        color: Colorfile.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          print("View Sample button pressed");
+                        },
+                        child: Center(
+                          child: Text(
+                            LocalizedStrings.getString(
+                              'viewSample',
+                              widget.isToggled,
                             ),
-                            child: TextButton(
-                              onPressed: () {
-                                print("View Sample button pressed");
-                              },
-                              child: Center(
-                                child: Text(
-                                  LocalizedStrings.getString(
-                                    'viewSample',
-                                    widget.isToggled,
-                                  ),
-                                  style: AppFontStyle2.blinker(
-                                    color: Colorfile.lightblack,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            style: AppFontStyle2.blinker(
+                              color: Colorfile.lightblack,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.lightwhite,
-                              ),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                print("Chat with Us button pressed");
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    AppImages.whatsapp,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    LocalizedStrings.getString(
-                                      'chatWithUs',
-                                      widget.isToggled,
-                                    ),
-                                    style: AppFontStyle2.blinker(
-                                      color: Colorfile.lightblack,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
