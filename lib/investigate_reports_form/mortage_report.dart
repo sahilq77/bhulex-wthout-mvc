@@ -1,21 +1,22 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:bhulexapp/My_package/package_order_details.dart';
-import 'package:bhulexapp/colors/order_fonts.dart';
-import 'package:bhulexapp/quicke_services_forms/pay.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
-
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Core/AppImages.dart';
+import '../My_package/package_order_details.dart';
+import '../colors/custom_color.dart';
+import '../colors/order_fonts.dart';
 import '../form_internet.dart';
 import '../language/hindi.dart';
 import '../network/url.dart';
+import '../quicke_services_forms/pay.dart';
 import '../validations_chan_lang/mortage.dart';
 
 class MortgageReports extends StatefulWidget {
@@ -23,7 +24,6 @@ class MortgageReports extends StatefulWidget {
   final String serviceName;
   final String tblName;
   final String packageId; // Add this parameter
-
   final bool isToggled; // Added for language toggle
   final String serviceNameInLocalLanguage; // Added for local service name
   final String lead_id;
@@ -32,7 +32,6 @@ class MortgageReports extends StatefulWidget {
   const MortgageReports({
     required this.id,
     required this.packageId,
-
     required this.serviceName,
     required this.tblName,
     required this.isToggled,
@@ -48,6 +47,7 @@ class MortgageReports extends StatefulWidget {
 }
 
 class _MortgageReportsState extends State<MortgageReports> {
+  final TextEditingController _ownerNameController = TextEditingController();
   final TextEditingController _CTSNoController = TextEditingController();
   String? Selectedcity;
   String? SelectedId;
@@ -101,13 +101,12 @@ class _MortgageReportsState extends State<MortgageReports> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder:
-                  (context) => PackageService(
-                    package_Id: widget.packageId,
-                    lead_id: widget.lead_id,
-                    customerid: widget.customer_id,
-                    tbl_name: '',
-                  ),
+              builder: (context) => PackageService(
+                package_Id: widget.packageId,
+                lead_id: widget.lead_id,
+                customerid: widget.customer_id,
+                tbl_name: '',
+              ),
             ),
           );
         }
@@ -130,31 +129,6 @@ class _MortgageReportsState extends State<MortgageReports> {
     }
   }
 
-  // void _fetchCity() async {
-  //   final String url = URLS().get_all_city_apiUrl;
-  //   try {
-  //     var response = await http.post(
-  //       Uri.parse(url),
-  //       headers: {'Content-Type': 'application/json'},
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body);
-  //       if (data['status'] == 'true') {
-  //         setState(() {
-  //           CityData = List<Map<String, dynamic>>.from(data['data']);
-  //         });
-  //         log('Fetched City Data: ${data['data']}');
-  //       } else {
-  //         print('Failed to load city: ${data['message']}');
-  //       }
-  //     } else {
-  //       print('Failed to load data. Status code: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     print('Error: $e');
-  //   }
-  // }
   void _fetchCity() async {
     final String url = URLS().get_all_city_apiUrl;
     log('City URL: $url');
@@ -287,10 +261,9 @@ class _MortgageReportsState extends State<MortgageReports> {
 
   @override
   Widget build(BuildContext context) {
-    String displayServiceName =
-        widget.isToggled
-            ? widget.serviceNameInLocalLanguage
-            : widget.serviceName;
+    String displayServiceName = widget.isToggled
+        ? widget.serviceNameInLocalLanguage
+        : widget.serviceName;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
@@ -328,6 +301,35 @@ class _MortgageReportsState extends State<MortgageReports> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.00,
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: const Color(0x40F57C03),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          width: 0.5,
+                          color: const Color(0xFFFCCACA),
+                        ),
+                      ),
+                      padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
+                      child: Text(
+                        MortgageReportsStrings.getString(
+                          'note',
+                          widget.isToggled,
+                        ),
+                        style: AppFontStyle2.blinker(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF36322E),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
                   Text(
                     MortgageReportsStrings.getString(
                       'pleaseEnterYourDetails',
@@ -377,13 +379,12 @@ class _MortgageReportsState extends State<MortgageReports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DropdownSearch<String>(
-                            items:
-                                CityData.map<String>((item) {
-                                  return widget.isToggled
-                                      ? (item['city_name_in_local_language'])
-                                          .toString()
-                                      : (item['city_name']).toString();
-                                }).toList(),
+                            items: CityData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['city_name_in_local_language'])
+                                        .toString()
+                                  : (item['city_name']).toString();
+                            }).toList(),
                             selectedItem: Selectedcity,
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
@@ -423,10 +424,9 @@ class _MortgageReportsState extends State<MortgageReports> {
                                   LengthLimitingTextInputFormatter(50),
                                 ],
                                 decoration: InputDecoration(
-                                  hintText:
-                                      widget.isToggled
-                                          ? 'जिल्हा शोधा...'
-                                          : 'Search District...',
+                                  hintText: widget.isToggled
+                                      ? 'जिल्हा शोधा...'
+                                      : 'Search District...',
                                   hintStyle: AppFontStyle2.blinker(),
                                   border: const OutlineInputBorder(),
                                 ),
@@ -453,10 +453,9 @@ class _MortgageReportsState extends State<MortgageReports> {
                                   orElse: () => {},
                                 );
 
-                                SelectedId =
-                                    matchedCity.isNotEmpty
-                                        ? matchedCity['id'].toString()
-                                        : null;
+                                SelectedId = matchedCity.isNotEmpty
+                                    ? matchedCity['id'].toString()
+                                    : null;
 
                                 if (SelectedId != null) {
                                   _fetchTaluka(SelectedId!);
@@ -506,15 +505,14 @@ class _MortgageReportsState extends State<MortgageReports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DropdownSearch<String>(
-                            items:
-                                talukaData.map<String>((item) {
-                                  return widget.isToggled
-                                      ? (item['taluka_name_in_local_language'] ??
-                                              item['taluka_name'] ??
-                                              '')
-                                          .toString()
-                                      : (item['taluka_name'] ?? '').toString();
-                                }).toList(),
+                            items: talukaData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['taluka_name_in_local_language'] ??
+                                            item['taluka_name'] ??
+                                            '')
+                                        .toString()
+                                  : (item['taluka_name'] ?? '').toString();
+                            }).toList(),
                             selectedItem: selectedTaluka,
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
@@ -554,10 +552,9 @@ class _MortgageReportsState extends State<MortgageReports> {
                                   LengthLimitingTextInputFormatter(50),
                                 ],
                                 decoration: InputDecoration(
-                                  hintText:
-                                      widget.isToggled
-                                          ? 'तालुका शोधा...'
-                                          : 'Search Taluka...',
+                                  hintText: widget.isToggled
+                                      ? 'तालुका शोधा...'
+                                      : 'Search Taluka...',
                                   hintStyle: AppFontStyle2.blinker(),
                                   border: const OutlineInputBorder(),
                                 ),
@@ -578,16 +575,15 @@ class _MortgageReportsState extends State<MortgageReports> {
                                   (element) =>
                                       (widget.isToggled
                                           ? (element['taluka_name_in_local_language'] ??
-                                              element['taluka_name'])
+                                                element['taluka_name'])
                                           : element['taluka_name']) ==
                                       value,
                                   orElse: () => {},
                                 );
 
-                                selectedTalukaId =
-                                    matchedTaluka.isNotEmpty
-                                        ? matchedTaluka['id'].toString()
-                                        : null;
+                                selectedTalukaId = matchedTaluka.isNotEmpty
+                                    ? matchedTaluka['id'].toString()
+                                    : null;
 
                                 if (selectedTalukaId != null) {
                                   _fetchVillages(
@@ -640,15 +636,14 @@ class _MortgageReportsState extends State<MortgageReports> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DropdownSearch<String>(
-                            items:
-                                villageData.map<String>((item) {
-                                  return widget.isToggled
-                                      ? (item['village_name_in_local_language'] ??
-                                              item['village_name'] ??
-                                              '')
-                                          .toString()
-                                      : (item['village_name'] ?? '').toString();
-                                }).toList(),
+                            items: villageData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['village_name_in_local_language'] ??
+                                            item['village_name'] ??
+                                            '')
+                                        .toString()
+                                  : (item['village_name'] ?? '').toString();
+                            }).toList(),
                             selectedItem: selectedVillageName,
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
@@ -688,10 +683,9 @@ class _MortgageReportsState extends State<MortgageReports> {
                                   LengthLimitingTextInputFormatter(50),
                                 ],
                                 decoration: InputDecoration(
-                                  hintText:
-                                      widget.isToggled
-                                          ? 'गाव शोधा...'
-                                          : 'Search Village...',
+                                  hintText: widget.isToggled
+                                      ? 'गाव शोधा...'
+                                      : 'Search Village...',
                                   hintStyle: AppFontStyle2.blinker(),
                                   border: const OutlineInputBorder(),
                                 ),
@@ -712,16 +706,15 @@ class _MortgageReportsState extends State<MortgageReports> {
                                   (element) =>
                                       (widget.isToggled
                                           ? (element['village_name_in_local_language'] ??
-                                              element['village_name'])
+                                                element['village_name'])
                                           : element['village_name']) ==
                                       value,
                                   orElse: () => {},
                                 );
 
-                                selectedVillageId =
-                                    matchedVillage.isNotEmpty
-                                        ? matchedVillage['id'].toString()
-                                        : null;
+                                selectedVillageId = matchedVillage.isNotEmpty
+                                    ? matchedVillage['id'].toString()
+                                    : null;
 
                                 state.didChange(value);
                               });
@@ -771,11 +764,11 @@ class _MortgageReportsState extends State<MortgageReports> {
                         return text == newValue.text
                             ? newValue
                             : TextEditingValue(
-                              text: text,
-                              selection: TextSelection.collapsed(
-                                offset: text.length,
-                              ),
-                            );
+                                text: text,
+                                selection: TextSelection.collapsed(
+                                  offset: text.length,
+                                ),
+                              );
                       }),
                       LengthLimitingTextInputFormatter(50),
                     ],
@@ -800,13 +793,77 @@ class _MortgageReportsState extends State<MortgageReports> {
                       return null;
                     },
                   ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _ownerNameController,
+                    decoration: InputDecoration(
+                      hintText: widget.isToggled
+                          ? 'देनदार का नाम'
+                          : 'Name Of Owner',
+                      hintStyle: AppFontStyle2.blinker(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        height: 1.57,
+                        color: const Color(0xFF36322E),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+                      ),
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^[\u0900-\u097F a-zA-Z\s]+$'),
+                      ),
+                      TextInputFormatter.withFunction((oldValue, newValue) {
+                        String text = newValue.text;
+                        text = text.replaceAll(RegExp(r'\s+'), ' ');
+                        text = text.trimLeft();
+                        return text == newValue.text
+                            ? newValue
+                            : TextEditingValue(
+                                text: text,
+                                selection: TextSelection.collapsed(
+                                  offset: text.length,
+                                ),
+                              );
+                      }),
+                      LengthLimitingTextInputFormatter(50),
+                    ],
+                    textCapitalization: TextCapitalization.words,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return widget.isToggled
+                            ? 'कृपया देनदार का नाम प्रविष्ट करें'
+                            : 'Please enter Name of Debtor';
+                      }
+                      final trimmedValue = value.trim();
+                      if (RegExp(
+                        r'<.*?>|script|alert|on\w+=',
+                        caseSensitive: false,
+                      ).hasMatch(trimmedValue)) {
+                        return ValidationMessagesmortage.getMessage(
+                          'invalidCharacters',
+                          widget.isToggled,
+                        );
+                      }
+                      return null;
+                    },
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 50.0),
                     child: Container(
                       width: double.infinity,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF57C03),
+                        color: const Color(0xFFF26500),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: TextButton(
@@ -853,31 +910,31 @@ class _MortgageReportsState extends State<MortgageReports> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.29),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.00,
-                    ),
+                    padding: const EdgeInsets.only(top: 16.0),
                     child: Container(
-                      width: double.infinity,
+                      height: 50,
                       decoration: BoxDecoration(
-                        color: const Color(0x40F57C03),
+                        border: Border.all(color: Colorfile.borderDark),
+                        color: Colorfile.white,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          width: 0.5,
-                          color: const Color(0xFFFCCACA),
-                        ),
                       ),
-                      padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
-                      child: Text(
-                        MortgageReportsStrings.getString(
-                          'note',
-                          widget.isToggled,
-                        ),
-                        style: AppFontStyle2.blinker(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF36322E),
+                      child: TextButton(
+                        onPressed: () {
+                          print("View Sample button pressed");
+                        },
+                        child: Center(
+                          child: Text(
+                            LocalizedStrings.getString(
+                              'viewSample',
+                              widget.isToggled,
+                            ),
+                            style: AppFontStyle2.blinker(
+                              color: Colorfile.lightblack,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ),
