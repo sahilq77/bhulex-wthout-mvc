@@ -42,7 +42,6 @@ import 'legal_advisory_forms/adhikar_abhilekh.dart';
 import 'legal_advisory_forms/courtcases.dart';
 import 'legal_advisory_forms/investigate.dart';
 import 'legal_advisory_forms/legal_drafts_new.dart';
-import 'legal_advisory_forms/legaldrafts.dart';
 import 'network/url.dart';
 import 'profile/profile.dart';
 import 'quicke_services_forms/digitally_sign1.dart';

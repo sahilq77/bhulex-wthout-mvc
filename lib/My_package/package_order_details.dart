@@ -13,7 +13,7 @@ import 'package:bhulexapp/language/hindi.dart';
 import 'package:bhulexapp/legal_advisory_forms/adhikar_abhilekh.dart';
 import 'package:bhulexapp/legal_advisory_forms/courtcases.dart';
 import 'package:bhulexapp/legal_advisory_forms/investigate.dart';
-import 'package:bhulexapp/legal_advisory_forms/legaldrafts.dart';
+import 'package:bhulexapp/legal_advisory_forms/legal_drafts_new.dart';
 import 'package:bhulexapp/network/url.dart';
 import 'package:bhulexapp/no%20internet.dart';
 import 'package:bhulexapp/old_records_form/old%20extract1.dart';
@@ -405,7 +405,7 @@ class _PackageServiceState extends State<PackageService> {
         );
         break;
       case "tbl_legal_drafts":
-        targetScreen = Legaldrafts(
+        targetScreen = LegalDraftsNew(
           id: id,
           serviceName: serviceName,
           tblName: tblName,
