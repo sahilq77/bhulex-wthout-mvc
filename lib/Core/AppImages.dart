@@ -72,6 +72,12 @@ class AppImages {
   static const String ordersIcon = 'assets/images/my-order-icon.svg';
   static const String profileIcon = 'assets/images/user-icon.svg';
 
+ static const String uploadIcon = 'assets/images/upload-icon-small.svg';
+static const String uploadBigIcon = 'assets/images/upload-big-icon.svg';
+
+ 
+  
+
 
  static const String searchIcon = 'assets/images/search-icon.svg';
   

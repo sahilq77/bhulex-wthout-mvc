@@ -92,18 +92,18 @@ class _oldextract1State extends State<OldRevenueRecords> {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Form submitted successfully')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Form submitted successfully')));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Form submission failed')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Form submission failed')));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Network error')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Network error')));
     }
   }
 
@@ -218,11 +218,7 @@ class _oldextract1State extends State<OldRevenueRecords> {
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1.0),
-          child: Divider(
-            height: 1,
-            thickness: 1,
-            color: Color(0xFFD9D9D9),
-          ),
+          child: Divider(height: 1, thickness: 1, color: Color(0xFFD9D9D9)),
         ),
       ),
       body: RefreshIndicator(
@@ -264,7 +260,9 @@ class _oldextract1State extends State<OldRevenueRecords> {
                   SizedBox(height: 10),
                   Text(
                     LocalizedStrings.getString(
-                        'selectServices', widget.isToggled),
+                      'selectServices',
+                      widget.isToggled,
+                    ),
                     style: AppFontStyle2.blinker(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -319,7 +317,9 @@ class _oldextract1State extends State<OldRevenueRecords> {
                   const SizedBox(height: 16),
                   Text(
                     LocalizedStrings.getString(
-                        'pleaseEnterYourDetails', widget.isToggled),
+                      'pleaseEnterYourDetails',
+                      widget.isToggled,
+                    ),
                     style: AppFontStyle2.blinker(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -331,8 +331,8 @@ class _oldextract1State extends State<OldRevenueRecords> {
                   FormField<String>(
                     validator: (value) =>
                         Selectedcity == null || Selectedcity!.trim().isEmpty
-                            ? 'Please select district'
-                            : null,
+                        ? 'Please select district'
+                        : null,
                     builder: (FormFieldState<String> state) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,7 +341,7 @@ class _oldextract1State extends State<OldRevenueRecords> {
                             items: CityData.map<String>((item) {
                               return widget.isToggled
                                   ? (item['city_name_in_local_language'])
-                                      .toString()
+                                        .toString()
                                   : (item['city_name']).toString();
                             }).toList(),
                             selectedItem: Selectedcity,
@@ -363,27 +363,32 @@ class _oldextract1State extends State<OldRevenueRecords> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: const BorderSide(
-                                      color: Color(0xFFC5C5C5)),
+                                    color: Color(0xFFC5C5C5),
+                                  ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: const BorderSide(
-                                      color: Color(0xFFC5C5C5)),
+                                    color: Color(0xFFC5C5C5),
+                                  ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: const BorderSide(
-                                      color: Color(0xFFF26500)),
+                                    color: Color(0xFFF26500),
+                                  ),
                                 ),
                                 errorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
-                                  borderSide:
-                                      const BorderSide(color: Colors.red),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
-                                  borderSide:
-                                      const BorderSide(color: Colors.red),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 errorText: state.errorText,
                               ),
@@ -412,8 +417,7 @@ class _oldextract1State extends State<OldRevenueRecords> {
                                 final matchedCity = CityData.firstWhere(
                                   (element) =>
                                       (widget.isToggled
-                                          ? element[
-                                              'city_name_in_local_language']
+                                          ? element['city_name_in_local_language']
                                           : element['city_name']) ==
                                       value,
                                   orElse: () => {},
@@ -436,8 +440,8 @@ class _oldextract1State extends State<OldRevenueRecords> {
                   FormField<String>(
                     validator: (value) =>
                         selectedTaluka == null || selectedTaluka!.trim().isEmpty
-                            ? 'Please select taluka'
-                            : null,
+                        ? 'Please select taluka'
+                        : null,
                     builder: (FormFieldState<String> state) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -446,9 +450,9 @@ class _oldextract1State extends State<OldRevenueRecords> {
                             items: talukaData.map<String>((item) {
                               return widget.isToggled
                                   ? (item['taluka_name_in_local_language'] ??
-                                          item['taluka_name'] ??
-                                          '')
-                                      .toString()
+                                            item['taluka_name'] ??
+                                            '')
+                                        .toString()
                                   : (item['taluka_name'] ?? '').toString();
                             }).toList(),
                             selectedItem: selectedTaluka,
@@ -470,27 +474,32 @@ class _oldextract1State extends State<OldRevenueRecords> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: const BorderSide(
-                                      color: Color(0xFFC5C5C5)),
+                                    color: Color(0xFFC5C5C5),
+                                  ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: const BorderSide(
-                                      color: Color(0xFFC5C5C5)),
+                                    color: Color(0xFFC5C5C5),
+                                  ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: const BorderSide(
-                                      color: Color(0xFFF26500)),
+                                    color: Color(0xFFF26500),
+                                  ),
                                 ),
                                 errorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
-                                  borderSide:
-                                      const BorderSide(color: Colors.red),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
-                                  borderSide:
-                                      const BorderSide(color: Colors.red),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 errorText: state.errorText,
                               ),
@@ -519,9 +528,8 @@ class _oldextract1State extends State<OldRevenueRecords> {
                                 final matchedTaluka = talukaData.firstWhere(
                                   (element) =>
                                       (widget.isToggled
-                                          ? (element[
-                                                  'taluka_name_in_local_language'] ??
-                                              element['taluka_name'])
+                                          ? (element['taluka_name_in_local_language'] ??
+                                                element['taluka_name'])
                                           : element['taluka_name']) ==
                                       value,
                                   orElse: () => {},
@@ -545,7 +553,8 @@ class _oldextract1State extends State<OldRevenueRecords> {
                   ),
                   const SizedBox(height: 16),
                   FormField<String>(
-                    validator: (value) => selectedVillageName == null ||
+                    validator: (value) =>
+                        selectedVillageName == null ||
                             selectedVillageName!.trim().isEmpty
                         ? 'Please select village'
                         : null,
@@ -557,9 +566,9 @@ class _oldextract1State extends State<OldRevenueRecords> {
                             items: villageData.map<String>((item) {
                               return widget.isToggled
                                   ? (item['village_name_in_local_language'] ??
-                                          item['village_name'] ??
-                                          '')
-                                      .toString()
+                                            item['village_name'] ??
+                                            '')
+                                        .toString()
                                   : (item['village_name'] ?? '').toString();
                             }).toList(),
                             selectedItem: selectedVillageName,
@@ -581,27 +590,32 @@ class _oldextract1State extends State<OldRevenueRecords> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: const BorderSide(
-                                      color: Color(0xFFC5C5C5)),
+                                    color: Color(0xFFC5C5C5),
+                                  ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: const BorderSide(
-                                      color: Color(0xFFC5C5C5)),
+                                    color: Color(0xFFC5C5C5),
+                                  ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
                                   borderSide: const BorderSide(
-                                      color: Color(0xFFF26500)),
+                                    color: Color(0xFFF26500),
+                                  ),
                                 ),
                                 errorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
-                                  borderSide:
-                                      const BorderSide(color: Colors.red),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(6),
-                                  borderSide:
-                                      const BorderSide(color: Colors.red),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 errorText: state.errorText,
                               ),
@@ -630,9 +644,8 @@ class _oldextract1State extends State<OldRevenueRecords> {
                                 final matchedVillage = villageData.firstWhere(
                                   (element) =>
                                       (widget.isToggled
-                                          ? (element[
-                                                  'village_name_in_local_language'] ??
-                                              element['village_name'])
+                                          ? (element['village_name_in_local_language'] ??
+                                                element['village_name'])
                                           : element['village_name']) ==
                                       value,
                                   orElse: () => {},
@@ -708,8 +721,9 @@ class _oldextract1State extends State<OldRevenueRecords> {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             final String? stateId = prefs.getString('state_id');
-                            final prepaidCustomerId =
-                                prefs.getString('customer_id');
+                            final prepaidCustomerId = prefs.getString(
+                              'customer_id',
+                            );
                             Map<String, dynamic> formData = {
                               "tbl_name": widget.tblName,
                               "lead_id": widget.package_lead_id,
@@ -743,9 +757,7 @@ class _oldextract1State extends State<OldRevenueRecords> {
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.borderDark,
-                              ),
+                              border: Border.all(color: Colorfile.borderDark),
                               color: Colorfile.white,
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -774,9 +786,7 @@ class _oldextract1State extends State<OldRevenueRecords> {
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.lightwhite,
-                              ),
+                              border: Border.all(color: Colorfile.lightwhite),
                               color: Colorfile.white,
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -787,9 +797,7 @@ class _oldextract1State extends State<OldRevenueRecords> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset(
-                                    AppImages.whatsapp,
-                                  ),
+                                  Image.asset(AppImages.whatsapp),
                                   const SizedBox(width: 8),
                                   Text(
                                     LocalizedStrings.getString(

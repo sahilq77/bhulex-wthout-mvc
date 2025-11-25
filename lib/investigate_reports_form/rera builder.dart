@@ -1,11 +1,18 @@
 import 'dart:convert';
-import 'package:bhulexapp/My_package/package_order_details.dart';
-import 'package:bhulexapp/colors/fonts.dart';
+import 'dart:developer';
+import 'package:bhulexapp/network/url.dart';
+import 'package:bhulexapp/validations_chan_lang/mortage.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Core/AppImages.dart';
+import '../My_package/package_order_details.dart';
+import '../colors/custom_color.dart';
+import '../colors/fonts.dart';
 import '../colors/order_fonts.dart';
 import '../form_internet.dart' show NetworkChecker;
 import '../language/hindi.dart';
@@ -42,15 +49,22 @@ class RERA_Builder extends StatefulWidget {
 class _RERA_BuilderState extends State<RERA_Builder> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = true;
+  String? Selectedcity;
+  String? SelectedId;
+  List<Map<String, dynamic>> CityData = [];
 
   final TextEditingController _projectController = TextEditingController();
   final TextEditingController _builderController = TextEditingController();
-  final NetworkChecker _networkChecker = NetworkChecker(); // Add NetworkChecker
+  final TextEditingController _pincodeController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  final NetworkChecker _networkChecker = NetworkChecker();
 
   @override
   void dispose() {
     _projectController.dispose();
     _builderController.dispose();
+    _pincodeController.dispose();
+    _cityController.dispose();
     super.dispose();
   }
 
@@ -59,13 +73,66 @@ class _RERA_BuilderState extends State<RERA_Builder> {
       isLoading = true;
       _projectController.clear();
       _builderController.clear();
+      _pincodeController.clear();
+      _cityController.clear();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _networkChecker.startMonitoring(context); // Start network monitoring
+    _networkChecker.startMonitoring(context);
+    _fetchCity();
+  }
+
+  void _fetchCity() async {
+    final String url = URLS().get_all_city_apiUrl;
+    log('City URL: $url');
+
+    // Fetch state_id from SharedPreferences and set it to "22" for testing
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('state_id', '22');
+    log('state_id 22 saved to SharedPreferences');
+
+    var requestBody = {"state_id": "22"};
+    log('City Request Body: ${jsonEncode(requestBody)}');
+
+    try {
+      var response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      log('City Response Status Code: ${response.statusCode}');
+      log('City Raw Response Body: "${response.body}"');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['status'] == 'true') {
+          setState(() {
+            CityData = List<Map<String, dynamic>>.from(data['data'] ?? []);
+            isLoading = false;
+          });
+          log('Fetched City Data: ${data['data']}');
+        } else {
+          log('Failed to load city: ${data['message'] ?? 'Unknown error'}');
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } else {
+        log('Failed to load city data. Status code: ${response.statusCode}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      log('City Fetch Error: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> submitQuickServiceForm(
@@ -98,13 +165,12 @@ class _RERA_BuilderState extends State<RERA_Builder> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder:
-                  (context) => PackageService(
-                    package_Id: widget.packageId,
-                    lead_id: widget.lead_id,
-                    customerid: widget.customer_id,
-                    tbl_name: '',
-                  ),
+              builder: (context) => PackageService(
+                package_Id: widget.packageId,
+                lead_id: widget.lead_id,
+                customerid: widget.customer_id,
+                tbl_name: '',
+              ),
             ),
           );
         }
@@ -129,10 +195,9 @@ class _RERA_BuilderState extends State<RERA_Builder> {
 
   @override
   Widget build(BuildContext context) {
-    String displayServiceName =
-        widget.isToggled
-            ? widget.serviceNameInLocalLanguage
-            : widget.serviceName;
+    String displayServiceName = widget.isToggled
+        ? widget.serviceNameInLocalLanguage
+        : widget.serviceName;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
@@ -169,6 +234,35 @@ class _RERA_BuilderState extends State<RERA_Builder> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.00,
+                    ),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: const Color(0x40F57C03),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          width: 0.5,
+                          color: const Color(0xFFFCCACA),
+                        ),
+                      ),
+                      padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
+                      child: Text(
+                        ReraCertificateStrings.getString(
+                          'note',
+                          widget.isToggled,
+                        ),
+                        style: AppFontStyle2.blinker(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF36322E),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   Text(
                     ReraCertificateStrings.getString(
                       'pleaseEnterYourDetails',
@@ -219,11 +313,11 @@ class _RERA_BuilderState extends State<RERA_Builder> {
                         return text == newValue.text
                             ? newValue
                             : TextEditingValue(
-                              text: text,
-                              selection: TextSelection.collapsed(
-                                offset: text.length,
-                              ),
-                            );
+                                text: text,
+                                selection: TextSelection.collapsed(
+                                  offset: text.length,
+                                ),
+                              );
                       }),
                       LengthLimitingTextInputFormatter(50),
                     ],
@@ -246,6 +340,176 @@ class _RERA_BuilderState extends State<RERA_Builder> {
                         );
                       }
                       return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _pincodeController,
+                    decoration: InputDecoration(
+                      hintText: ReraCertificateStrings.getString(
+                        'pincode',
+                        widget.isToggled,
+                      ),
+                      hintStyle: AppFontStyle2.blinker(
+                        color: Color(0xFF36322E),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+                      ),
+                      errorStyle: AppTextStyles.error(),
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(6),
+                    ],
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return ValidationMessagesrera.getMessage(
+                          'pleaseEnterPincode',
+                          widget.isToggled,
+                        );
+                      }
+                      if (value.length != 6) {
+                        return ValidationMessagesrera.getMessage(
+                          'invalidPincode',
+                          widget.isToggled,
+                        );
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  FormField<String>(
+                    validator: (value) {
+                      if (Selectedcity == null ||
+                          Selectedcity!.trim().isEmpty) {
+                        return ValidationMessagesrera.getMessage(
+                          'pleaseEnterCity',
+                          widget.isToggled,
+                        );
+                      }
+                      final trimmedValue = Selectedcity!.trim();
+                      if (RegExp(
+                        r'<.*?>|script|alert|on\w+=',
+                        caseSensitive: false,
+                      ).hasMatch(trimmedValue)) {
+                        return ValidationMessagesmortage.getMessage(
+                          'invalidCharacters',
+                          widget.isToggled,
+                        );
+                      }
+                      // if (!RegExp(
+                      //   r'^[\p{L}\s]+$',
+                      //   unicode: true,
+                      // ).hasMatch(trimmedValue)) {
+                      //   return ValidationMessagesmortage.getMessage(
+                      //     'onlyAlphabetsAllowed',
+                      //     widget.isToggled,
+                      //   );
+                      // }
+                      return null;
+                    },
+                    builder: (FormFieldState<String> state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DropdownSearch<String>(
+                            items: CityData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['city_name_in_local_language'])
+                                        .toString()
+                                  : (item['city_name']).toString();
+                            }).toList(),
+                            selectedItem: Selectedcity,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: ReraCertificateStrings.getString(
+                                  'city',
+                                  widget.isToggled,
+                                ),
+                                hintStyle: AppFontStyle2.blinker(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.57,
+                                  color: const Color(0xFF36322E),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                errorText: state.errorText,
+                              ),
+                            ),
+                            popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                textCapitalization: TextCapitalization.words,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(
+                                      r'^[a-zA-Z\u0900-\u095F\u0970-\u097F\s]+$',
+                                    ),
+                                  ),
+                                  LengthLimitingTextInputFormatter(50),
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: widget.isToggled
+                                      ? 'जिल्हा शोधा...'
+                                      : 'Search District...',
+                                  hintStyle: AppFontStyle2.blinker(),
+                                  border: const OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            dropdownButtonProps: DropdownButtonProps(
+                              icon: const Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 28,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              log('${widget.isToggled}');
+                              setState(() {
+                                Selectedcity = value;
+
+                                final matchedCity = CityData.firstWhere(
+                                  (element) =>
+                                      (widget.isToggled
+                                          ? (element['city_name_in_local_language'])
+                                          : element['city_name']) ==
+                                      value,
+                                  orElse: () => {},
+                                );
+
+                                SelectedId = matchedCity.isNotEmpty
+                                    ? matchedCity['id'].toString()
+                                    : null;
+
+                                state.didChange(value);
+                              });
+                            },
+                          ),
+                        ],
+                      );
                     },
                   ),
                   const SizedBox(height: 16),
@@ -284,11 +548,11 @@ class _RERA_BuilderState extends State<RERA_Builder> {
                         return text == newValue.text
                             ? newValue
                             : TextEditingValue(
-                              text: text,
-                              selection: TextSelection.collapsed(
-                                offset: text.length,
-                              ),
-                            );
+                                text: text,
+                                selection: TextSelection.collapsed(
+                                  offset: text.length,
+                                ),
+                              );
                       }),
                       LengthLimitingTextInputFormatter(50),
                     ],
@@ -319,7 +583,7 @@ class _RERA_BuilderState extends State<RERA_Builder> {
                       width: double.infinity,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF57C03),
+                        color: const Color(0xFFF26500),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: TextButton(
@@ -338,6 +602,8 @@ class _RERA_BuilderState extends State<RERA_Builder> {
                               "lead_id": widget.package_lead_id,
                               "package_id": widget.packageId ?? "",
                               "project_name": _projectController.text.trim(),
+                              "pincode": _pincodeController.text.trim(),
+                              "city": SelectedId.toString(),
                               "builder_name": _builderController.text.trim(),
                               "tbl_name": widget.tblName,
                             };
@@ -351,7 +617,6 @@ class _RERA_BuilderState extends State<RERA_Builder> {
                               'next',
                               widget.isToggled,
                             ),
-
                             style: AppFontStyle2.blinker(
                               color: Colors.white,
                               fontSize: 18,
@@ -362,32 +627,31 @@ class _RERA_BuilderState extends State<RERA_Builder> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.45),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.00,
-                    ),
+                    padding: const EdgeInsets.only(top: 16.0),
                     child: Container(
-                      width: double.infinity,
+                      height: 50,
                       decoration: BoxDecoration(
-                        color: const Color(0x40F57C03),
+                        border: Border.all(color: Colorfile.borderDark),
+                        color: Colorfile.white,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          width: 0.5,
-                          color: const Color(0xFFFCCACA),
-                        ),
                       ),
-                      padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
-                      child: Text(
-                        ReraCertificateStrings.getString(
-                          'note',
-                          widget.isToggled,
-                        ),
-
-                        style: AppFontStyle2.blinker(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF36322E),
+                      child: TextButton(
+                        onPressed: () {
+                          print("View Sample button pressed");
+                        },
+                        child: Center(
+                          child: Text(
+                            LocalizedStrings.getString(
+                              'viewSample',
+                              widget.isToggled,
+                            ),
+                            style: AppFontStyle2.blinker(
+                              color: Colorfile.lightblack,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ),

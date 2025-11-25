@@ -512,7 +512,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                                         ? matchedCity['id'].toString()
                                         : null;
 
-                                    if (SelectedId != null){
+                                    if (SelectedId != null) {
                                       _fetchTaluka(SelectedId!);
                                     }
 
@@ -1268,6 +1268,7 @@ class _DigitallySign1State extends State<DigitallySign1> {
                         visible:
                             widget.tblName != 'tbl_e_mutation_extract' &&
                             widget.tblName != 'tbl_bhu_naksha' &&
+                            widget.tblName != 'tbl_cts_map' &&
                             widget
                                 .tblName
                                 .isNotEmpty, // Check for empty or blank table name

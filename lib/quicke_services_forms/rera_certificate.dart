@@ -58,6 +58,7 @@ class _ReraCertificateState extends State<ReraCertificate> {
   List<Map<String, dynamic>> villageData = [];
   String? selectedVillage;
   String? selectedVillageId;
+  String? SelectedDivision; // Add this line
   final NetworkChecker _networkChecker = NetworkChecker();
 
   final TextEditingController _projectController = TextEditingController();
@@ -380,6 +381,101 @@ class _ReraCertificateState extends State<ReraCertificate> {
                     },
                   ),
                   const SizedBox(height: 16),
+
+                  // =============== DUMMY DIVISION DROPDOWN ===============
+                  FormField<String>(
+                    validator: (value) {
+                      if (SelectedDivision == null ||
+                          SelectedDivision!.trim().isEmpty) {
+                        return ValidationMessagesrera.getMessage(
+                          'pleaseSelectDivision',
+                          widget.isToggled,
+                        );
+                      }
+                      return null;
+                    },
+                    builder: (FormFieldState<String> state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DropdownSearch<String>(
+                            items: widget.isToggled
+                                ? [
+                                    'Dummy Data',
+                                    'कोकण विभाग',
+                                    'पुणे विभाग',
+                                    'नाशिक विभाग',
+                                    'औरंगाबाद विभाग',
+                                    'अमरावती विभाग',
+                                    'नागपूर विभाग',
+                                  ]
+                                : [
+                                    'Dummy Data',
+                                    'Konkan Division',
+                                    'Pune Division',
+                                    'Nashik Division',
+                                    'Aurangabad Division',
+                                    'Amravati Division',
+                                    'Nagpur Division',
+                                  ],
+                            selectedItem: SelectedDivision,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                hintText: widget.isToggled
+                                    ? 'विभाग निवडा'
+                                    : 'Select Division',
+                                hintStyle: AppFontStyle2.blinker(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF36322E),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                errorText: state.errorText,
+                              ),
+                            ),
+                            popupProps: const PopupProps.menu(
+                              showSearchBox: false,
+                            ),
+                            dropdownButtonProps: const DropdownButtonProps(
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 28,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                // SelectedDivision = value;
+                                state.didChange(value);
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
                   FormField<String>(
                     validator: (value) {
                       if (Selectedcity == null ||
@@ -510,7 +606,7 @@ class _ReraCertificateState extends State<ReraCertificate> {
                                       ? matchedCity['id'].toString()
                                       : null;
                                   if (SelectedId != null) {
-                                    // _fetchTaluka(SelectedId!);
+                                    _fetchVillage(SelectedId!);
                                   } else {
                                     print(
                                       "No matching city found for value: '$value'",

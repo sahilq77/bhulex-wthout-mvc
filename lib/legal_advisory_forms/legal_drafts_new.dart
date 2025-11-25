@@ -64,17 +64,17 @@ class _oldextract1State extends State<LegalDraftsNew> {
     {
       "id": "2",
       "name": "Legal Notice for Money Recovery ",
-      "isSelected": false
+      "isSelected": false,
     },
     {
       "id": "3",
       "name": "Legal Notice for recovery of dues",
-      "isSelected": false
+      "isSelected": false,
     },
     {
       "id": "4",
       "name": "Legal Notice Under Consumer Protection Act",
-      "isSelected": false
+      "isSelected": false,
     },
     {"id": "5", "name": "Rental Agreement", "isSelected": false},
   ];
@@ -104,18 +104,18 @@ class _oldextract1State extends State<LegalDraftsNew> {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Form submitted successfully')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Form submitted successfully')));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Form submission failed')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Form submission failed')));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Network error')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Network error')));
     }
   }
 
@@ -230,11 +230,7 @@ class _oldextract1State extends State<LegalDraftsNew> {
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1.0),
-          child: Divider(
-            height: 1,
-            thickness: 1,
-            color: Color(0xFFD9D9D9),
-          ),
+          child: Divider(height: 1, thickness: 1, color: Color(0xFFD9D9D9)),
         ),
       ),
       body: RefreshIndicator(
@@ -276,7 +272,9 @@ class _oldextract1State extends State<LegalDraftsNew> {
                   SizedBox(height: 10),
                   Text(
                     LocalizedStrings.getString(
-                        'selectServices', widget.isToggled),
+                      'selectServices',
+                      widget.isToggled,
+                    ),
                     style: AppFontStyle2.blinker(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -354,8 +352,9 @@ class _oldextract1State extends State<LegalDraftsNew> {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             final String? stateId = prefs.getString('state_id');
-                            final prepaidCustomerId =
-                                prefs.getString('customer_id');
+                            final prepaidCustomerId = prefs.getString(
+                              'customer_id',
+                            );
                             Map<String, dynamic> formData = {
                               "tbl_name": widget.tblName,
                               "lead_id": widget.package_lead_id,
@@ -389,9 +388,7 @@ class _oldextract1State extends State<LegalDraftsNew> {
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.borderDark,
-                              ),
+                              border: Border.all(color: Colorfile.borderDark),
                               color: Colorfile.white,
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -420,9 +417,7 @@ class _oldextract1State extends State<LegalDraftsNew> {
                           child: Container(
                             height: 50,
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.lightwhite,
-                              ),
+                              border: Border.all(color: Colorfile.lightwhite),
                               color: Colorfile.white,
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -433,9 +428,7 @@ class _oldextract1State extends State<LegalDraftsNew> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset(
-                                    AppImages.whatsapp,
-                                  ),
+                                  Image.asset(AppImages.whatsapp),
                                   const SizedBox(width: 8),
                                   Text(
                                     LocalizedStrings.getString(

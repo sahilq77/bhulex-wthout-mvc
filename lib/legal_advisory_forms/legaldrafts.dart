@@ -1,22 +1,23 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:bhulexapp/My_package/package_order_details.dart';
-import 'package:bhulexapp/colors/fonts.dart';
-import 'package:bhulexapp/colors/order_fonts.dart';
-import 'package:bhulexapp/language/hindi.dart';
-import 'package:bhulexapp/network/url.dart';
-import 'package:bhulexapp/quicke_services_forms/pay.dart';
-import 'package:bhulexapp/validations_chan_lang/legalvalidation.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../My_package/package_order_details.dart';
+import '../colors/fonts.dart';
+import '../colors/order_fonts.dart';
 import '../form_internet.dart';
+import '../language/hindi.dart';
+import '../network/url.dart';
+import '../quicke_services_forms/pay.dart';
+import '../validations_chan_lang/legalvalidation.dart';
 
 class Legaldrafts extends StatefulWidget {
   final String id;
@@ -31,7 +32,6 @@ class Legaldrafts extends StatefulWidget {
   const Legaldrafts({
     super.key,
     required this.packageId,
-
     required this.id,
     required this.serviceName,
     required this.tblName,
@@ -102,13 +102,12 @@ class _LegaldraftsState extends State<Legaldrafts> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder:
-                  (context) => PackageService(
-                    package_Id: widget.packageId,
-                    lead_id: widget.lead_id,
-                    customerid: widget.customer_id,
-                    tbl_name: '',
-                  ),
+              builder: (context) => PackageService(
+                package_Id: widget.packageId,
+                lead_id: widget.lead_id,
+                customerid: widget.customer_id,
+                tbl_name: '',
+              ),
             ),
           );
         }
@@ -266,10 +265,9 @@ class _LegaldraftsState extends State<Legaldrafts> {
 
   @override
   Widget build(BuildContext context) {
-    String displayServiceName =
-        widget.isToggled
-            ? widget.serviceNameInLocalLanguage
-            : widget.serviceName;
+    String displayServiceName = widget.isToggled
+        ? widget.serviceNameInLocalLanguage
+        : widget.serviceName;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
@@ -387,13 +385,12 @@ class _LegaldraftsState extends State<Legaldrafts> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DropdownSearch<String>(
-                            items:
-                                CityData.map<String>((item) {
-                                  return widget.isToggled
-                                      ? (item['city_name_in_local_language'])
-                                          .toString()
-                                      : (item['city_name']).toString();
-                                }).toList(),
+                            items: CityData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['city_name_in_local_language'])
+                                        .toString()
+                                  : (item['city_name']).toString();
+                            }).toList(),
 
                             selectedItem: Selectedcity,
                             dropdownDecoratorProps: DropDownDecoratorProps(
@@ -434,10 +431,9 @@ class _LegaldraftsState extends State<Legaldrafts> {
                                   LengthLimitingTextInputFormatter(50),
                                 ],
                                 decoration: InputDecoration(
-                                  hintText:
-                                      widget.isToggled
-                                          ? 'जिल्हा शोधा...'
-                                          : 'Search District...',
+                                  hintText: widget.isToggled
+                                      ? 'जिल्हा शोधा...'
+                                      : 'Search District...',
                                   hintStyle: AppFontStyle2.blinker(),
                                   border: const OutlineInputBorder(),
                                 ),
@@ -476,10 +472,9 @@ class _LegaldraftsState extends State<Legaldrafts> {
                                   orElse: () => {},
                                 );
 
-                                SelectedId =
-                                    matchedCity.isNotEmpty
-                                        ? matchedCity['id'].toString()
-                                        : null;
+                                SelectedId = matchedCity.isNotEmpty
+                                    ? matchedCity['id'].toString()
+                                    : null;
 
                                 if (SelectedId != null) {
                                   _fetchTaluka(SelectedId!);
@@ -529,15 +524,14 @@ class _LegaldraftsState extends State<Legaldrafts> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DropdownSearch<String>(
-                            items:
-                                talukaData.map<String>((item) {
-                                  return widget.isToggled
-                                      ? (item['taluka_name_in_local_language'] ??
-                                              item['taluka_name'] ??
-                                              '')
-                                          .toString()
-                                      : (item['taluka_name'] ?? '').toString();
-                                }).toList(),
+                            items: talukaData.map<String>((item) {
+                              return widget.isToggled
+                                  ? (item['taluka_name_in_local_language'] ??
+                                            item['taluka_name'] ??
+                                            '')
+                                        .toString()
+                                  : (item['taluka_name'] ?? '').toString();
+                            }).toList(),
                             selectedItem: selectedTaluka,
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
@@ -577,10 +571,9 @@ class _LegaldraftsState extends State<Legaldrafts> {
                                   LengthLimitingTextInputFormatter(50),
                                 ],
                                 decoration: InputDecoration(
-                                  hintText:
-                                      widget.isToggled
-                                          ? 'तालुका शोधा...'
-                                          : 'Search Taluka...',
+                                  hintText: widget.isToggled
+                                      ? 'तालुका शोधा...'
+                                      : 'Search Taluka...',
                                   hintStyle: AppFontStyle2.blinker(),
                                   border: const OutlineInputBorder(),
                                 ),
@@ -601,16 +594,15 @@ class _LegaldraftsState extends State<Legaldrafts> {
                                   (element) =>
                                       (widget.isToggled
                                           ? (element['taluka_name_in_local_language'] ??
-                                              element['taluka_name'])
+                                                element['taluka_name'])
                                           : element['taluka_name']) ==
                                       value,
                                   orElse: () => {},
                                 );
 
-                                selectedTalukaId =
-                                    matchedTaluka.isNotEmpty
-                                        ? matchedTaluka['id'].toString()
-                                        : null;
+                                selectedTalukaId = matchedTaluka.isNotEmpty
+                                    ? matchedTaluka['id'].toString()
+                                    : null;
 
                                 if (selectedTalukaId != null) {
                                   _fetchVillages(
@@ -663,22 +655,20 @@ class _LegaldraftsState extends State<Legaldrafts> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           DropdownSearch<String>(
-                            items:
-                                villageData
-                                    .map<String>((item) {
-                                      final villageName =
-                                          widget.isToggled
-                                              ? (item['village_name_in_local_language'] ??
-                                                  item['village_name'])
-                                              : item['village_name'];
-                                      return villageName?.toString() ?? '';
-                                    })
-                                    .where(
-                                      (name) =>
-                                          name.trim().isNotEmpty &&
-                                          name.toLowerCase() != 'null',
-                                    )
-                                    .toList(),
+                            items: villageData
+                                .map<String>((item) {
+                                  final villageName = widget.isToggled
+                                      ? (item['village_name_in_local_language'] ??
+                                            item['village_name'])
+                                      : item['village_name'];
+                                  return villageName?.toString() ?? '';
+                                })
+                                .where(
+                                  (name) =>
+                                      name.trim().isNotEmpty &&
+                                      name.toLowerCase() != 'null',
+                                )
+                                .toList(),
                             selectedItem: selectedVillageName,
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
@@ -719,12 +709,10 @@ class _LegaldraftsState extends State<Legaldrafts> {
                                   LengthLimitingTextInputFormatter(50),
                                 ],
                                 decoration: InputDecoration(
-                                  hintText:
-                                      widget.isToggled
-                                          ? 'गाव शोधा...'
-                                          : 'Search Village...',
+                                  hintText: widget.isToggled
+                                      ? 'गाव शोधा...'
+                                      : 'Search Village...',
                                   hintStyle: AppFontStyle2.blinker(),
-
                                   border: const OutlineInputBorder(),
                                 ),
                               ),
@@ -744,16 +732,15 @@ class _LegaldraftsState extends State<Legaldrafts> {
                                   (element) =>
                                       (widget.isToggled
                                           ? (element['village_name_in_local_language'] ??
-                                              element['village_name'])
+                                                element['village_name'])
                                           : element['village_name']) ==
                                       value,
                                   orElse: () => {},
                                 );
 
-                                selectedVillageId =
-                                    matchedVillage.isNotEmpty
-                                        ? matchedVillage['id'].toString()
-                                        : null;
+                                selectedVillageId = matchedVillage.isNotEmpty
+                                    ? matchedVillage['id'].toString()
+                                    : null;
 
                                 state.didChange(value);
                               });
@@ -803,11 +790,11 @@ class _LegaldraftsState extends State<Legaldrafts> {
                         return text == newValue.text
                             ? newValue
                             : TextEditingValue(
-                              text: text,
-                              selection: TextSelection.collapsed(
-                                offset: text.length,
-                              ),
-                            );
+                                text: text,
+                                selection: TextSelection.collapsed(
+                                  offset: text.length,
+                                ),
+                              );
                       }),
                       LengthLimitingTextInputFormatter(50),
                     ],
@@ -862,7 +849,6 @@ class _LegaldraftsState extends State<Legaldrafts> {
                       FilteringTextInputFormatter.allow(
                         RegExp(r'[0-9 /a-zA-Z]'),
                       ),
-
                       LengthLimitingTextInputFormatter(50),
                       TextInputFormatter.withFunction((oldValue, newValue) {
                         String text = newValue.text;
@@ -874,11 +860,11 @@ class _LegaldraftsState extends State<Legaldrafts> {
                         return text == newValue.text
                             ? newValue
                             : TextEditingValue(
-                              text: text,
-                              selection: TextSelection.collapsed(
-                                offset: text.length,
-                              ),
-                            );
+                                text: text,
+                                selection: TextSelection.collapsed(
+                                  offset: text.length,
+                                ),
+                              );
                       }),
                       LengthLimitingTextInputFormatter(50),
                     ],
@@ -960,11 +946,11 @@ class _LegaldraftsState extends State<Legaldrafts> {
                         return text == newValue.text
                             ? newValue
                             : TextEditingValue(
-                              text: text,
-                              selection: TextSelection.collapsed(
-                                offset: text.length,
-                              ),
-                            );
+                                text: text,
+                                selection: TextSelection.collapsed(
+                                  offset: text.length,
+                                ),
+                              );
                       }),
                       LengthLimitingTextInputFormatter(50),
                     ],
