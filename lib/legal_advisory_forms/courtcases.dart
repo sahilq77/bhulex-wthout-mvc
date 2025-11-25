@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Core/AppImages.dart';
 import '../My_package/package_order_details.dart';
 import '../colors/custom_color.dart';
@@ -109,16 +106,13 @@ class _CourtcasesState extends State<Courtcases> {
     'Labour',
     'Tax',
   ];
-
   final List<String> bombayBenches = ['Bombay', 'Nagpur', 'Aurangabad', 'Goa'];
-
   final List<String> revenueDepartments = [
     'Revenue Department',
     'Land Records',
     'Registration',
     'Stamps',
   ];
-
   final List<String> revenueDistricts = [
     'Mumbai',
     'Pune',
@@ -132,6 +126,28 @@ class _CourtcasesState extends State<Courtcases> {
     super.initState();
     _networkChecker.startMonitoring(context);
     _fetchCity();
+  }
+
+  // SELECT ONLY ONE COURT AT A TIME
+  void _selectOnlyThisCourt(Map<String, dynamic> selectedService) {
+    setState(() {
+      for (var service in courtServices) {
+        if (service == selectedService) {
+          service['isSelected'] = true;
+        } else {
+          service['isSelected'] = false;
+          // Clear data of deselected courts
+          service['caseType'] = null;
+          service['bench'] = null;
+          service['department'] = null;
+          service['district'] = null;
+          service['caseNumber'] = '';
+          service['caseYear'] = '';
+          service['partyName'] = '';
+          service['partyYear'] = '';
+        }
+      }
+    });
   }
 
   Future<void> submitLegalAdvisoryEnquiryForm(
@@ -152,8 +168,8 @@ class _CourtcasesState extends State<Courtcases> {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         print("Form submitted successfully: $responseData");
-        if (widget.packageId == "") {
-        } else {
+
+        if (widget.packageId.isNotEmpty) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -189,13 +205,9 @@ class _CourtcasesState extends State<Courtcases> {
   void _fetchCity() async {
     final String url = URLS().get_all_city_apiUrl;
     log('City URL: $url');
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('state_id', '22');
-    log('state_id 22 saved to SharedPreferences');
-
     var requestBody = {"state_id": "22"};
-    log('City Request Body: ${jsonEncode(requestBody)}');
 
     try {
       var response = await http.post(
@@ -204,9 +216,6 @@ class _CourtcasesState extends State<Courtcases> {
         body: jsonEncode(requestBody),
       );
 
-      log('City Response Status Code: ${response.statusCode}');
-      log('City Raw Response Body: "${response.body}"');
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['status'] == 'true') {
@@ -214,24 +223,15 @@ class _CourtcasesState extends State<Courtcases> {
             CityData = List<Map<String, dynamic>>.from(data['data'] ?? []);
             isLoading = false;
           });
-          log('Fetched City Data: ${data['data']}');
         } else {
-          log('Failed to load city: ${data['message'] ?? 'Unknown error'}');
-          setState(() {
-            isLoading = false;
-          });
+          setState(() => isLoading = false);
         }
       } else {
-        log('Failed to load city data. Status code: ${response.statusCode}');
-        setState(() {
-          isLoading = false;
-        });
+        setState(() => isLoading = false);
       }
     } catch (e) {
       log('City Fetch Error: $e');
-      setState(() {
-        isLoading = false;
-      });
+      setState(() => isLoading = false);
     }
   }
 
@@ -239,21 +239,20 @@ class _CourtcasesState extends State<Courtcases> {
     setState(() {
       isLoading = true;
       Selectedcity = null;
-      courtServices = courtServices.map((service) {
-        return {
-          ...service,
-          'isSelected': false,
-          'caseType': null,
-          'bench': null,
-          'department': null,
-          'district': null,
-          'caseNumber': '',
-          'caseYear': '',
-          'partyName': '',
-          'partyYear': '',
-        };
-      }).toList();
+      // Reset all courts
+      for (var service in courtServices) {
+        service['isSelected'] = false;
+        service['caseType'] = null;
+        service['bench'] = null;
+        service['department'] = null;
+        service['district'] = null;
+        service['caseNumber'] = '';
+        service['caseYear'] = '';
+        service['partyName'] = '';
+        service['partyYear'] = '';
+      }
     });
+    _fetchCity();
   }
 
   @override
@@ -277,9 +276,7 @@ class _CourtcasesState extends State<Courtcases> {
         titleSpacing: 0.0,
         elevation: 0,
         leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
+          onTap: () => Navigator.pop(context),
           child: const Icon(Icons.arrow_back),
         ),
         bottom: const PreferredSize(
@@ -294,11 +291,12 @@ class _CourtcasesState extends State<Courtcases> {
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Form(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
               key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  // Description Box
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -337,912 +335,305 @@ class _CourtcasesState extends State<Courtcases> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
-                  Column(
-                    children: courtServices.map((service) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: const Color(0xFFC5C5C5)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: service['isSelected']
-                                        ? Border(
-                                            bottom: BorderSide(
-                                              color: Colors.grey.shade300,
-                                              width: 1.0,
-                                            ),
-                                          )
-                                        : null,
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        service['isSelected'] =
-                                            !service['isSelected'];
-                                      });
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Text(
-                                              service['name'],
-                                              style: AppFontStyle2.blinker(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: const Color(0xFF36322E),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Transform.scale(
-                                          scale:
-                                              0.7, // Adjust scale to make the switch smaller (0.7 is ~30% smaller)
-                                          child: Switch(
-                                            value: service['isSelected'],
-                                            onChanged: (value) {
-                                              setState(() {
-                                                service['isSelected'] = value;
-                                              });
-                                            },
-                                            activeColor: Colors.white,
-                                            activeTrackColor: Colors.black,
-                                            inactiveThumbColor: Colors.white,
-                                            inactiveTrackColor: Colors.black26,
-                                            materialTapTargetSize:
-                                                MaterialTapTargetSize
-                                                    .shrinkWrap, // Minimize tap area
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                  const SizedBox(height: 16),
+
+                  // Court Selection Cards
+                  ...courtServices.map((service) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: const Color(0xFFC5C5C5)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Header with Switch
+                            InkWell(
+                              onTap: () => _selectOnlyThisCourt(service),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
                                 ),
-                              ),
-                              SizedBox(height: 12),
-                              if (service['isSelected']) ...[
-                                if (service['name'] == 'High Court Bombay') ...[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 8.0,
-                                      right: 8,
-                                    ),
-                                    child: FormField<String>(
-                                      validator: (value) {
-                                        if (service['bench'] == null) {
-                                          return 'Please select a bench';
-                                        }
-                                        return null;
-                                      },
-                                      builder: (FormFieldState<String> state) {
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            DropdownSearch<String>(
-                                              items: bombayBenches,
-                                              selectedItem: service['bench'],
-                                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                                dropdownSearchDecoration: InputDecoration(
-                                                  hintText:
-                                                      CourtcasesStrings.getString(
-                                                        'selectBench',
-                                                        widget.isToggled,
-                                                      ),
-                                                  hintStyle:
-                                                      AppFontStyle2.blinker(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        height: 1.57,
-                                                        color: const Color(
-                                                          0xFF36322E,
-                                                        ),
-                                                      ),
-                                                  contentPadding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 14,
-                                                      ),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          6,
-                                                        ),
-                                                    borderSide:
-                                                        const BorderSide(
-                                                          color: Color(
-                                                            0xFFC5C5C5,
-                                                          ),
-                                                        ),
-                                                  ),
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              6,
-                                                            ),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                              color: Color(
-                                                                0xFFC5C5C5,
-                                                              ),
-                                                            ),
-                                                      ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              6,
-                                                            ),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                              color: Color(
-                                                                0xFFC5C5C5,
-                                                              ),
-                                                            ),
-                                                      ),
-                                                  errorText: state.errorText,
-                                                  errorStyle: const TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ),
-                                              popupProps: PopupProps.menu(
-                                                showSearchBox: true,
-                                                searchFieldProps: TextFieldProps(
-                                                  textCapitalization:
-                                                      TextCapitalization.words,
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter.allow(
-                                                      RegExp(r'^[a-zA-Z\s]+$'),
-                                                    ),
-                                                    LengthLimitingTextInputFormatter(
-                                                      50,
-                                                    ),
-                                                  ],
-                                                  decoration: InputDecoration(
-                                                    hintText: widget.isToggled
-                                                        ? 'बेंच शोधा...'
-                                                        : 'Search Bench...',
-                                                    hintStyle:
-                                                        AppFontStyle2.blinker(),
-                                                    border: OutlineInputBorder(
-                                                      borderSide:
-                                                          const BorderSide(
-                                                            color: Color(
-                                                              0xFFC5C5C5,
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              dropdownButtonProps:
-                                                  const DropdownButtonProps(
-                                                    icon: Icon(
-                                                      Icons.keyboard_arrow_down,
-                                                      size: 28,
-                                                      color: Color(0xFF9CA3AF),
-                                                    ),
-                                                  ),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  service['bench'] = value;
-                                                  state.didChange(value);
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                ],
-                                if (service['name'] == 'Revenue Courts') ...[
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 8.0,
-                                      right: 8,
-                                    ),
-                                    child: FormField<String>(
-                                      validator: (value) {
-                                        if (service['department'] == null) {
-                                          return 'Please select a department';
-                                        }
-                                        return null;
-                                      },
-                                      builder: (FormFieldState<String> state) {
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            DropdownSearch<String>(
-                                              items: revenueDepartments,
-                                              selectedItem:
-                                                  service['department'],
-                                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                                dropdownSearchDecoration: InputDecoration(
-                                                  hintText:
-                                                      CourtcasesStrings.getString(
-                                                        'department',
-                                                        widget.isToggled,
-                                                      ),
-                                                  hintStyle:
-                                                      AppFontStyle2.blinker(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        height: 1.57,
-                                                        color: const Color(
-                                                          0xFF36322E,
-                                                        ),
-                                                      ),
-                                                  contentPadding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 14,
-                                                      ),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          6,
-                                                        ),
-                                                    borderSide:
-                                                        const BorderSide(
-                                                          color: Color(
-                                                            0xFFC5C5C5,
-                                                          ),
-                                                        ),
-                                                  ),
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              6,
-                                                            ),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                              color: Color(
-                                                                0xFFC5C5C5,
-                                                              ),
-                                                            ),
-                                                      ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              6,
-                                                            ),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                              color: Color(
-                                                                0xFFC5C5C5,
-                                                              ),
-                                                            ),
-                                                      ),
-                                                  errorText: state.errorText,
-                                                  errorStyle: const TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ),
-                                              popupProps: PopupProps.menu(
-                                                showSearchBox: true,
-                                                searchFieldProps: TextFieldProps(
-                                                  textCapitalization:
-                                                      TextCapitalization.words,
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter.allow(
-                                                      RegExp(r'^[a-zA-Z\s]+$'),
-                                                    ),
-                                                    LengthLimitingTextInputFormatter(
-                                                      50,
-                                                    ),
-                                                  ],
-                                                  decoration: InputDecoration(
-                                                    hintText: widget.isToggled
-                                                        ? 'विभाग शोधा...'
-                                                        : 'Search Department...',
-                                                    hintStyle:
-                                                        AppFontStyle2.blinker(),
-                                                    border: OutlineInputBorder(
-                                                      borderSide:
-                                                          const BorderSide(
-                                                            color: Color(
-                                                              0xFFC5C5C5,
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              dropdownButtonProps:
-                                                  const DropdownButtonProps(
-                                                    icon: Icon(
-                                                      Icons.keyboard_arrow_down,
-                                                      size: 28,
-                                                      color: Color(0xFF9CA3AF),
-                                                    ),
-                                                  ),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  service['department'] = value;
-                                                  state.didChange(value);
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 8.0,
-                                      right: 8,
-                                    ),
-                                    child: FormField<String>(
-                                      validator: (value) {
-                                        if (service['district'] == null) {
-                                          return 'Please select a district';
-                                        }
-                                        return null;
-                                      },
-                                      builder: (FormFieldState<String> state) {
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            DropdownSearch<String>(
-                                              items: revenueDistricts,
-                                              selectedItem: service['district'],
-                                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                                dropdownSearchDecoration: InputDecoration(
-                                                  hintText:
-                                                      CourtcasesStrings.getString(
-                                                        'district',
-                                                        widget.isToggled,
-                                                      ),
-                                                  hintStyle:
-                                                      AppFontStyle2.blinker(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        height: 1.57,
-                                                        color: const Color(
-                                                          0xFF36322E,
-                                                        ),
-                                                      ),
-                                                  contentPadding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 14,
-                                                      ),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          6,
-                                                        ),
-                                                    borderSide:
-                                                        const BorderSide(
-                                                          color: Color(
-                                                            0xFFC5C5C5,
-                                                          ),
-                                                        ),
-                                                  ),
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              6,
-                                                            ),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                              color: Color(
-                                                                0xFFC5C5C5,
-                                                              ),
-                                                            ),
-                                                      ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              6,
-                                                            ),
-                                                        borderSide:
-                                                            const BorderSide(
-                                                              color: Color(
-                                                                0xFFC5C5C5,
-                                                              ),
-                                                            ),
-                                                      ),
-                                                  errorText: state.errorText,
-                                                  errorStyle: const TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ),
-                                              popupProps: PopupProps.menu(
-                                                showSearchBox: true,
-                                                searchFieldProps: TextFieldProps(
-                                                  textCapitalization:
-                                                      TextCapitalization.words,
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter.allow(
-                                                      RegExp(r'^[a-zA-Z\s]+$'),
-                                                    ),
-                                                    LengthLimitingTextInputFormatter(
-                                                      50,
-                                                    ),
-                                                  ],
-                                                  decoration: InputDecoration(
-                                                    hintText: widget.isToggled
-                                                        ? 'जिल्हा शोधा...'
-                                                        : 'Search District...',
-                                                    hintStyle:
-                                                        AppFontStyle2.blinker(),
-                                                    border: OutlineInputBorder(
-                                                      borderSide:
-                                                          const BorderSide(
-                                                            color: Color(
-                                                              0xFFC5C5C5,
-                                                            ),
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              dropdownButtonProps:
-                                                  const DropdownButtonProps(
-                                                    icon: Icon(
-                                                      Icons.keyboard_arrow_down,
-                                                      size: 28,
-                                                      color: Color(0xFF9CA3AF),
-                                                    ),
-                                                  ),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  service['district'] = value;
-                                                  state.didChange(value);
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                ],
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 8.0,
-                                    right: 8,
-                                  ),
-                                  child: FormField<String>(
-                                    validator: (value) {
-                                      if (service['caseType'] == null) {
-                                        return 'Please select a case type';
-                                      }
-                                      return null;
-                                    },
-                                    builder: (FormFieldState<String> state) {
-                                      return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          DropdownSearch<String>(
-                                            items: caseTypes,
-                                            selectedItem: service['caseType'],
-                                            dropdownDecoratorProps: DropDownDecoratorProps(
-                                              dropdownSearchDecoration: InputDecoration(
-                                                hintText:
-                                                    CourtcasesStrings.getString(
-                                                      'caseType',
-                                                      widget.isToggled,
-                                                    ),
-                                                hintStyle:
-                                                    AppFontStyle2.blinker(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      height: 1.57,
-                                                      color: const Color(
-                                                        0xFF36322E,
-                                                      ),
-                                                    ),
-                                                contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 14,
-                                                    ),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            6,
-                                                          ),
-                                                      borderSide:
-                                                          const BorderSide(
-                                                            color: Color(
-                                                              0xFFC5C5C5,
-                                                            ),
-                                                          ),
-                                                    ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            6,
-                                                          ),
-                                                      borderSide:
-                                                          const BorderSide(
-                                                            color: Color(
-                                                              0xFFC5C5C5,
-                                                            ),
-                                                          ),
-                                                    ),
-                                                errorText: state.errorText,
-                                                errorStyle: const TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
-                                            popupProps: PopupProps.menu(
-                                              showSearchBox: true,
-                                              searchFieldProps: TextFieldProps(
-                                                textCapitalization:
-                                                    TextCapitalization.words,
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter.allow(
-                                                    RegExp(r'^[a-zA-Z\s]+$'),
-                                                  ),
-                                                  LengthLimitingTextInputFormatter(
-                                                    50,
-                                                  ),
-                                                ],
-                                                decoration: InputDecoration(
-                                                  hintText: widget.isToggled
-                                                      ? 'केस प्रकार शोधा...'
-                                                      : 'Search Case Type...',
-                                                  hintStyle:
-                                                      AppFontStyle2.blinker(),
-                                                  border: OutlineInputBorder(
-                                                    borderSide:
-                                                        const BorderSide(
-                                                          color: Color(
-                                                            0xFFC5C5C5,
-                                                          ),
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            dropdownButtonProps:
-                                                const DropdownButtonProps(
-                                                  icon: Icon(
-                                                    Icons.keyboard_arrow_down,
-                                                    size: 28,
-                                                    color: Color(0xFF9CA3AF),
-                                                  ),
-                                                ),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                service['caseType'] = value;
-                                                state.didChange(value);
-                                              });
-                                            },
+                                decoration: BoxDecoration(
+                                  border: service['isSelected']
+                                      ? const Border(
+                                          bottom: BorderSide(
+                                            color: Colors.grey,
+                                            width: 1,
                                           ),
-                                        ],
-                                      );
-                                    },
-                                  ),
+                                        )
+                                      : null,
                                 ),
-                                const SizedBox(height: 12),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 8.0,
-                                    right: 8,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          decoration: InputDecoration(
-                                            labelText:
-                                                CourtcasesStrings.getString(
-                                                  'caseNumber',
-                                                  widget.isToggled,
-                                                ),
-                                            border: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Color(0xFFC5C5C5),
-                                              ),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Color(0xFFC5C5C5),
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Color(0xFFC5C5C5),
-                                              ),
-                                            ),
-                                          ),
-                                          onChanged: (value) {
-                                            service['caseNumber'] = value;
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: TextFormField(
-                                          decoration: InputDecoration(
-                                            labelText:
-                                                CourtcasesStrings.getString(
-                                                  'caseYear',
-                                                  widget.isToggled,
-                                                ),
-                                            border: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Color(0xFFC5C5C5),
-                                              ),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Color(0xFFC5C5C5),
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Color(0xFFC5C5C5),
-                                              ),
-                                            ),
-                                          ),
-                                          keyboardType: TextInputType.number,
-                                          onChanged: (value) {
-                                            service['caseYear'] = value;
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 8.0,
-                                        right: 8,
-                                      ),
+                                    Expanded(
                                       child: Text(
-                                        CourtcasesStrings.getString(
-                                          'ifNotKnown',
-                                          widget.isToggled,
-                                        ),
+                                        service['name'],
                                         style: AppFontStyle2.blinker(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
                                           color: const Color(0xFF36322E),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 12),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 8.0,
-                                        right: 8,
-                                      ),
-                                      child: TextFormField(
-                                        decoration: InputDecoration(
-                                          labelText:
-                                              CourtcasesStrings.getString(
-                                                'partyName',
-                                                widget.isToggled,
-                                              ),
-                                          border: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Color(0xFFC5C5C5),
-                                            ),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Color(0xFFC5C5C5),
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Color(0xFFC5C5C5),
-                                            ),
-                                          ),
-                                        ),
+                                    Transform.scale(
+                                      scale: 0.7,
+                                      child: Switch(
+                                        value: service['isSelected'],
                                         onChanged: (value) {
-                                          service['partyName'] = value;
+                                          if (value) {
+                                            _selectOnlyThisCourt(service);
+                                          }
+                                          // Else: Do nothing — user cannot turn off the last selected
                                         },
-                                      ),
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 8.0,
-                                        right: 8,
-                                        bottom: 8,
-                                      ),
-                                      child: TextFormField(
-                                        decoration: InputDecoration(
-                                          labelText:
-                                              CourtcasesStrings.getString(
-                                                'partyYear',
-                                                widget.isToggled,
-                                              ),
-                                          border: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Color(0xFFC5C5C5),
-                                            ),
-                                          ),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Color(0xFFC5C5C5),
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Color(0xFFC5C5C5),
-                                            ),
-                                          ),
-                                        ),
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (value) {
-                                          service['partyYear'] = value;
-                                        },
+                                        activeColor: Colors.white,
+                                        activeTrackColor: Colors.black,
+                                        inactiveThumbColor: Colors.white,
+                                        inactiveTrackColor: Colors.black26,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 50.0),
-                    child: Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF26500),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: TextButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate() &&
-                              courtServices.any(
-                                (service) => service['isSelected'],
-                              )) {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            final String? stateId = prefs.getString('state_id');
-                            final String? customerId = prefs.getString(
-                              'customer_id',
-                            );
-
-                            Map<String, dynamic> formData = {
-                              "tbl_name": widget.tblName,
-                              "customer_id": customerId,
-                              "package_id": widget.packageId ?? "",
-                              "state_id": stateId,
-                              "lead_id": widget.package_lead_id,
-                              "service_name": widget.isToggled
-                                  ? widget.serviceNameInLocalLanguage
-                                  : widget.serviceName,
-                              "city_id": SelectedId,
-                              "selected_courts": courtServices
-                                  .where((service) => service['isSelected'])
-                                  .map(
-                                    (service) => {
-                                      "court_id": service['id'],
-                                      "case_type": service['caseType'],
-                                      "bench": service['bench'],
-                                      "department": service['department'],
-                                      "district": service['district'],
-                                      "case_number": service['caseNumber'],
-                                      "case_year": service['caseYear'],
-                                      "party_name": service['partyName'],
-                                      "party_year": service['partyYear'],
-                                    },
-                                  )
-                                  .toList(),
-                            };
-                            submitLegalAdvisoryEnquiryForm(context, formData);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  courtServices.any(
-                                        (service) => service['isSelected'],
-                                      )
-                                      ? "Please fix form errors."
-                                      : "Please select at least one court.",
-                                ),
-                                backgroundColor: Colors.red,
                               ),
-                            );
-                          }
-                        },
-                        child: Center(
-                          child: Text(
-                            CourtcasesStrings.getString(
-                              'next',
-                              widget.isToggled,
                             ),
-                            style: AppFontStyle2.blinker(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
+
+                            // Expanded Form Fields
+                            if (service['isSelected']) ...[
+                              const SizedBox(height: 12),
+
+                              // High Court Bombay - Bench
+                              if (service['name'] == 'High Court Bombay') ...[
+                                _buildDropdown(
+                                  hint: CourtcasesStrings.getString(
+                                    'selectBench',
+                                    widget.isToggled,
+                                  ),
+                                  items: bombayBenches,
+                                  value: service['bench'],
+                                  onChanged: (val) =>
+                                      setState(() => service['bench'] = val),
+                                  validator: () => service['bench'] == null
+                                      ? 'Select bench'
+                                      : null,
+                                ),
+                                const SizedBox(height: 12),
+                              ],
+
+                              // Revenue Courts - Department & District
+                              if (service['name'] == 'Revenue Courts') ...[
+                                _buildDropdown(
+                                  hint: CourtcasesStrings.getString(
+                                    'department',
+                                    widget.isToggled,
+                                  ),
+                                  items: revenueDepartments,
+                                  value: service['department'],
+                                  onChanged: (val) => setState(
+                                    () => service['department'] = val,
+                                  ),
+                                  validator: () => service['department'] == null
+                                      ? 'Select department'
+                                      : null,
+                                ),
+                                const SizedBox(height: 12),
+                                _buildDropdown(
+                                  hint: CourtcasesStrings.getString(
+                                    'district',
+                                    widget.isToggled,
+                                  ),
+                                  items: revenueDistricts,
+                                  value: service['district'],
+                                  onChanged: (val) =>
+                                      setState(() => service['district'] = val),
+                                  validator: () => service['district'] == null
+                                      ? 'Select district'
+                                      : null,
+                                ),
+                                const SizedBox(height: 12),
+                              ],
+
+                              // Case Type (All Courts)
+                              _buildDropdown(
+                                hint: CourtcasesStrings.getString(
+                                  'caseType',
+                                  widget.isToggled,
+                                ),
+                                items: caseTypes,
+                                value: service['caseType'],
+                                onChanged: (val) =>
+                                    setState(() => service['caseType'] = val),
+                                validator: () => service['caseType'] == null
+                                    ? 'Select case type'
+                                    : null,
+                              ),
+                              const SizedBox(height: 12),
+
+                              // Case Number & Year
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: _buildTextField(
+                                        'caseNumber',
+                                        service,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: _buildTextField(
+                                        'caseYear',
+                                        service,
+                                        isNumber: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+
+                              // Party Name & Year (If case number unknown)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      CourtcasesStrings.getString(
+                                        'ifNotKnown',
+                                        widget.isToggled,
+                                      ),
+                                      style: AppFontStyle2.blinker(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    _buildTextField('partyName', service),
+                                    const SizedBox(height: 12),
+                                    _buildTextField(
+                                      'partyYear',
+                                      service,
+                                      isNumber: true,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+
+                  const SizedBox(height: 30),
+
+                  // Submit Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF26500),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate() &&
+                            courtServices.any((s) => s['isSelected'])) {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          final customerId = prefs.getString('customer_id');
+                          final stateId = prefs.getString('state_id');
+
+                          Map<String, dynamic> formData = {
+                            "tbl_name": widget.tblName,
+                            "customer_id": customerId,
+                            "package_id": widget.packageId,
+                            "state_id": stateId,
+                            "lead_id": widget.package_lead_id,
+                            "service_name": widget.isToggled
+                                ? widget.serviceNameInLocalLanguage
+                                : widget.serviceName,
+                            "city_id": SelectedId,
+                            "selected_courts": courtServices
+                                .where((s) => s['isSelected'])
+                                .map(
+                                  (s) => {
+                                    "court_id": s['id'],
+                                    "case_type": s['caseType'],
+                                    "bench": s['bench'],
+                                    "department": s['department'],
+                                    "district": s['district'],
+                                    "case_number": s['caseNumber'],
+                                    "case_year": s['caseYear'],
+                                    "party_name": s['partyName'],
+                                    "party_year": s['partyYear'],
+                                  },
+                                )
+                                .toList(),
+                          };
+
+                          submitLegalAdvisoryEnquiryForm(context, formData);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                courtServices.any((s) => s['isSelected'])
+                                    ? "Please fill all required fields."
+                                    : "Please select one court to proceed.",
+                              ),
+                              backgroundColor: Colors.red,
                             ),
-                          ),
+                          );
+                        }
+                      },
+                      child: Text(
+                        CourtcasesStrings.getString('next', widget.isToggled),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colorfile.borderDark),
-                        color: Colorfile.white,
-                        borderRadius: BorderRadius.circular(8),
+
+                  const SizedBox(height: 16),
+                  // View Sample Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: OutlinedButton(
+                      onPressed: () => print("View Sample Pressed"),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colorfile.borderDark),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                      child: TextButton(
-                        onPressed: () {
-                          print("View Sample button pressed");
-                        },
-                        child: Center(
-                          child: Text(
-                            LocalizedStrings.getString(
-                              'viewSample',
-                              widget.isToggled,
-                            ),
-                            style: AppFontStyle2.blinker(
-                              color: Colorfile.lightblack,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                      child: Text(
+                        LocalizedStrings.getString(
+                          'viewSample',
+                          widget.isToggled,
+                        ),
+                        style: AppFontStyle2.blinker(
+                          color: Colorfile.lightblack,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -1253,6 +644,75 @@ class _CourtcasesState extends State<Courtcases> {
           ),
         ),
       ),
+    );
+  }
+
+  // Helper: Dropdown Field
+  Widget _buildDropdown({
+    required String hint,
+    required List<String> items,
+    required String? value,
+    required Function(String?) onChanged,
+    required String? Function() validator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: FormField<String>(
+        validator: (_) => validator(),
+        builder: (state) => DropdownSearch<String>(
+          items: items,
+          selectedItem: value,
+          dropdownDecoratorProps: DropDownDecoratorProps(
+            dropdownSearchDecoration: InputDecoration(
+              hintText: hint,
+              errorText: state.errorText,
+              errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 14,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+              ),
+            ),
+          ),
+          popupProps: const PopupProps.menu(showSearchBox: true),
+          onChanged: (val) {
+            onChanged(val);
+            state.didChange(val);
+          },
+        ),
+      ),
+    );
+  }
+
+  // Helper: Text Field
+  Widget _buildTextField(
+    String key,
+    Map<String, dynamic> service, {
+    bool isNumber = false,
+  }) {
+    return TextFormField(
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      decoration: InputDecoration(
+        labelText: CourtcasesStrings.getString(key, widget.isToggled),
+        border: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+        ),
+      ),
+      onChanged: (val) => service[key] = val,
     );
   }
 }

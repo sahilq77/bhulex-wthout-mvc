@@ -90,7 +90,7 @@ class _HomePage2State extends State<HomePage2> {
     'Legal Advisory': 'within12Hours',
     'Investigative Reports': 'within24Hours',
     'E-Applications': 'within12Hours',
-  };
+  }; 
 
   @override
   void initState() {
