@@ -52,7 +52,7 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
       "taluka": null,
       "village": null,
       "cornerPlot": null,
-      "surveyNumber": ""
+      "surveyNumber": "",
     },
     {
       "id": "2",
@@ -63,7 +63,7 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
       "taluka": null,
       "village": null,
       "cornerPlot": null,
-      "surveyNumber": ""
+      "surveyNumber": "",
     },
   ];
 
@@ -71,7 +71,7 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
     'Residential',
     'Commercial',
     'Agricultural',
-    'Industrial'
+    'Industrial',
   ];
 
   final List<String> districts = [
@@ -79,7 +79,7 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
     'Pune',
     'Nagpur',
     'Aurangabad',
-    'Nashik'
+    'Nashik',
   ];
 
   final List<String> talukas = ['Haveli', 'Khed', 'Mulshi', 'Shirur', 'Daund'];
@@ -89,7 +89,7 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
     'Hadapsar',
     'Kharadi',
     'Hinjewadi',
-    'Baner'
+    'Baner',
   ];
 
   final List<String> cornerPlotOptions = ['Yes', 'No'];
@@ -111,7 +111,7 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
           'taluka': null,
           'village': null,
           'cornerPlot': null,
-          'surveyNumber': ''
+          'surveyNumber': '',
         };
       }).toList();
       isLoading = false;
@@ -174,7 +174,9 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                     padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
                     child: Text(
                       PropertyStrings.getString(
-                          'description', widget.isToggled),
+                        'description',
+                        widget.isToggled,
+                      ),
                       textAlign: TextAlign.justify,
                       style: AppFontStyle2.blinker(
                         fontSize: 10,
@@ -186,7 +188,9 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                   const SizedBox(height: 16),
                   Text(
                     PropertyStrings.getString(
-                        'pleaseEnterYourDetails', widget.isToggled),
+                      'pleaseEnterYourDetails',
+                      widget.isToggled,
+                    ),
                     style: AppFontStyle2.blinker(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -205,9 +209,7 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: const Color(0xFFC5C5C5),
-                            ),
+                            border: Border.all(color: const Color(0xFFC5C5C5)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,7 +279,9 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                               if (property['isSelected']) ...[
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                  ),
                                   child: FormField<String>(
                                     validator: (value) {
                                       if (property['natureOfProperty'] ==
@@ -295,27 +299,28 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                             items: natureOfProperties,
                                             selectedItem:
                                                 property['natureOfProperty'],
-                                            dropdownDecoratorProps:
-                                                DropDownDecoratorProps(
-                                              dropdownSearchDecoration:
-                                                  InputDecoration(
+                                            dropdownDecoratorProps: DropDownDecoratorProps(
+                                              dropdownSearchDecoration: InputDecoration(
                                                 hintText:
                                                     PropertyStrings.getString(
-                                                        'natureOfProperty',
-                                                        widget.isToggled),
+                                                      'natureOfProperty',
+                                                      widget.isToggled,
+                                                    ),
                                                 hintStyle:
                                                     AppFontStyle2.blinker(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.57,
-                                                  color:
-                                                      const Color(0xFF36322E),
-                                                ),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      height: 1.57,
+                                                      color: const Color(
+                                                        0xFF36322E,
+                                                      ),
+                                                    ),
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 14,
-                                                ),
+                                                      horizontal: 12,
+                                                      vertical: 14,
+                                                    ),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(6),
@@ -325,20 +330,30 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                 ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 errorText: state.errorText,
                                                 errorStyle: const TextStyle(
                                                   color: Colors.red,
@@ -352,12 +367,12 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                 textCapitalization:
                                                     TextCapitalization.words,
                                                 inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(
+                                                  FilteringTextInputFormatter.allow(
                                                     RegExp(r'^[a-zA-Z\s]+$'),
                                                   ),
                                                   LengthLimitingTextInputFormatter(
-                                                      50),
+                                                    50,
+                                                  ),
                                                 ],
                                                 decoration: InputDecoration(
                                                   hintText: widget.isToggled
@@ -368,20 +383,22 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                   border: OutlineInputBorder(
                                                     borderSide:
                                                         const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
+                                                          color: Color(
+                                                            0xFFC5C5C5,
+                                                          ),
+                                                        ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                             dropdownButtonProps:
                                                 const DropdownButtonProps(
-                                              icon: Icon(
-                                                Icons.keyboard_arrow_down,
-                                                size: 28,
-                                                color: Color(0xFF9CA3AF),
-                                              ),
-                                            ),
+                                                  icon: Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    size: 28,
+                                                    color: Color(0xFF9CA3AF),
+                                                  ),
+                                                ),
                                             onChanged: (value) {
                                               setState(() {
                                                 property['natureOfProperty'] =
@@ -398,7 +415,9 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                 const SizedBox(height: 12),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                  ),
                                   child: FormField<String>(
                                     validator: (value) {
                                       if (property['district'] == null) {
@@ -414,27 +433,28 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                           DropdownSearch<String>(
                                             items: districts,
                                             selectedItem: property['district'],
-                                            dropdownDecoratorProps:
-                                                DropDownDecoratorProps(
-                                              dropdownSearchDecoration:
-                                                  InputDecoration(
+                                            dropdownDecoratorProps: DropDownDecoratorProps(
+                                              dropdownSearchDecoration: InputDecoration(
                                                 hintText:
                                                     PropertyStrings.getString(
-                                                        'district',
-                                                        widget.isToggled),
+                                                      'district',
+                                                      widget.isToggled,
+                                                    ),
                                                 hintStyle:
                                                     AppFontStyle2.blinker(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.57,
-                                                  color:
-                                                      const Color(0xFF36322E),
-                                                ),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      height: 1.57,
+                                                      color: const Color(
+                                                        0xFF36322E,
+                                                      ),
+                                                    ),
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 14,
-                                                ),
+                                                      horizontal: 12,
+                                                      vertical: 14,
+                                                    ),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(6),
@@ -444,20 +464,30 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                 ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 errorText: state.errorText,
                                                 errorStyle: const TextStyle(
                                                   color: Colors.red,
@@ -471,12 +501,12 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                 textCapitalization:
                                                     TextCapitalization.words,
                                                 inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(
+                                                  FilteringTextInputFormatter.allow(
                                                     RegExp(r'^[a-zA-Z\s]+$'),
                                                   ),
                                                   LengthLimitingTextInputFormatter(
-                                                      50),
+                                                    50,
+                                                  ),
                                                 ],
                                                 decoration: InputDecoration(
                                                   hintText: widget.isToggled
@@ -487,20 +517,22 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                   border: OutlineInputBorder(
                                                     borderSide:
                                                         const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
+                                                          color: Color(
+                                                            0xFFC5C5C5,
+                                                          ),
+                                                        ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                             dropdownButtonProps:
                                                 const DropdownButtonProps(
-                                              icon: Icon(
-                                                Icons.keyboard_arrow_down,
-                                                size: 28,
-                                                color: Color(0xFF9CA3AF),
-                                              ),
-                                            ),
+                                                  icon: Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    size: 28,
+                                                    color: Color(0xFF9CA3AF),
+                                                  ),
+                                                ),
                                             onChanged: (value) {
                                               setState(() {
                                                 property['district'] = value;
@@ -516,7 +548,9 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                 const SizedBox(height: 12),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                  ),
                                   child: FormField<String>(
                                     validator: (value) {
                                       if (property['taluka'] == null) {
@@ -532,27 +566,28 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                           DropdownSearch<String>(
                                             items: talukas,
                                             selectedItem: property['taluka'],
-                                            dropdownDecoratorProps:
-                                                DropDownDecoratorProps(
-                                              dropdownSearchDecoration:
-                                                  InputDecoration(
+                                            dropdownDecoratorProps: DropDownDecoratorProps(
+                                              dropdownSearchDecoration: InputDecoration(
                                                 hintText:
                                                     PropertyStrings.getString(
-                                                        'taluka',
-                                                        widget.isToggled),
+                                                      'taluka',
+                                                      widget.isToggled,
+                                                    ),
                                                 hintStyle:
                                                     AppFontStyle2.blinker(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.57,
-                                                  color:
-                                                      const Color(0xFF36322E),
-                                                ),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      height: 1.57,
+                                                      color: const Color(
+                                                        0xFF36322E,
+                                                      ),
+                                                    ),
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 14,
-                                                ),
+                                                      horizontal: 12,
+                                                      vertical: 14,
+                                                    ),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(6),
@@ -562,20 +597,30 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                 ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 errorText: state.errorText,
                                                 errorStyle: const TextStyle(
                                                   color: Colors.red,
@@ -589,12 +634,12 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                 textCapitalization:
                                                     TextCapitalization.words,
                                                 inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(
+                                                  FilteringTextInputFormatter.allow(
                                                     RegExp(r'^[a-zA-Z\s]+$'),
                                                   ),
                                                   LengthLimitingTextInputFormatter(
-                                                      50),
+                                                    50,
+                                                  ),
                                                 ],
                                                 decoration: InputDecoration(
                                                   hintText: widget.isToggled
@@ -605,20 +650,22 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                   border: OutlineInputBorder(
                                                     borderSide:
                                                         const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
+                                                          color: Color(
+                                                            0xFFC5C5C5,
+                                                          ),
+                                                        ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                             dropdownButtonProps:
                                                 const DropdownButtonProps(
-                                              icon: Icon(
-                                                Icons.keyboard_arrow_down,
-                                                size: 28,
-                                                color: Color(0xFF9CA3AF),
-                                              ),
-                                            ),
+                                                  icon: Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    size: 28,
+                                                    color: Color(0xFF9CA3AF),
+                                                  ),
+                                                ),
                                             onChanged: (value) {
                                               setState(() {
                                                 property['taluka'] = value;
@@ -634,7 +681,9 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                 const SizedBox(height: 12),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                  ),
                                   child: FormField<String>(
                                     validator: (value) {
                                       if (property['village'] == null) {
@@ -650,27 +699,28 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                           DropdownSearch<String>(
                                             items: villages,
                                             selectedItem: property['village'],
-                                            dropdownDecoratorProps:
-                                                DropDownDecoratorProps(
-                                              dropdownSearchDecoration:
-                                                  InputDecoration(
+                                            dropdownDecoratorProps: DropDownDecoratorProps(
+                                              dropdownSearchDecoration: InputDecoration(
                                                 hintText:
                                                     PropertyStrings.getString(
-                                                        'village',
-                                                        widget.isToggled),
+                                                      'village',
+                                                      widget.isToggled,
+                                                    ),
                                                 hintStyle:
                                                     AppFontStyle2.blinker(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.57,
-                                                  color:
-                                                      const Color(0xFF36322E),
-                                                ),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      height: 1.57,
+                                                      color: const Color(
+                                                        0xFF36322E,
+                                                      ),
+                                                    ),
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 14,
-                                                ),
+                                                      horizontal: 12,
+                                                      vertical: 14,
+                                                    ),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(6),
@@ -680,20 +730,30 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                 ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 errorText: state.errorText,
                                                 errorStyle: const TextStyle(
                                                   color: Colors.red,
@@ -707,12 +767,12 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                 textCapitalization:
                                                     TextCapitalization.words,
                                                 inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(
+                                                  FilteringTextInputFormatter.allow(
                                                     RegExp(r'^[a-zA-Z\s]+$'),
                                                   ),
                                                   LengthLimitingTextInputFormatter(
-                                                      50),
+                                                    50,
+                                                  ),
                                                 ],
                                                 decoration: InputDecoration(
                                                   hintText: widget.isToggled
@@ -723,20 +783,22 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                   border: OutlineInputBorder(
                                                     borderSide:
                                                         const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
+                                                          color: Color(
+                                                            0xFFC5C5C5,
+                                                          ),
+                                                        ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                             dropdownButtonProps:
                                                 const DropdownButtonProps(
-                                              icon: Icon(
-                                                Icons.keyboard_arrow_down,
-                                                size: 28,
-                                                color: Color(0xFF9CA3AF),
-                                              ),
-                                            ),
+                                                  icon: Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    size: 28,
+                                                    color: Color(0xFF9CA3AF),
+                                                  ),
+                                                ),
                                             onChanged: (value) {
                                               setState(() {
                                                 property['village'] = value;
@@ -752,7 +814,9 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                 const SizedBox(height: 12),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                  ),
                                   child: FormField<bool>(
                                     validator: (value) {
                                       if (property['cornerPlot'] == null) {
@@ -768,13 +832,15 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                           Container(
                                             decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color:
-                                                      const Color(0xFFC5C5C5)),
+                                                color: const Color(0xFFC5C5C5),
+                                              ),
                                               borderRadius:
                                                   BorderRadius.circular(6),
                                             ),
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 14),
+                                              horizontal: 12,
+                                              vertical: 14,
+                                            ),
                                             child: Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment
@@ -782,14 +848,16 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                               children: [
                                                 Text(
                                                   PropertyStrings.getString(
-                                                      'cornerPlot',
-                                                      widget.isToggled),
+                                                    'cornerPlot',
+                                                    widget.isToggled,
+                                                  ),
                                                   style: AppFontStyle2.blinker(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w500,
                                                     height: 1.57,
-                                                    color:
-                                                        const Color(0xFF36322E),
+                                                    color: const Color(
+                                                      0xFF36322E,
+                                                    ),
                                                   ),
                                                 ),
                                                 Row(
@@ -797,8 +865,7 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                     GestureDetector(
                                                       onTap: () {
                                                         setState(() {
-                                                          property[
-                                                                  'cornerPlot'] =
+                                                          property['cornerPlot'] =
                                                               true;
                                                           state.didChange(true);
                                                         });
@@ -808,25 +875,25 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                           Container(
                                                             width: 20,
                                                             height: 20,
-                                                            decoration:
-                                                                BoxDecoration(
+                                                            decoration: BoxDecoration(
                                                               shape: BoxShape
                                                                   .circle,
-                                                              color: property[
-                                                                          'cornerPlot'] ==
+                                                              color:
+                                                                  property['cornerPlot'] ==
                                                                       true
                                                                   ? Colors.black
                                                                   : Colors
-                                                                      .transparent,
-                                                              border:
-                                                                  Border.all(
-                                                                color: const Color(
-                                                                    0xFFC5C5C5),
+                                                                        .transparent,
+                                                              border: Border.all(
+                                                                color:
+                                                                    const Color(
+                                                                      0xFFC5C5C5,
+                                                                    ),
                                                                 width: 2,
                                                               ),
                                                             ),
-                                                            child: property[
-                                                                        'cornerPlot'] ==
+                                                            child:
+                                                                property['cornerPlot'] ==
                                                                     true
                                                                 ? const Center(
                                                                     child: Icon(
@@ -840,17 +907,19 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                                 : null,
                                                           ),
                                                           const SizedBox(
-                                                              width: 4),
+                                                            width: 4,
+                                                          ),
                                                           Text(
                                                             'Yes',
-                                                            style: AppFontStyle2
-                                                                .blinker(
+                                                            style: AppFontStyle2.blinker(
                                                               fontSize: 16,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w500,
-                                                              color: const Color(
-                                                                  0xFF36322E),
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF36322E,
+                                                                  ),
                                                             ),
                                                           ),
                                                         ],
@@ -860,11 +929,11 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                     GestureDetector(
                                                       onTap: () {
                                                         setState(() {
-                                                          property[
-                                                                  'cornerPlot'] =
+                                                          property['cornerPlot'] =
                                                               false;
-                                                          state
-                                                              .didChange(false);
+                                                          state.didChange(
+                                                            false,
+                                                          );
                                                         });
                                                       },
                                                       child: Row(
@@ -872,25 +941,25 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                           Container(
                                                             width: 20,
                                                             height: 20,
-                                                            decoration:
-                                                                BoxDecoration(
+                                                            decoration: BoxDecoration(
                                                               shape: BoxShape
                                                                   .circle,
-                                                              color: property[
-                                                                          'cornerPlot'] ==
+                                                              color:
+                                                                  property['cornerPlot'] ==
                                                                       false
                                                                   ? Colors.black
                                                                   : Colors
-                                                                      .transparent,
-                                                              border:
-                                                                  Border.all(
-                                                                color: const Color(
-                                                                    0xFFC5C5C5),
+                                                                        .transparent,
+                                                              border: Border.all(
+                                                                color:
+                                                                    const Color(
+                                                                      0xFFC5C5C5,
+                                                                    ),
                                                                 width: 2,
                                                               ),
                                                             ),
-                                                            child: property[
-                                                                        'cornerPlot'] ==
+                                                            child:
+                                                                property['cornerPlot'] ==
                                                                     false
                                                                 ? const Center(
                                                                     child: Icon(
@@ -904,17 +973,19 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                                                 : null,
                                                           ),
                                                           const SizedBox(
-                                                              width: 4),
+                                                            width: 4,
+                                                          ),
                                                           Text(
                                                             'No',
-                                                            style: AppFontStyle2
-                                                                .blinker(
+                                                            style: AppFontStyle2.blinker(
                                                               fontSize: 16,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .w500,
-                                                              color: const Color(
-                                                                  0xFF36322E),
+                                                              color:
+                                                                  const Color(
+                                                                    0xFF36322E,
+                                                                  ),
                                                             ),
                                                           ),
                                                         ],
@@ -928,7 +999,8 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                           if (state.errorText != null)
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  top: 4.0),
+                                                top: 4.0,
+                                              ),
                                               child: Text(
                                                 state.errorText!,
                                                 style: const TextStyle(
@@ -945,11 +1017,16 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                 const SizedBox(height: 12),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8, bottom: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                    bottom: 8,
+                                  ),
                                   child: TextFormField(
                                     decoration: InputDecoration(
                                       labelText: PropertyStrings.getString(
-                                          'surveyNumber', widget.isToggled),
+                                        'surveyNumber',
+                                        widget.isToggled,
+                                      ),
                                       border: OutlineInputBorder(
                                         borderSide: const BorderSide(
                                           color: Color(0xFFC5C5C5),
@@ -996,13 +1073,15 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                       child: TextButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate() &&
-                              propertyTypes
-                                  .any((property) => property['isSelected'])) {
+                              propertyTypes.any(
+                                (property) => property['isSelected'],
+                              )) {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             final String? stateId = prefs.getString('state_id');
-                            final String? customerId =
-                                prefs.getString('customer_id');
+                            final String? customerId = prefs.getString(
+                              'customer_id',
+                            );
 
                             Map<String, dynamic> formData = {
                               "tbl_name": widget.tblName,
@@ -1015,17 +1094,18 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                                   : widget.serviceName,
                               "selected_properties": propertyTypes
                                   .where((property) => property['isSelected'])
-                                  .map((property) => {
-                                        "property_type": property['name'],
-                                        "nature_of_property":
-                                            property['natureOfProperty'],
-                                        "district": property['district'],
-                                        "taluka": property['taluka'],
-                                        "village": property['village'],
-                                        "corner_plot": property['cornerPlot'],
-                                        "survey_number":
-                                            property['surveyNumber'],
-                                      })
+                                  .map(
+                                    (property) => {
+                                      "property_type": property['name'],
+                                      "nature_of_property":
+                                          property['natureOfProperty'],
+                                      "district": property['district'],
+                                      "taluka": property['taluka'],
+                                      "village": property['village'],
+                                      "corner_plot": property['cornerPlot'],
+                                      "survey_number": property['surveyNumber'],
+                                    },
+                                  )
                                   .toList(),
                             };
 
@@ -1036,7 +1116,8 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                               SnackBar(
                                 content: Text(
                                   propertyTypes.any(
-                                          (property) => property['isSelected'])
+                                        (property) => property['isSelected'],
+                                      )
                                       ? "Please fix form errors."
                                       : "Please select at least one property type.",
                                 ),
@@ -1060,75 +1141,31 @@ class _EPropertyValuationPageState extends State<EPropertyValuationPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.borderDark,
-                              ),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colorfile.borderDark),
+                        color: Colorfile.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          developer.log("View Sample button pressed");
+                        },
+                        child: Center(
+                          child: Text(
+                            PropertyStrings.getString(
+                              'viewSample',
+                              widget.isToggled,
                             ),
-                            child: TextButton(
-                              onPressed: () {
-                                developer.log("View Sample button pressed");
-                              },
-                              child: Center(
-                                child: Text(
-                                  PropertyStrings.getString(
-                                      'viewSample', widget.isToggled),
-                                  style: AppFontStyle2.blinker(
-                                    color: Colorfile.lightblack,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            style: AppFontStyle2.blinker(
+                              color: Colorfile.lightblack,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.lightwhite,
-                              ),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                developer.log("Chat with Us button pressed");
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    AppImages.whatsapp,
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    PropertyStrings.getString(
-                                        'chatWithUs', widget.isToggled),
-                                    style: AppFontStyle2.blinker(
-                                      color: Colorfile.lightblack,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],

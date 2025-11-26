@@ -50,7 +50,7 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
       "district": null,
       "taluka": null,
       "village": null,
-      "surveyNumber": ""
+      "surveyNumber": "",
     },
     {
       "id": "2",
@@ -60,7 +60,7 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
       "taluka": null,
       "village": null,
       "office": null,
-      "surveyNumber": ""
+      "surveyNumber": "",
     },
   ];
 
@@ -69,7 +69,7 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
     'Pune',
     'Nagpur',
     'Aurangabad',
-    'Nashik'
+    'Nashik',
   ];
 
   final List<String> talukas = ['Haveli', 'Khed', 'Mulshi', 'Shirur', 'Daund'];
@@ -79,7 +79,7 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
     'Hadapsar',
     'Kharadi',
     'Hinjewadi',
-    'Baner'
+    'Baner',
   ];
 
   final List<String> offices = [
@@ -87,7 +87,7 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
     'Land Records Office',
     'Sub-Registrar Office',
     'Revenue Office',
-    'Municipal Office'
+    'Municipal Office',
   ];
 
   @override
@@ -106,7 +106,7 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
           'taluka': null,
           'village': null,
           'office': null,
-          'surveyNumber': ''
+          'surveyNumber': '',
         };
       }).toList();
       isLoading = false;
@@ -180,7 +180,9 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                   const SizedBox(height: 16),
                   Text(
                     PropertyStrings.getString(
-                        'pleaseEnterYourDetails', widget.isToggled),
+                      'pleaseEnterYourDetails',
+                      widget.isToggled,
+                    ),
                     style: AppFontStyle2.blinker(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -199,9 +201,7 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: const Color(0xFFC5C5C5),
-                            ),
+                            border: Border.all(color: const Color(0xFFC5C5C5)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,7 +271,9 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                               if (document['isSelected']) ...[
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                  ),
                                   child: FormField<String>(
                                     validator: (value) {
                                       if (document['district'] == null) {
@@ -287,26 +289,27 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                           DropdownSearch<String>(
                                             items: districts,
                                             selectedItem: document['district'],
-                                            dropdownDecoratorProps:
-                                                DropDownDecoratorProps(
-                                              dropdownSearchDecoration:
-                                                  InputDecoration(
+                                            dropdownDecoratorProps: DropDownDecoratorProps(
+                                              dropdownSearchDecoration: InputDecoration(
                                                 hintText: Aaplichawli.getString(
-                                                    'district',
-                                                    widget.isToggled),
+                                                  'district',
+                                                  widget.isToggled,
+                                                ),
                                                 hintStyle:
                                                     AppFontStyle2.blinker(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.57,
-                                                  color:
-                                                      const Color(0xFF36322E),
-                                                ),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      height: 1.57,
+                                                      color: const Color(
+                                                        0xFF36322E,
+                                                      ),
+                                                    ),
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 14,
-                                                ),
+                                                      horizontal: 12,
+                                                      vertical: 14,
+                                                    ),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(6),
@@ -316,20 +319,30 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                 ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 errorText: state.errorText,
                                                 errorStyle: const TextStyle(
                                                   color: Colors.red,
@@ -343,12 +356,12 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                 textCapitalization:
                                                     TextCapitalization.words,
                                                 inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(
+                                                  FilteringTextInputFormatter.allow(
                                                     RegExp(r'^[a-zA-Z\s]+$'),
                                                   ),
                                                   LengthLimitingTextInputFormatter(
-                                                      50),
+                                                    50,
+                                                  ),
                                                 ],
                                                 decoration: InputDecoration(
                                                   hintText: widget.isToggled
@@ -359,20 +372,22 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                   border: OutlineInputBorder(
                                                     borderSide:
                                                         const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
+                                                          color: Color(
+                                                            0xFFC5C5C5,
+                                                          ),
+                                                        ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                             dropdownButtonProps:
                                                 const DropdownButtonProps(
-                                              icon: Icon(
-                                                Icons.keyboard_arrow_down,
-                                                size: 28,
-                                                color: Color(0xFF9CA3AF),
-                                              ),
-                                            ),
+                                                  icon: Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    size: 28,
+                                                    color: Color(0xFF9CA3AF),
+                                                  ),
+                                                ),
                                             onChanged: (value) {
                                               setState(() {
                                                 document['district'] = value;
@@ -390,7 +405,9 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                   const SizedBox(height: 12),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 8.0, right: 8),
+                                      left: 8.0,
+                                      right: 8,
+                                    ),
                                     child: FormField<String>(
                                       validator: (value) {
                                         if (document['office'] == null) {
@@ -406,57 +423,66 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                             DropdownSearch<String>(
                                               items: offices,
                                               selectedItem: document['office'],
-                                              dropdownDecoratorProps:
-                                                  DropDownDecoratorProps(
-                                                dropdownSearchDecoration:
-                                                    InputDecoration(
+                                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                                dropdownSearchDecoration: InputDecoration(
                                                   hintText:
                                                       Aaplichawli.getString(
-                                                          'office',
-                                                          widget.isToggled),
+                                                        'office',
+                                                        widget.isToggled,
+                                                      ),
                                                   hintStyle:
                                                       AppFontStyle2.blinker(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                    height: 1.57,
-                                                    color:
-                                                        const Color(0xFF36322E),
-                                                  ),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        height: 1.57,
+                                                        color: const Color(
+                                                          0xFF36322E,
+                                                        ),
+                                                      ),
                                                   contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 14,
-                                                  ),
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 14,
+                                                      ),
                                                   border: OutlineInputBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            6),
+                                                          6,
+                                                        ),
                                                     borderSide:
                                                         const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
+                                                          color: Color(
+                                                            0xFFC5C5C5,
+                                                          ),
+                                                        ),
                                                   ),
                                                   enabledBorder:
                                                       OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            6),
-                                                    borderSide:
-                                                        const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
-                                                  ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              6,
+                                                            ),
+                                                        borderSide:
+                                                            const BorderSide(
+                                                              color: Color(
+                                                                0xFFC5C5C5,
+                                                              ),
+                                                            ),
+                                                      ),
                                                   focusedBorder:
                                                       OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            6),
-                                                    borderSide:
-                                                        const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
-                                                  ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              6,
+                                                            ),
+                                                        borderSide:
+                                                            const BorderSide(
+                                                              color: Color(
+                                                                0xFFC5C5C5,
+                                                              ),
+                                                            ),
+                                                      ),
                                                   errorText: state.errorText,
                                                   errorStyle: const TextStyle(
                                                     color: Colors.red,
@@ -466,17 +492,16 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                               ),
                                               popupProps: PopupProps.menu(
                                                 showSearchBox: true,
-                                                searchFieldProps:
-                                                    TextFieldProps(
+                                                searchFieldProps: TextFieldProps(
                                                   textCapitalization:
                                                       TextCapitalization.words,
                                                   inputFormatters: [
-                                                    FilteringTextInputFormatter
-                                                        .allow(
+                                                    FilteringTextInputFormatter.allow(
                                                       RegExp(r'^[a-zA-Z\s]+$'),
                                                     ),
                                                     LengthLimitingTextInputFormatter(
-                                                        50),
+                                                      50,
+                                                    ),
                                                   ],
                                                   decoration: InputDecoration(
                                                     hintText: widget.isToggled
@@ -487,21 +512,22 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                     border: OutlineInputBorder(
                                                       borderSide:
                                                           const BorderSide(
-                                                        color:
-                                                            Color(0xFFC5C5C5),
-                                                      ),
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                               dropdownButtonProps:
                                                   const DropdownButtonProps(
-                                                icon: Icon(
-                                                  Icons.keyboard_arrow_down,
-                                                  size: 28,
-                                                  color: Color(0xFF9CA3AF),
-                                                ),
-                                              ),
+                                                    icon: Icon(
+                                                      Icons.keyboard_arrow_down,
+                                                      size: 28,
+                                                      color: Color(0xFF9CA3AF),
+                                                    ),
+                                                  ),
                                               onChanged: (value) {
                                                 setState(() {
                                                   document['office'] = value;
@@ -518,7 +544,9 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                 const SizedBox(height: 12),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                  ),
                                   child: FormField<String>(
                                     validator: (value) {
                                       if (document['taluka'] == null) {
@@ -534,25 +562,27 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                           DropdownSearch<String>(
                                             items: talukas,
                                             selectedItem: document['taluka'],
-                                            dropdownDecoratorProps:
-                                                DropDownDecoratorProps(
-                                              dropdownSearchDecoration:
-                                                  InputDecoration(
+                                            dropdownDecoratorProps: DropDownDecoratorProps(
+                                              dropdownSearchDecoration: InputDecoration(
                                                 hintText: Aaplichawli.getString(
-                                                    'taluka', widget.isToggled),
+                                                  'taluka',
+                                                  widget.isToggled,
+                                                ),
                                                 hintStyle:
                                                     AppFontStyle2.blinker(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.57,
-                                                  color:
-                                                      const Color(0xFF36322E),
-                                                ),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      height: 1.57,
+                                                      color: const Color(
+                                                        0xFF36322E,
+                                                      ),
+                                                    ),
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 14,
-                                                ),
+                                                      horizontal: 12,
+                                                      vertical: 14,
+                                                    ),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(6),
@@ -562,20 +592,30 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                 ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 errorText: state.errorText,
                                                 errorStyle: const TextStyle(
                                                   color: Colors.red,
@@ -589,12 +629,12 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                 textCapitalization:
                                                     TextCapitalization.words,
                                                 inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(
+                                                  FilteringTextInputFormatter.allow(
                                                     RegExp(r'^[a-zA-Z\s]+$'),
                                                   ),
                                                   LengthLimitingTextInputFormatter(
-                                                      50),
+                                                    50,
+                                                  ),
                                                 ],
                                                 decoration: InputDecoration(
                                                   hintText: widget.isToggled
@@ -605,20 +645,22 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                   border: OutlineInputBorder(
                                                     borderSide:
                                                         const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
+                                                          color: Color(
+                                                            0xFFC5C5C5,
+                                                          ),
+                                                        ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                             dropdownButtonProps:
                                                 const DropdownButtonProps(
-                                              icon: Icon(
-                                                Icons.keyboard_arrow_down,
-                                                size: 28,
-                                                color: Color(0xFF9CA3AF),
-                                              ),
-                                            ),
+                                                  icon: Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    size: 28,
+                                                    color: Color(0xFF9CA3AF),
+                                                  ),
+                                                ),
                                             onChanged: (value) {
                                               setState(() {
                                                 document['taluka'] = value;
@@ -634,7 +676,9 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                 const SizedBox(height: 12),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                  ),
                                   child: FormField<String>(
                                     validator: (value) {
                                       if (document['village'] == null) {
@@ -650,26 +694,27 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                           DropdownSearch<String>(
                                             items: villages,
                                             selectedItem: document['village'],
-                                            dropdownDecoratorProps:
-                                                DropDownDecoratorProps(
-                                              dropdownSearchDecoration:
-                                                  InputDecoration(
+                                            dropdownDecoratorProps: DropDownDecoratorProps(
+                                              dropdownSearchDecoration: InputDecoration(
                                                 hintText: Aaplichawli.getString(
-                                                    'village',
-                                                    widget.isToggled),
+                                                  'village',
+                                                  widget.isToggled,
+                                                ),
                                                 hintStyle:
                                                     AppFontStyle2.blinker(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  height: 1.57,
-                                                  color:
-                                                      const Color(0xFF36322E),
-                                                ),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      height: 1.57,
+                                                      color: const Color(
+                                                        0xFF36322E,
+                                                      ),
+                                                    ),
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 14,
-                                                ),
+                                                      horizontal: 12,
+                                                      vertical: 14,
+                                                    ),
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(6),
@@ -679,20 +724,30 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                 ),
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 focusedBorder:
                                                     OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(6),
-                                                  borderSide: const BorderSide(
-                                                    color: Color(0xFFC5C5C5),
-                                                  ),
-                                                ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            6,
+                                                          ),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                            color: Color(
+                                                              0xFFC5C5C5,
+                                                            ),
+                                                          ),
+                                                    ),
                                                 errorText: state.errorText,
                                                 errorStyle: const TextStyle(
                                                   color: Colors.red,
@@ -706,12 +761,12 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                 textCapitalization:
                                                     TextCapitalization.words,
                                                 inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .allow(
+                                                  FilteringTextInputFormatter.allow(
                                                     RegExp(r'^[a-zA-Z\s]+$'),
                                                   ),
                                                   LengthLimitingTextInputFormatter(
-                                                      50),
+                                                    50,
+                                                  ),
                                                 ],
                                                 decoration: InputDecoration(
                                                   hintText: widget.isToggled
@@ -722,20 +777,22 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                                   border: OutlineInputBorder(
                                                     borderSide:
                                                         const BorderSide(
-                                                      color: Color(0xFFC5C5C5),
-                                                    ),
+                                                          color: Color(
+                                                            0xFFC5C5C5,
+                                                          ),
+                                                        ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                             dropdownButtonProps:
                                                 const DropdownButtonProps(
-                                              icon: Icon(
-                                                Icons.keyboard_arrow_down,
-                                                size: 28,
-                                                color: Color(0xFF9CA3AF),
-                                              ),
-                                            ),
+                                                  icon: Icon(
+                                                    Icons.keyboard_arrow_down,
+                                                    size: 28,
+                                                    color: Color(0xFF9CA3AF),
+                                                  ),
+                                                ),
                                             onChanged: (value) {
                                               setState(() {
                                                 document['village'] = value;
@@ -751,11 +808,16 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                 const SizedBox(height: 12),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 8.0, right: 8, bottom: 8),
+                                    left: 8.0,
+                                    right: 8,
+                                    bottom: 8,
+                                  ),
                                   child: TextFormField(
                                     decoration: InputDecoration(
                                       labelText: Aaplichawli.getString(
-                                          'surveyNumber', widget.isToggled),
+                                        'surveyNumber',
+                                        widget.isToggled,
+                                      ),
                                       border: OutlineInputBorder(
                                         borderSide: const BorderSide(
                                           color: Color(0xFFC5C5C5),
@@ -802,13 +864,15 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                       child: TextButton(
                         onPressed: () async {
                           if (_formKey.currentState!.validate() &&
-                              documentTypes
-                                  .any((document) => document['isSelected'])) {
+                              documentTypes.any(
+                                (document) => document['isSelected'],
+                              )) {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             final String? stateId = prefs.getString('state_id');
-                            final String? customerId =
-                                prefs.getString('customer_id');
+                            final String? customerId = prefs.getString(
+                              'customer_id',
+                            );
 
                             Map<String, dynamic> formData = {
                               "tbl_name": widget.tblName,
@@ -821,15 +885,16 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                                   : widget.serviceName,
                               "selected_documents": documentTypes
                                   .where((document) => document['isSelected'])
-                                  .map((document) => {
-                                        "document_type": document['name'],
-                                        "district": document['district'],
-                                        "taluka": document['taluka'],
-                                        "village": document['village'],
-                                        "office": document['office'],
-                                        "survey_number":
-                                            document['surveyNumber'],
-                                      })
+                                  .map(
+                                    (document) => {
+                                      "document_type": document['name'],
+                                      "district": document['district'],
+                                      "taluka": document['taluka'],
+                                      "village": document['village'],
+                                      "office": document['office'],
+                                      "survey_number": document['surveyNumber'],
+                                    },
+                                  )
                                   .toList(),
                             };
 
@@ -840,7 +905,8 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                               SnackBar(
                                 content: Text(
                                   documentTypes.any(
-                                          (document) => document['isSelected'])
+                                        (document) => document['isSelected'],
+                                      )
                                       ? "Please fix form errors."
                                       : "Please select at least one document type.",
                                 ),
@@ -864,75 +930,31 @@ class _AapliChawadiPageState extends State<AapliChawadiPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.borderDark,
-                              ),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colorfile.borderDark),
+                        color: Colorfile.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          developer.log("View Sample button pressed");
+                        },
+                        child: Center(
+                          child: Text(
+                            Aaplichawli.getString(
+                              'viewSample',
+                              widget.isToggled,
                             ),
-                            child: TextButton(
-                              onPressed: () {
-                                developer.log("View Sample button pressed");
-                              },
-                              child: Center(
-                                child: Text(
-                                  Aaplichawli.getString(
-                                      'viewSample', widget.isToggled),
-                                  style: AppFontStyle2.blinker(
-                                    color: Colorfile.lightblack,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            style: AppFontStyle2.blinker(
+                              color: Colorfile.lightblack,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.lightwhite,
-                              ),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                developer.log("Chat with Us button pressed");
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    AppImages.whatsapp,
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    Aaplichawli.getString(
-                                        'chatWithUs', widget.isToggled),
-                                    style: AppFontStyle2.blinker(
-                                      color: Colorfile.lightblack,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],

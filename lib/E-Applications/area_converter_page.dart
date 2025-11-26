@@ -53,7 +53,7 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
     'Gujarat',
     'Karnataka',
     'Tamil Nadu',
-    'Uttar Pradesh'
+    'Uttar Pradesh',
   ];
 
   void _convertArea() {
@@ -124,10 +124,7 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
           onTap: () {
             Navigator.pop(context);
           },
-          child: const Icon(
-            Icons.arrow_back,
-            semanticLabel: 'Back',
-          ),
+          child: const Icon(Icons.arrow_back, semanticLabel: 'Back'),
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1.0),
@@ -160,7 +157,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                     padding: const EdgeInsets.fromLTRB(14, 14, 18, 14),
                     child: Text(
                       AreaConverterStrings.getString(
-                          'description', widget.isToggled),
+                        'description',
+                        widget.isToggled,
+                      ),
                       textAlign: TextAlign.justify,
                       style: AppFontStyle2.blinker(
                         fontSize: 10,
@@ -172,7 +171,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                   const SizedBox(height: 16),
                   Text(
                     AreaConverterStrings.getString(
-                        'pleaseEnterYourDetails', widget.isToggled),
+                      'pleaseEnterYourDetails',
+                      widget.isToggled,
+                    ),
                     style: AppFontStyle2.blinker(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -187,7 +188,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                     validator: (value) {
                       if (_selectedState == null) {
                         return AreaConverterStrings.getString(
-                            'stateError', widget.isToggled);
+                          'stateError',
+                          widget.isToggled,
+                        );
                       }
                       return null;
                     },
@@ -201,7 +204,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
                                 hintText: AreaConverterStrings.getString(
-                                    'stateHint', widget.isToggled),
+                                  'stateHint',
+                                  widget.isToggled,
+                                ),
                                 hintStyle: AppFontStyle2.blinker(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -250,7 +255,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                                 ],
                                 decoration: InputDecoration(
                                   hintText: AreaConverterStrings.getString(
-                                      'stateSearchHint', widget.isToggled),
+                                    'stateSearchHint',
+                                    widget.isToggled,
+                                  ),
                                   hintStyle: AppFontStyle2.blinker(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
@@ -293,7 +300,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                     ],
                     decoration: InputDecoration(
                       hintText: AreaConverterStrings.getString(
-                          'inputHint', widget.isToggled),
+                        'inputHint',
+                        widget.isToggled,
+                      ),
                       hintStyle: AppFontStyle2.blinker(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -306,21 +315,15 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFC5C5C5),
-                        ),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFC5C5C5),
-                        ),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFC5C5C5),
-                        ),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
                       ),
                     ),
                     onChanged: (value) {
@@ -341,7 +344,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                               dropdownDecoratorProps: DropDownDecoratorProps(
                                 dropdownSearchDecoration: InputDecoration(
                                   hintText: AreaConverterStrings.getString(
-                                      'unitHint', widget.isToggled),
+                                    'unitHint',
+                                    widget.isToggled,
+                                  ),
                                   hintStyle: AppFontStyle2.blinker(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
@@ -372,9 +377,7 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                                   ),
                                 ),
                               ),
-                              popupProps: PopupProps.menu(
-                                showSearchBox: false,
-                              ),
+                              popupProps: PopupProps.menu(showSearchBox: false),
                               dropdownButtonProps: const DropdownButtonProps(
                                 icon: Icon(
                                   Icons.keyboard_arrow_down,
@@ -392,7 +395,8 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                             ),
                           ),
                           const SizedBox(
-                              width: 22), // Gap for circle (32 - 2*10 overlap)
+                            width: 22,
+                          ), // Gap for circle (32 - 2*10 overlap)
                           Expanded(
                             child: DropdownSearch<String>(
                               items: _areaUnits,
@@ -400,7 +404,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                               dropdownDecoratorProps: DropDownDecoratorProps(
                                 dropdownSearchDecoration: InputDecoration(
                                   hintText: AreaConverterStrings.getString(
-                                      'unitHint', widget.isToggled),
+                                    'unitHint',
+                                    widget.isToggled,
+                                  ),
                                   hintStyle: AppFontStyle2.blinker(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
@@ -431,9 +437,7 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                                   ),
                                 ),
                               ),
-                              popupProps: PopupProps.menu(
-                                showSearchBox: false,
-                              ),
+                              popupProps: PopupProps.menu(showSearchBox: false),
                               dropdownButtonProps: const DropdownButtonProps(
                                 icon: Icon(
                                   Icons.keyboard_arrow_down,
@@ -468,7 +472,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                           ),
                           onPressed: _swapUnits,
                           tooltip: AreaConverterStrings.getString(
-                              'swapTooltip', widget.isToggled),
+                            'swapTooltip',
+                            widget.isToggled,
+                          ),
                         ),
                       ),
                     ],
@@ -512,7 +518,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                           )
                         : Text(
                             AreaConverterStrings.getString(
-                                'resultPlaceholder', widget.isToggled),
+                              'resultPlaceholder',
+                              widget.isToggled,
+                            ),
                             style: AppFontStyle2.blinker(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -535,12 +543,15 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                         if (_formKey.currentState!.validate()) {
                           // Handle form submission
                           developer.log(
-                              "Form submitted with state: $_selectedState");
+                            "Form submitted with state: $_selectedState",
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
                                 AreaConverterStrings.getString(
-                                    'successMessage', widget.isToggled),
+                                  'successMessage',
+                                  widget.isToggled,
+                                ),
                                 style: AppFontStyle2.blinker(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -556,7 +567,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                             SnackBar(
                               content: Text(
                                 AreaConverterStrings.getString(
-                                    'errorMessage', widget.isToggled),
+                                  'errorMessage',
+                                  widget.isToggled,
+                                ),
                                 style: AppFontStyle2.blinker(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -572,7 +585,9 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                       child: Center(
                         child: Text(
                           AreaConverterStrings.getString(
-                              'submit', widget.isToggled),
+                            'submit',
+                            widget.isToggled,
+                          ),
                           style: AppFontStyle2.blinker(
                             fontSize: 18, // Submit button uses larger font size
                             fontWeight: FontWeight.w500,
@@ -585,75 +600,31 @@ class _AreaConverterPageState extends State<AreaConverterPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.borderDark,
-                              ),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colorfile.borderDark),
+                        color: Colorfile.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          developer.log("View Sample button pressed");
+                        },
+                        child: Center(
+                          child: Text(
+                            Aaplichawli.getString(
+                              'viewSample',
+                              widget.isToggled,
                             ),
-                            child: TextButton(
-                              onPressed: () {
-                                developer.log("View Sample button pressed");
-                              },
-                              child: Center(
-                                child: Text(
-                                  Aaplichawli.getString(
-                                      'viewSample', widget.isToggled),
-                                  style: AppFontStyle2.blinker(
-                                    color: Colorfile.lightblack,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            style: AppFontStyle2.blinker(
+                              color: Colorfile.lightblack,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colorfile.lightwhite,
-                              ),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                developer.log("Chat with Us button pressed");
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    AppImages.whatsapp,
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    Aaplichawli.getString(
-                                        'chatWithUs', widget.isToggled),
-                                    style: AppFontStyle2.blinker(
-                                      color: Colorfile.lightblack,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],

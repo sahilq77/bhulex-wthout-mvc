@@ -90,7 +90,7 @@ class _HomePage2State extends State<HomePage2> {
     'Legal Advisory': 'within12Hours',
     'Investigative Reports': 'within24Hours',
     'E-Applications': 'within12Hours',
-  }; 
+  };
 
   @override
   void initState() {
@@ -1171,187 +1171,187 @@ class _HomePage2State extends State<HomePage2> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            // GridView.builder(
-                            //   shrinkWrap: true,
-                            //   physics: const NeverScrollableScrollPhysics(),
-                            //   itemCount: dummyCategory['service'].length,
-                            //   gridDelegate:
-                            //       const SliverGridDelegateWithFixedCrossAxisCount(
-                            //         crossAxisCount: 4,
-                            //         crossAxisSpacing: 10,
-                            //         mainAxisSpacing: 10,
-                            //         childAspectRatio: 1.4,
-                            //       ),
-                            //   itemBuilder: (context, serviceIndex) {
-                            //     var service =
-                            //         dummyCategory['service'][serviceIndex];
-                            //     String serviceIcon = service['icon'] ?? '';
-                            //     return Obx(() {
-                            //       String displayName =
-                            //           languageController.isToggled.value
-                            //           ? (service['service_name_in_local_language'] ??
-                            //                 service['service_name'] ??
-                            //                 '')
-                            //           : (service['service_name'] ?? '');
-                            //       return InkWell(
-                            //         onTap: () {
-                            //           final id = service['id'].toString();
-                            //           final serviceName =
-                            //               service['service_name'] ?? '';
-                            //           final tblName = service['tbl_name'] ?? '';
-                            //           final serviceNameInLocalLanguage =
-                            //               service['service_name_in_local_language'] ??
-                            //               serviceName;
-                            //           switch (tblName) {
-                            //             case "tbl_e_property_valuation":
-                            //               Navigator.push(
-                            //                 context,
-                            //                 MaterialPageRoute(
-                            //                   builder: (context) =>
-                            //                       EPropertyValuationPage(
-                            //                         id: id,
-                            //                         packageId: "",
-                            //                         serviceName: serviceName,
-                            //                         tblName: tblName,
-                            //                         isToggled:
-                            //                             languageController
-                            //                                 .isToggled
-                            //                                 .value,
-                            //                         serviceNameInLocalLanguage:
-                            //                             serviceNameInLocalLanguage,
-                            //                         lead_id: '',
-                            //                         customer_id:
-                            //                             widget.customer_id,
-                            //                         package_lead_id: '',
-                            //                       ),
-                            //                 ),
-                            //               );
-                            //               break;
-                            //             case "tbl_aapli_chawadi":
-                            //               Navigator.push(
-                            //                 context,
-                            //                 MaterialPageRoute(
-                            //                   builder: (context) =>
-                            //                       AapliChawadiPage(
-                            //                         id: id,
-                            //                         packageId: "",
-                            //                         serviceName: serviceName,
-                            //                         tblName: tblName,
-                            //                         isToggled:
-                            //                             languageController
-                            //                                 .isToggled
-                            //                                 .value,
-                            //                         serviceNameInLocalLanguage:
-                            //                             serviceNameInLocalLanguage,
-                            //                         lead_id: '',
-                            //                         customer_id:
-                            //                             widget.customer_id,
-                            //                         package_lead_id: '',
-                            //                       ),
-                            //                 ),
-                            //               );
-                            //               break;
-                            //             case "tbl_area_converter":
-                            //               Navigator.push(
-                            //                 context,
-                            //                 MaterialPageRoute(
-                            //                   builder: (context) =>
-                            //                       AreaConverterPage(
-                            //                         id: id,
-                            //                         packageId: "",
-                            //                         serviceName: serviceName,
-                            //                         tblName: tblName,
-                            //                         isToggled:
-                            //                             languageController
-                            //                                 .isToggled
-                            //                                 .value,
-                            //                         serviceNameInLocalLanguage:
-                            //                             serviceNameInLocalLanguage,
-                            //                         lead_id: '',
-                            //                         customer_id:
-                            //                             widget.customer_id,
-                            //                         package_lead_id: '',
-                            //                       ),
-                            //                 ),
-                            //               );
-                            //               break;
-                            //             case "tbl_property_mutation":
-                            //               Navigator.push(
-                            //                 context,
-                            //                 MaterialPageRoute(
-                            //                   builder: (context) => DigitallySign1(
-                            //                     id: id,
-                            //                     packageId: "",
-                            //                     serviceName: serviceName,
-                            //                     tblName: tblName,
-                            //                     isToggled: languageController
-                            //                         .isToggled
-                            //                         .value,
-                            //                     serviceNameInLocalLanguage:
-                            //                         serviceNameInLocalLanguage,
-                            //                     lead_id: '',
-                            //                     customer_id: widget.customer_id,
-                            //                     package_lead_id: '',
-                            //                   ),
-                            //                 ),
-                            //               );
-                            //               break;
-                            //             default:
-                            //               ScaffoldMessenger.of(
-                            //                 context,
-                            //               ).showSnackBar(
-                            //                 SnackBar(
-                            //                   content: Obx(
-                            //                     () => Text(
-                            //                       languageController
-                            //                               .isToggled
-                            //                               .value
-                            //                           ? "या निवडीसाठी सेवा उपलब्ध नाही."
-                            //                           : "Service not available for this selection.",
-                            //                     ),
-                            //                   ),
-                            //                 ),
-                            //               );
-                            //           }
-                            //         },
-                            //         child: Column(
-                            //           mainAxisSize: MainAxisSize.min,
-                            //           children: [
-                            //             serviceIcon.isNotEmpty
-                            //                 ? Image.asset(
-                            //                     serviceIcon,
-                            //                     height: 25,
-                            //                     width: 25,
-                            //                     fit: BoxFit.contain,
-                            //                     errorBuilder: (ctx, _, __) =>
-                            //                         const Icon(
-                            //                           Icons.broken_image,
-                            //                           size: 25,
-                            //                         ),
-                            //                   )
-                            //                 : const Icon(
-                            //                     Icons.miscellaneous_services,
-                            //                     size: 30,
-                            //                   ),
-                            //             const SizedBox(height: 5),
-                            //             Text(
-                            //               displayName,
-                            //               style: AppFontStyle2.blinker(
-                            //                 fontSize: 9,
-                            //                 fontWeight: FontWeight.w600,
-                            //                 height: 12 / 9,
-                            //                 color: Colorfile.servicename,
-                            //               ),
-                            //               textAlign: TextAlign.center,
-                            //               maxLines: 2,
-                            //               overflow: TextOverflow.ellipsis,
-                            //             ),
-                            //           ],
-                            //         ),
-                            //       );
-                            //     });
-                            //   },
-                            // ),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: dummyCategory['service'].length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    childAspectRatio: 1.4,
+                                  ),
+                              itemBuilder: (context, serviceIndex) {
+                                var service =
+                                    dummyCategory['service'][serviceIndex];
+                                String serviceIcon = service['icon'] ?? '';
+                                return Obx(() {
+                                  String displayName =
+                                      languageController.isToggled.value
+                                      ? (service['service_name_in_local_language'] ??
+                                            service['service_name'] ??
+                                            '')
+                                      : (service['service_name'] ?? '');
+                                  return InkWell(
+                                    onTap: () {
+                                      final id = service['id'].toString();
+                                      final serviceName =
+                                          service['service_name'] ?? '';
+                                      final tblName = service['tbl_name'] ?? '';
+                                      final serviceNameInLocalLanguage =
+                                          service['service_name_in_local_language'] ??
+                                          serviceName;
+                                      switch (tblName) {
+                                        case "tbl_e_property_valuation":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EPropertyValuationPage(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        serviceNameInLocalLanguage,
+                                                    lead_id: '',
+                                                    customer_id:
+                                                        widget.customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                          break;
+                                        case "tbl_aapli_chawadi":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AapliChawadiPage(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        serviceNameInLocalLanguage,
+                                                    lead_id: '',
+                                                    customer_id:
+                                                        widget.customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                          break;
+                                        case "tbl_area_converter":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AreaConverterPage(
+                                                    id: id,
+                                                    packageId: "",
+                                                    serviceName: serviceName,
+                                                    tblName: tblName,
+                                                    isToggled:
+                                                        languageController
+                                                            .isToggled
+                                                            .value,
+                                                    serviceNameInLocalLanguage:
+                                                        serviceNameInLocalLanguage,
+                                                    lead_id: '',
+                                                    customer_id:
+                                                        widget.customer_id,
+                                                    package_lead_id: '',
+                                                  ),
+                                            ),
+                                          );
+                                          break;
+                                        case "tbl_property_mutation":
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => DigitallySign1(
+                                                id: id,
+                                                packageId: "",
+                                                serviceName: serviceName,
+                                                tblName: tblName,
+                                                isToggled: languageController
+                                                    .isToggled
+                                                    .value,
+                                                serviceNameInLocalLanguage:
+                                                    serviceNameInLocalLanguage,
+                                                lead_id: '',
+                                                customer_id: widget.customer_id,
+                                                package_lead_id: '',
+                                              ),
+                                            ),
+                                          );
+                                          break;
+                                        default:
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Obx(
+                                                () => Text(
+                                                  languageController
+                                                          .isToggled
+                                                          .value
+                                                      ? "या निवडीसाठी सेवा उपलब्ध नाही."
+                                                      : "Service not available for this selection.",
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                      }
+                                    },
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        serviceIcon.isNotEmpty
+                                            ? Image.asset(
+                                                serviceIcon,
+                                                height: 25,
+                                                width: 25,
+                                                fit: BoxFit.contain,
+                                                errorBuilder: (ctx, _, __) =>
+                                                    const Icon(
+                                                      Icons.broken_image,
+                                                      size: 25,
+                                                    ),
+                                              )
+                                            : const Icon(
+                                                Icons.miscellaneous_services,
+                                                size: 30,
+                                              ),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          displayName,
+                                          style: AppFontStyle2.blinker(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.w600,
+                                            height: 12 / 9,
+                                            color: Colorfile.servicename,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                });
+                              },
+                            ),
                           ],
                         ),
                       ),
