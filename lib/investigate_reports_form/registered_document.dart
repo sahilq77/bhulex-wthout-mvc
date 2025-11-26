@@ -1070,71 +1070,31 @@ class _RegisteredDocumentState extends State<RegisteredDocument> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colorfile.borderDark),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colorfile.borderDark),
+                        color: Colorfile.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          print("View Sample button pressed");
+                        },
+                        child: Center(
+                          child: Text(
+                            LocalizedStrings.getString(
+                              'viewSample',
+                              widget.isToggled,
                             ),
-                            child: TextButton(
-                              onPressed: () {
-                                print("View Sample button pressed");
-                              },
-                              child: Center(
-                                child: Text(
-                                  LocalizedStrings.getString(
-                                    'viewSample',
-                                    widget.isToggled,
-                                  ),
-                                  style: AppFontStyle2.blinker(
-                                    color: Colorfile.lightblack,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            style: AppFontStyle2.blinker(
+                              color: Colorfile.lightblack,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colorfile.lightwhite),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                print("Chat with Us button pressed");
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(AppImages.whatsapp),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    LocalizedStrings.getString(
-                                      'chatWithUs',
-                                      widget.isToggled,
-                                    ),
-                                    style: AppFontStyle2.blinker(
-                                      color: Colorfile.lightblack,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
