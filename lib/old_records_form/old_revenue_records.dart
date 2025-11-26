@@ -3,6 +3,9 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:bhulexapp/colors/fonts.dart';
+import 'package:bhulexapp/validations_chan_lang/registerdoc%20download.dart';
+import 'package:bhulexapp/validations_chan_lang/seventwelveextract.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,6 +49,8 @@ class OldRevenueRecords extends StatefulWidget {
 class _oldextract1State extends State<OldRevenueRecords> {
   final TextEditingController _FieldSurveyNoController =
       TextEditingController();
+  final TextEditingController _ByNameIncasesurveynoisnotknownController =
+      TextEditingController();
   String? Selectedcity;
   String? SelectedId;
   List<Map<String, dynamic>> talukaData = [];
@@ -57,6 +62,16 @@ class _oldextract1State extends State<OldRevenueRecords> {
   String? selectedTalukaId;
   final _formKey = GlobalKey<FormState>();
   bool isLoading = true;
+  String? selectedDocumentType;
+
+  final List<String> documentTypes = [
+    'Sale Deed',
+    'Gift Deed',
+    'Will',
+    'Lease Agreement',
+    'Power of Attorney',
+    'Mortgage Deed',
+  ];
 
   // Services data
   List<Map<String, dynamic>> services = [
@@ -257,63 +272,7 @@ class _oldextract1State extends State<OldRevenueRecords> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    LocalizedStrings.getString(
-                      'selectServices',
-                      widget.isToggled,
-                    ),
-                    style: AppFontStyle2.blinker(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF36322E),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Column(
-                    children: services.map((service) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              service['isSelected'] = !service['isSelected'];
-                            });
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: service['isSelected']
-                                  ? const Color(0xFFF26500)
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: service['isSelected']
-                                    ? const Color(0xFFF26500)
-                                    : const Color(0xFFD9D9D9),
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  service['name'],
-                                  style: AppFontStyle2.blinker(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: service['isSelected']
-                                        ? Colors.white
-                                        : const Color(0xFF36322E),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
+
                   const SizedBox(height: 16),
                   Text(
                     LocalizedStrings.getString(
@@ -662,6 +621,109 @@ class _oldextract1State extends State<OldRevenueRecords> {
                     },
                   ),
                   const SizedBox(height: 16),
+                  FormField<String>(
+                    validator: (value) {
+                      if (selectedDocumentType == null ||
+                          selectedDocumentType!.trim().isEmpty) {
+                        return ValidationMessagesregisterdocument.getMessage(
+                          'pleaseEnterDocumentName',
+                          widget.isToggled,
+                        );
+                      }
+                      final trimmedValue = selectedDocumentType!.trim();
+                      if (RegExp(
+                        r'<.*?>|script|alert|on\w+=',
+                        caseSensitive: false,
+                      ).hasMatch(trimmedValue)) {
+                        return ValidationMessagesregisterdocument.getMessage(
+                          'invalidCharacters',
+                          widget.isToggled,
+                        );
+                      }
+                      return null;
+                    },
+                    builder: (FormFieldState<String> state) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DropdownSearch<String>(
+                            items: documentTypes,
+                            selectedItem: selectedDocumentType,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                labelText: RegisteredDocumentStrings.getString(
+                                  'typeOfDocument',
+                                  widget.isToggled,
+                                ),
+                                labelStyle: AppFontStyle2.blinker(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: const Color(0xFF36322E),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 14,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFFC5C5C5),
+                                  ),
+                                ),
+                                errorText: state.errorText,
+                                errorStyle: AppTextStyles.error(),
+                              ),
+                            ),
+                            popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                textCapitalization: TextCapitalization.words,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^[a-zA-Z\s]+$'),
+                                  ),
+                                  LengthLimitingTextInputFormatter(50),
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: widget.isToggled
+                                      ? 'दस्तऐवजाचा प्रकार शोधा...'
+                                      : 'Search Document Type...',
+                                  hintStyle: AppFontStyle2.blinker(),
+                                  border: const OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            dropdownButtonProps: DropdownButtonProps(
+                              icon: const Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 28,
+                                color: Color(0xFF9CA3AF),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedDocumentType = value;
+                                state.didChange(value);
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: _FieldSurveyNoController,
                     decoration: InputDecoration(
@@ -705,6 +767,95 @@ class _oldextract1State extends State<OldRevenueRecords> {
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'Please enter survey number'
                         : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _ByNameIncasesurveynoisnotknownController,
+                    decoration: InputDecoration(
+                      label: RichText(
+                        text: TextSpan(
+                          text: LocalizedStrings.getString(
+                            'byName',
+                            widget.isToggled,
+                          ),
+                          style: AppFontStyle2.blinker(
+                            color: const Color(0xFF36322E),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: [
+                            TextSpan(
+                              text:
+                                  ' ${LocalizedStrings.getString('byNameHint', widget.isToggled)}',
+                              style: AppFontStyle2.blinker(
+                                color: const Color(0xFF36322E),
+                                fontSize: 10,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: const BorderSide(color: Color(0xFFC5C5C5)),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: const BorderSide(color: Colors.red),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: const BorderSide(color: Colors.red),
+                      ),
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^[\u0900-\u097F\u0966-\u096F a-zA-Z\s/]+$'),
+                      ),
+                      TextInputFormatter.withFunction((oldValue, newValue) {
+                        String text = newValue.text;
+                        text = text.replaceAll(RegExp(r'\s+'), ' ');
+                        text = text.trimLeft();
+                        return text == newValue.text
+                            ? newValue
+                            : TextEditingValue(
+                                text: text,
+                                selection: TextSelection.collapsed(
+                                  offset: text.length,
+                                ),
+                              );
+                      }),
+                      LengthLimitingTextInputFormatter(50),
+                    ],
+                    textCapitalization: TextCapitalization.words,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return ValidationMessagesseventweleve.getMessage(
+                          'pleaseEnterByName',
+                          widget.isToggled,
+                        );
+                      }
+                      final trimmedValue = value.trim();
+                      if (RegExp(
+                        r'<.*?>|script|alert|on\w+=',
+                        caseSensitive: false,
+                      ).hasMatch(trimmedValue)) {
+                        return ValidationMessagesseventweleve.getMessage(
+                          'invalidCharacters',
+                          widget.isToggled,
+                        );
+                      }
+                      return null;
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 30.0),
@@ -751,71 +902,31 @@ class _oldextract1State extends State<OldRevenueRecords> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colorfile.borderDark),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colorfile.borderDark),
+                        color: Colorfile.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          print("View Sample button pressed");
+                        },
+                        child: Center(
+                          child: Text(
+                            LocalizedStrings.getString(
+                              'viewSample',
+                              widget.isToggled,
                             ),
-                            child: TextButton(
-                              onPressed: () {
-                                print("View Sample button pressed");
-                              },
-                              child: Center(
-                                child: Text(
-                                  LocalizedStrings.getString(
-                                    'viewSample',
-                                    widget.isToggled,
-                                  ),
-                                  style: AppFontStyle2.blinker(
-                                    color: Colorfile.lightblack,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
+                            style: AppFontStyle2.blinker(
+                              color: Colorfile.lightblack,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colorfile.lightwhite),
-                              color: Colorfile.white,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                print("Chat with Us button pressed");
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(AppImages.whatsapp),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    LocalizedStrings.getString(
-                                      'chatWithUs',
-                                      widget.isToggled,
-                                    ),
-                                    style: AppFontStyle2.blinker(
-                                      color: Colorfile.lightblack,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
