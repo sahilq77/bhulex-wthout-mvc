@@ -142,7 +142,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                   );
                 } else {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) =>

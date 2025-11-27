@@ -382,8 +382,9 @@ class _HomePage2State extends State<HomePage2> {
                           () => !languageController.isToggled.value
                               ? Positioned(
                                   right: 10,
+                                  bottom: 5,
                                   child: Text(
-                                    'अ',
+                                    'म',
                                     style: AppFontStyle2.blinker(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w400,
@@ -394,7 +395,7 @@ class _HomePage2State extends State<HomePage2> {
                               : Positioned(
                                   left: 10,
                                   child: Text(
-                                    'A',
+                                    'E',
                                     style: AppFontStyle2.blinker(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w400,

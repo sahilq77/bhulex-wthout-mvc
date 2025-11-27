@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:bhulexapp/colors/order_fonts.dart';
+import 'package:bhulexapp/homepage.dart';
 import 'package:bhulexapp/information/upload_info_document_screen.dart';
 import 'package:bhulexapp/network/url.dart';
 import 'package:bhulexapp/profile/profile.dart';
@@ -128,11 +129,10 @@ class _informationscreenState extends State<informationscreen> {
             duration: Duration(seconds: 2),
           ),
         );
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                UploadInfoDocumentScreen(isToggled: istoggled),
+            builder: (context) => HomePage2(customer_id: "", customerId: ""),
           ),
         );
 
@@ -250,7 +250,7 @@ class _informationscreenState extends State<informationscreen> {
           title: Text(
             'Personal Details', // Replace with your desired title
             style: AppFontStyle.poppins(
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               fontSize: 18,
               height: 16 / 18, // Equivalent to line-height: 16px
               // letterSpacing: 0,
@@ -286,7 +286,7 @@ class _informationscreenState extends State<informationscreen> {
               child: SizedBox(
                 height: 900,
                 child: Form(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  autovalidateMode: AutovalidateMode.onUnfocus,
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,8 +294,8 @@ class _informationscreenState extends State<informationscreen> {
                       Text(
                         'Please Enter Your Details',
                         style: AppFontStyle.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                           height: 1.57,
                           color: Color(0xFF36322E),
                         ),
@@ -755,7 +755,8 @@ class _informationscreenState extends State<informationscreen> {
 
                       const SizedBox(height: 16),
 
-                      FormField<String>(//design by sahil
+                      FormField<String>(
+                        //design by sahil
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Please select a city';
@@ -848,48 +849,45 @@ class _informationscreenState extends State<informationscreen> {
                           );
                         },
                       ),
-                      const SizedBox(height: 70),
+                      const SizedBox(height: 30),
                       // Replace the TextButton widget in your build method with this:
-                      Padding(
-                        padding: const EdgeInsets.only(top: 110.0),
-                        child: Container(
-                          width: double.infinity,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF57C03),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: TextButton(
-                            onPressed: () {
-                              // Validate the form and check dropdown selections
-                              if (_formKey.currentState!.validate() &&
-                                  Selectedstate != null &&
-                                  Selectedcity != null) {
-                                // All fields are valid and dropdowns are selected, proceed with submission
-                                information();
-                              } else {
-                                // Show error message if any field is empty or dropdown not selected
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Please enter all fields',
-                                      style: AppFontStyle.poppins(
-                                        color: Colors.white,
-                                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF26500),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: TextButton(
+                          onPressed: () {
+                            // Validate the form and check dropdown selections
+                            if (_formKey.currentState!.validate() &&
+                                Selectedstate != null &&
+                                Selectedcity != null) {
+                              // All fields are valid and dropdowns are selected, proceed with submission
+                              information();
+                            } else {
+                              // Show error message if any field is empty or dropdown not selected
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Please enter all fields',
+                                    style: AppFontStyle.poppins(
+                                      color: Colors.white,
                                     ),
-                                    backgroundColor: Colors.red,
-                                    duration: Duration(seconds: 2),
                                   ),
-                                );
-                              }
-                            },
-                            child: Text(
-                              'Submit',
-                              style: AppFontStyle.poppins(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                              ),
+                                  backgroundColor: Colors.red,
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          },
+                          child: Text(
+                            'Submit',
+                            style: AppFontStyle2.blinker(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
