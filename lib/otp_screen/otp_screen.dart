@@ -441,11 +441,11 @@ class _OtpScreenState extends State<OtpScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 22.0),
                   child: Container(
-                    width: 356,
-                    height: 52,
+                    width: double.infinity,
+                    height: 50,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF57C03),
-                      borderRadius: BorderRadius.circular(12),
+                      color: const Color(0xFFF26500),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     alignment: Alignment.center,
                     child: Text(
@@ -478,7 +478,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     child: Text(
                       _canResend ? "Resend" : getTimerText(),
                       style: AppFontStyle2.blinker(
-                        color: const Color(0xFFF57C03),
+                        color: const Color(0xFFF26500),
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),

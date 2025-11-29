@@ -248,7 +248,7 @@ class _ChangeLanguageScreenState extends State<ChangeLanguageScreen> {
             ),
             Icon(
               isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: isSelected ? Color(0xFFFFA500) : Color(0xFFB0B0B0),
+              color: isSelected ? const Color(0xFFF26500) : Color(0xFFB0B0B0),
             ),
           ],
         ),

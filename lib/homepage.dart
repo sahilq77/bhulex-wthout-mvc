@@ -1482,9 +1482,11 @@ class _HomePage2State extends State<HomePage2> {
                                                   BorderRadius.circular(10),
                                               border: Border.all(
                                                 color: Colorfile.primaryColor,
-                                                width: 0.5,
+                                                //  width: 0.5,
                                               ),
-                                              color: const Color(0xFFFFF3E0),
+                                              color: const Color(
+                                                0xFFF3D0A2,
+                                              ).withOpacity(0.1),
                                             ),
                                             child: SingleChildScrollView(
                                               child: Column(
@@ -1498,15 +1500,15 @@ class _HomePage2State extends State<HomePage2> {
                                                             const EdgeInsets.all(
                                                               12,
                                                             ),
-                                                        decoration: BoxDecoration(
-                                                          color: const Color(
-                                                            0xFFFFF3E0,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                12,
-                                                              ),
-                                                        ),
+                                                        // decoration: BoxDecoration(
+                                                        //   color: const Color(
+                                                        //     0xFFFFF3E0,
+                                                        //   ),
+                                                        //   borderRadius:
+                                                        //       BorderRadius.circular(
+                                                        //         12,
+                                                        //       ),
+                                                        // ),
                                                         child: ClipRRect(
                                                           borderRadius:
                                                               BorderRadius.circular(
