@@ -1,3 +1,4 @@
+import 'package:bhulexapp/Order/all_order_page.dart';
 import 'package:bhulexapp/Order/order_list.dart';
 import 'package:bhulexapp/controller/order/language%20controller.dart';
 import 'package:bhulexapp/homepage.dart';
@@ -17,7 +18,7 @@ class BottomNavigationController extends GetxController {
       customer_id: "",
     ), // Will be replaced properly later
     const SupportPage(),
-    const MyOrderScreen(),
+    const OrderCardsPage(),
     const ProfilePage(isToggled: false),
   ];
 
