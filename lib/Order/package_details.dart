@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:bhulexapp/Order/property_ownership_verification.dart';
 import 'package:bhulexapp/utils/responsive_helper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -585,7 +586,15 @@ class _PackageDetailsPageState extends State<PackageDetailsPage> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        _showPaymentDialog();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                PropertyOwnershipVerification(),
+                                          ),
+                                        );
+
+                                        // _showPaymentDialog();
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: const Color(
